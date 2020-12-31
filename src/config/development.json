@@ -1,0 +1,29 @@
+{
+  "CUSTOM_TYPES": {
+    "Address": "AccountId",
+    "AssetId": "u64",
+    "FeeRate": "u64",
+    "LookupSource": "AccountId",
+    "User": {
+      "borrowLimit": "Balance",
+      "supplyBalance": "Balance",
+      "debtBalance": "Balance"
+    },
+    "Pool": {
+      "enabled": "bool",
+      "canBeCollateral": "bool",
+      "asset": "AssetId",
+      "supply": "Balance",
+      "debt": "Balance",
+      "liquidationThreshold": "u128",
+      "supplyThreshold": "u128",
+      "liquidationBonus": "u128",
+      "totalSupplyIndex": "u128",
+      "totalDebtIndex": "u128",
+      "lastUpdated": "BlockNumber",
+      "supplyAPY": "Balance",
+      "debtAPY": "Balance"
+    }
+  },
+  "PROVIDER_SOCKET": "ws://127.0.0.1:9944"
+}

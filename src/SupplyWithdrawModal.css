@@ -1,0 +1,93 @@
+.MarketModal-container {
+  /* height: 400px; */
+}
+
+.MarketModal-header {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+}
+
+.MarketModal-header-image {
+  width: 40px;
+  height: 40px;
+  margin: 10px 0px;
+}
+
+.MarketModal-header-title {
+  font-size: 22px;
+  line-height: 60px;
+  margin: 0px 20px;
+}
+
+.MarketModal-header-close-button {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: 10px;
+  top: 10px;
+  right: 10px;
+}
+
+.MarketModal-input-container {
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 20px 0px;
+}
+
+.MarketModal-input {
+  width: 300px;
+  font-size: 32px;
+  text-align: center;
+  border: 0px;
+}
+
+input.MarketModal-input:focus {
+  border: 0px;
+  outline: none;
+}
+
+.MarketModal-trans-info {
+
+}
+
+.MarketModal-trans-info-row {
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+}
+
+.MarketModal-trans-info-row-middle {
+  width: 100%;
+}
+
+.MarketModal-supply-rate-icon {
+  width: 40px;
+  height: 40px;
+  margin: 15px 10px 15px 0px;
+}
+
+.MarketModal-trans-info-text {
+  color: #657786;
+  font-size: 20px;
+  line-height: 70px;
+  min-width: 180px;
+}
+
+.MarketModal-trans-info-number {
+  font-size: 20px;
+  line-height: 70px;
+  text-align: right;
+  min-width: 300px;
+}
+
+.MarketModal-trans-info-apy-number {
+  font-size: 20px;
+  line-height: 70px;
+  text-align: right;
+  min-width: 150px;
+}

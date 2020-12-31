@@ -1,0 +1,32 @@
+.MarketLists-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.Market-container {
+  width: 49%;
+  background-color: white;
+  padding: 15px 30px;
+  border-radius: 6px;
+}
+
+.MarketLists-middle-padding {
+  width: 2%;
+  min-width: 20px;
+}
+
+.Market-title {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.Market-table-header {
+  display: flex;
+  flex-direction: row;
+  height: 35px;
+}
+
+.Market-table-header-text {
+  color: #657786;
+  line-height: 35px;
+}
