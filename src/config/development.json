@@ -25,5 +25,5 @@
       "debtAPY": "Balance"
     }
   },
-  "PROVIDER_SOCKET": "wss://konomi.tech/node"
+  "PROVIDER_SOCKET": "ws://127.0.0.1:9944"
 }
