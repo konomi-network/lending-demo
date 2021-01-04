@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'semantic-ui-react';
 
-import { useSubstrate } from './substrate-lib';
-import { balanceToInt, intToReadableString } from './numberUtils';
-import './SupplyMarketRow.css';
+import { useSubstrate } from '../substrate-lib';
+import { balanceToInt, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import KonomiImage from '../resources/img/KONO.png';
+import DotImage from '../resources/img/DOT.png';
+import KsmImage from '../resources/img/KSM.png';
+import EthImage from '../resources/img/ETH.png';
+import BtcImage from '../resources/img/BTC.png';
 
-import KonomiImage from './resources/img/KONO.png';
-import DotImage from './resources/img/DOT.png';
-import KsmImage from './resources/img/KSM.png';
-import EthImage from './resources/img/ETH.png';
-import BtcImage from './resources/img/BTC.png';
+import './SupplyMarketRow.css';
 
 const SUPPLY_ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
@@ -51,8 +51,8 @@ export default function Main (props) {
       if (accountPair) {
         const getSupplyWallet = async () => {
           unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
-            const intNumber = balanceToInt(balance, 1);
-            setWalletBalance(intToReadableString(intNumber, moneyBase));
+            const balanceNum = balanceToUnitNumber(balance);
+            setWalletBalance(numberToReadableString(balanceNum));
           });
         };
         getSupplyWallet();

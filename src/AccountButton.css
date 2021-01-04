@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+.ConnectAccountButton {
+  height: 34px;
+  width: 230px;
+  margin: 10px 0px;
+  text-align: center;
+  border-radius: 17px;
+  border-width: 2px;
+  border-color: #3650FA;
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 25px;
+  color: #3650FA;
+  background-color: white;
+}

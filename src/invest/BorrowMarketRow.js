@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSubstrate } from './substrate-lib';
-import { balanceToInt, intToReadableString } from './numberUtils';
-import './BorrowMarketRow.css';
+import { useSubstrate } from '../substrate-lib';
+import { balanceToInt, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import KonomiImage from '../resources/img/KONO.png';
+import DotImage from '../resources/img/DOT.png';
+import KsmImage from '../resources/img/KSM.png';
+import EthImage from '../resources/img/ETH.png';
+import BtcImage from '../resources/img/BTC.png';
 
-import KonomiImage from './resources/img/KONO.png';
-import DotImage from './resources/img/DOT.png';
-import KsmImage from './resources/img/KSM.png';
-import EthImage from './resources/img/ETH.png';
-import BtcImage from './resources/img/BTC.png';
+import './BorrowMarketRow.css';
 
 const moneyBase = 1000000000000;
 
@@ -40,7 +40,8 @@ export default function Main (props) {
           if (assetPool.isSome) {
             const unwrappedPool = assetPool.unwrap();
             setAPY((balanceToInt(unwrappedPool.debtAPY) / 10000).toFixed(2));
-            const liquidityInt = balanceToInt(unwrappedPool.supply) - balanceToInt(unwrappedPool.debt);
+            const liquidityInt = balanceToUnitNumber(unwrappedPool.supply)
+                - balanceToUnitNumber(unwrappedPool.debt);
             setLiquidity(liquidityInt);
           } else {
             setAPY(0);
@@ -53,8 +54,8 @@ export default function Main (props) {
       if (accountPair) {
         const getBorrowWallet = async () => {
           unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
-            const intNumber = balanceToInt(balance, 1);
-            setWalletBalance(intToReadableString(intNumber, moneyBase));
+            const balanceNum = balanceToUnitNumber(balance);
+            setWalletBalance(numberToReadableString(balanceNum));
           });
         };
         getBorrowWallet();
@@ -81,7 +82,7 @@ export default function Main (props) {
         <p className="Market-table-cell-text">{`${walletBalance} ${rowData.abbr}`}</p>
       </div>
       <div className="BorrowMarket-liquidity-column Market-table-cell">
-        <p className="Market-table-cell-text">${intToReadableString(liquidity * rowData.price, moneyBase)}</p>
+        <p className="Market-table-cell-text">${numberToReadableString(liquidity * rowData.price)}</p>
       </div>
     </div>
   );

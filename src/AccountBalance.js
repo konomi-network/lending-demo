@@ -6,10 +6,17 @@ import './AccountBalance.css';
 
 const moneyBase = 1000000000000;
 
+const INIT_ACCOUNT_BALANCE = {
+  borrowLimit: 0,
+  supplyBalance: 0,
+  debtBalance: 0,
+  usedPercent: 0
+};
+
 export default function Main (props) {
   const { accountPair } = props;
 
-  const [accountBalance, setAccountBalance] = useState({ borrowLimit: 0, supplyBalance: 0, debtBalance: 0 });
+  const [accountBalance, setAccountBalance] = useState(INIT_ACCOUNT_BALANCE);
   const [progressBarPercent, setProgressBarPercent] = useState(0);
 
   const { api } = useSubstrate();
@@ -37,7 +44,7 @@ export default function Main (props) {
             }
             setAccountBalance({ borrowLimit, supplyBalance, debtBalance, usedPercent });
           } else {
-            setAccountBalance({ borrowLimit: 0, supplyBalance: 0, debtBalance: 0, usedPercent: 0 });
+            setAccountBalance(INIT_ACCOUNT_BALANCE);
           }
         });
       };

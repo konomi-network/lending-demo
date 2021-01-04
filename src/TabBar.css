@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+
+.TabBar-container {
+  display: flex;
+  flex-direction: row;
+  height: 54px;
+}
+
+.TabBar-item-container {
+  margin-left: 10px;
+  margin-right: 10px;
+  height: 54px;
+}
+
+.TabBar-item-container:hover {
+  cursor: pointer;
+}
+
+.TabBar-item {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+}
+
+.TabBar-item-icon-container {
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.TabBar-item-icon {
+  width: 20px;
+  height: 20px;
+  margin: 15px;
+
+}
+
+.TabBar-item-icon-active {
+  display: inline;
+  fill: #3650FA;
+}
+
+.TabBar-item-label {
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+  line-height: 50px;
+  color: #6A6A6A;
+  margin-right: 10px;
+}
+
+.TabBar-item-label-active {
+  color: #3650FA;
+}
+
+.TabBar-marker {
+  margin: 0px 10px;
+  height: 4px;
+}
+
+.TabBar-item-marker-active {
+  background-color: #3650FA;
+}
+
+.TabBar-grey-line {
+  position: absolute;
+  bottom: 4px;
+  left: 20px;
+  right: 5px;
+  /* width: 100%; */
+  height: 1px;
+  background-color: #C4C4C4;
+}

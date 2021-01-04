@@ -1,0 +1,55 @@
+.WalletAssetRow-container {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+  border-top: 1px solid #E5E5E5;
+}
+
+.WalletAssetRow-column-asset {
+  padding-left: 45px;
+  width: 20%;
+}
+
+.WalletAssetRow-column-balance {
+  width: 26%;
+  text-align: right;
+}
+
+.WalletAssetRow-column-price {
+  width: 26%;
+  text-align: right;
+}
+
+.WalletAssetRow-column-value {
+  padding-right: 60px;
+  width: 28%;
+  text-align: right;
+}
+
+.WalletAssetRow-cell {
+  display: flex;
+  flex-direction: row;
+}
+
+.WalletAssetRow-asset-icon {
+  width: 30px;
+  height: 30px;
+  margin: 10px 0px;
+}
+
+.WalletAssetRow-asset-text {
+  font-family: "Work Sans", sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 50px;
+  margin-left: 10px;
+}
+
+.WalletAssetRow-number {
+  font-family: "Work Sans", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 50px;
+}

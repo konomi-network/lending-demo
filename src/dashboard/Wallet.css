@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500&display=swap');
+
+.Wallet-container {
+
+}
+
+.Wallet-total {
+  width: 300px;
+  height: 80px;
+  border-radius: 10px;
+  position: relative;
+  background-color: #3650FA;
+}
+
+.Wallet-total-label {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 27px;
+  color: #FFFFFF;
+}
+
+.Wallet-total-number {
+  position: absolute;
+  right: 15px;
+  bottom: 5px;
+  font-family: 'Work Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 36px;
+  line-height: 42px;
+  color: #FFFFFF;
+}
+
+.Wallet-asset-table {
+  margin-top: 30px;
+}
+
+.Wallet-asset-table-header {
+  display: flex;
+  flex-direction: row;
+  height: 50px;
+}
+
+.Wallet-asset-table-header-text {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 50px;
+  color: #162064;
+}

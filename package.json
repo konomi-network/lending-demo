@@ -26,8 +26,10 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.13.5",
     "react": "^16.14.0",
+    "react-cookie": "^4.0.3",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.14.0",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.0"
@@ -58,6 +60,9 @@
     "plugins": [
       "only-warn"
     ],
+    "globals": {
+      "BigInt": true
+    },
     "rules": {
       "semi": [
         1,

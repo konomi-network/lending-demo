@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Icon, Menu } from 'semantic-ui-react';
 
-import { useSubstrate } from './substrate-lib';
-import { KNTxButton } from './substrate-lib/components';
-import { balanceToInt, intToReadableString } from './numberUtils';
+import { useSubstrate } from '../substrate-lib';
+import { KNTxButton } from '../substrate-lib/components';
+import { balanceToInt, balanceToUnitNumber, numberToReadableString, intToReadableString } from '../numberUtils';
+import KonomiImage from '../resources/img/KONO.png';
+import DotImage from '../resources/img/DOT.png';
+import KsmImage from '../resources/img/KSM.png';
+import EthImage from '../resources/img/ETH.png';
+import BtcImage from '../resources/img/BTC.png';
 
 import './BorrowRepayModal.css';
 
-import KonomiImage from './resources/img/KONO.png';
-import DotImage from './resources/img/DOT.png';
-import KsmImage from './resources/img/KSM.png';
-import EthImage from './resources/img/ETH.png';
-import BtcImage from './resources/img/BTC.png';
+/* global BigInt */
 
 const ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
@@ -51,7 +52,7 @@ export default function Main (props) {
             const unwrappedPool = assetPool.unwrap();
             const apyNumber = (balanceToInt(unwrappedPool.debtAPY) / 10000).toFixed(2);
             setAPY(apyNumber);
-            const liquidityInt = balanceToInt(unwrappedPool.supply) - balanceToInt(unwrappedPool.debt);
+            const liquidityInt = balanceToUnitNumber(unwrappedPool.supply) - balanceToUnitNumber(unwrappedPool.debt);
             setLiquidity(liquidityInt);
           } else {
             setAPY(0);
@@ -64,9 +65,9 @@ export default function Main (props) {
       if (accountPair) {
         const getWallet = async () => {
           unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
-            const intNumber = balanceToInt(balance, 1);
-            setWalletBalanceNumber(intNumber);
-            setWalletBalance(intToReadableString(intNumber, moneyBase));
+            const balanceNum = balanceToUnitNumber(balance);
+            setWalletBalanceNumber(balanceNum);
+            setWalletBalance(numberToReadableString(balanceNum));
           });
         };
         getWallet();
@@ -79,11 +80,11 @@ export default function Main (props) {
           if (userData.isSome) {
             const dataUnwrap = userData.unwrap();
             const borrowLimit = dataUnwrap.borrowLimit
-              ? balanceToInt(dataUnwrap.borrowLimit) : 0;
+              ? balanceToUnitNumber(dataUnwrap.borrowLimit) : 0;
             const supplyBalance = dataUnwrap.supplyBalance
-              ? balanceToInt(dataUnwrap.supplyBalance) : 0;
+              ? balanceToUnitNumber(dataUnwrap.supplyBalance) : 0;
             const debtBalance = dataUnwrap.debtBalance
-              ? balanceToInt(dataUnwrap.debtBalance) : 0;
+              ? balanceToUnitNumber(dataUnwrap.debtBalance) : 0;
             let usedPercent = 0;
             if (borrowLimit !== 0) {
               usedPercent = (debtBalance / borrowLimit * 100).toFixed(2);
@@ -132,7 +133,7 @@ export default function Main (props) {
           </p>
           <div className="MarketModal-trans-info-row-middle"></div>
           <p className="MarketModal-trans-info-number">
-            ${intToReadableString(accountBalance.debtBalance, moneyBase)}
+            ${numberToReadableString(accountBalance.debtBalance)}
           </p>
         </div>
       );
@@ -147,19 +148,19 @@ export default function Main (props) {
   };
 
   const renderBorrowBalanceText = () => {
-    const oldBorrowText = '$' + intToReadableString(accountBalance.debtBalance, moneyBase);
+    const oldBorrowText = '$' + numberToReadableString(accountBalance.debtBalance);
     if (!inputNumberValue) {
       return oldBorrowText;
     }
     if (activeItem === 'Borrow') {
       const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      const newDebt = accountBalance.debtBalance / moneyBase + increasedBorrow;
-      return oldBorrowText + ' -> ' + '$' + intToReadableString(newDebt, 1);
+      const newDebt = accountBalance.debtBalance + increasedBorrow;
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt);
     } else {
       const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      let newDebt = accountBalance.debtBalance / moneyBase - decreasedBorrow;
+      let newDebt = accountBalance.debtBalance - decreasedBorrow;
       newDebt = newDebt < 0 ? 0 : newDebt;
-      return oldBorrowText + ' -> ' + '$' + intToReadableString(newDebt, 1);
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt);
     }
   };
 
@@ -170,18 +171,18 @@ export default function Main (props) {
     }
     if (activeItem === 'Borrow') {
       const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      const newDebt = accountBalance.debtBalance / moneyBase + increasedBorrow;
-      const newUsedPercent = (newDebt / (accountBalance.borrowLimit / moneyBase) * 100).toFixed(2) + '%';
+      const newDebt = accountBalance.debtBalance + increasedBorrow;
+      const newUsedPercent = (newDebt / accountBalance.borrowLimit * 100).toFixed(2) + '%';
       return oldUsedPercent + ' -> ' + newUsedPercent;
     } else {
       const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      let newDebt = accountBalance.debtBalance / moneyBase - decreasedBorrow;
+      let newDebt = accountBalance.debtBalance - decreasedBorrow;
       newDebt = newDebt < 0 ? 0 : newDebt;
       let newUsedPercent = null;
       if (newDebt === 0) {
         newUsedPercent = '0%';
       } else {
-        newUsedPercent = (newDebt / (accountBalance.borrowLimit / moneyBase) * 100).toFixed(2) + '%';
+        newUsedPercent = (newDebt / accountBalance.borrowLimit * 100).toFixed(2) + '%';
       }
       return oldUsedPercent + ' -> ' + newUsedPercent;
     }
@@ -192,25 +193,25 @@ export default function Main (props) {
       return null;
     }
     if (activeItem === 'Borrow') {
-      const newDebt = inputNumberValue * ASSET_LIST[assetId].price * moneyBase;
+      const newDebt = inputNumberValue * ASSET_LIST[assetId].price;
       if (accountBalance.debtBalance + newDebt > accountBalance.borrowLimit) {
         // New borrow balance exceeds borrow limit.
         return null;
-      } else if (inputNumberValue * moneyBase > liquidity) {
+      } else if (inputNumberValue > liquidity) {
         // Borrow value exceeds liquidity.
         return null;
       } else {
-        return inputNumberValue * moneyBase;
+        return BigInt(inputNumberValue * moneyBase);
       }
     } else {
-      if (inputNumberValue * ASSET_LIST[assetId].price * moneyBase > accountBalance.debtBalance) {
+      if (inputNumberValue * ASSET_LIST[assetId].price > accountBalance.debtBalance) {
         // Repay value exceeds borrow balance.
         return null;
-      } else if (inputNumberValue * moneyBase > walletBalanceNumber) {
+      } else if (inputNumberValue > walletBalanceNumber) {
         // Repay exceeds wallet balance.
         return null;
       } else {
-        return inputNumberValue * moneyBase;
+        return BigInt(inputNumberValue * moneyBase);
       }
     }
   };

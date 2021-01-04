@@ -1,6 +1,7 @@
 .MarketLists-container {
   display: flex;
   flex-direction: row;
+  margin-top: 40px;
 }
 
 .Market-container {
@@ -16,8 +17,11 @@
 }
 
 .Market-title {
-  font-weight: bold;
-  font-size: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 35px;
+  font-style: normal;
 }
 
 .Market-table-header {

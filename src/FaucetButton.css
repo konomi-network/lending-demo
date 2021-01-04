@@ -1,0 +1,12 @@
+.FaucetButton {
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+  border: none;
+  background-color: white;
+}
+
+.FaucetButton-img {
+  width: 30px;
+  height: 30px;
+}

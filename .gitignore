@@ -1,4 +1,9 @@
-.DS_Store
+**/.DS_Store
 .git
+build
 yarn.lock
+package-lock.json
 **/node_modules/
+
+# Local Netlify folder
+.netlify
