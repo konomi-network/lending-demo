@@ -3,7 +3,7 @@ import { Button, Icon, Menu } from 'semantic-ui-react';
 
 import { useSubstrate } from '../substrate-lib';
 import { KNTxButton } from '../substrate-lib/components';
-import { balanceToInt, balanceToUnitNumber, numberToReadableString, intToReadableString } from '../numberUtils';
+import { balanceToInt, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';

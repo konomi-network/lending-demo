@@ -62,7 +62,6 @@ function Main () {
       case "Invest":
         return (
           <div>
-
             <MarketLists accountPair={accountPair} />
           </div>
         );

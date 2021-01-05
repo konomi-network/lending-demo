@@ -9,22 +9,22 @@ import './AccountSelector.css';
 function DropdownBaseButton (props) {
   const { setOpen, account } = props;
 
-  // const shortAddress = account.value.slice(0,5) + "..." + account.address.slice(-7);
+  const shortAddress = account.address.slice(0,5) + "..." + account.address.slice(-7);
 
   return (
     <div className="Dropdown-base-container" onClick={() => setOpen(true)}>
-      <div className="Dropdown-left">
-        <p>Alice</p>
+      <div className="Dropdown-base-left">
+        <p className="Dropdown-left-name name-selected">{account.name}</p>
       </div>
-      <div className="Dropdown-right">
-        <p>abcde...abcdefg</p>
+      <div className="Dropdown-base-right">
+        <p className="Dropdown-right-address address-selected">{shortAddress}</p>
       </div>
     </div>
   );
 }
 
 function DropdownOptions (props) {
-  const { accountList, selectedAccount, setOpen } = props;
+  const { accountOptions, selectedAccount, setOpen, setAccountAddress, setSelectedAccount } = props;
 
   const toggleContainer = React.createRef();
 
@@ -41,11 +41,70 @@ function DropdownOptions (props) {
     }
   });
 
-  const onClickOptions = () => {
+  const onClickRow = (index) => {
+    return () => {
+      const account = accountOptions[index];
+      setAccountAddress(account.address);
+      setSelectedAccount(account);
+      setOpen(false);
+    };
   }
 
+  const renderRow = (index) => {
+    const account = accountOptions[index];
+    const isFirst = index === 0;
+    const isLast = index === accountOptions.length - 1;
+    const isSelected = account.address === selectedAccount.address;
+
+    const rowHeight = 30 - (isFirst ? 2 : 0) - (isLast ? 2 : 0);
+
+    const nameStyle = "Dropdown-row-left-name" + (isSelected ? " name-selected" : "");
+    const addressStyle = "Dropdown-row-right-address" + (isSelected ? " address-selected" : "");
+    const leftStyle = {};
+    const rightStyle = {};
+    if (isFirst) {
+      leftStyle["borderTopLeftRadius"] = "11px";
+      rightStyle["borderTopRightRadius"] = "11px";
+    }
+    if (isLast) {
+      leftStyle["borderBottomLeftRadius"] = "11px";
+      rightStyle["borderBottomRightRadius"] = "11px";
+    }
+
+    const shortAddress = account.address.slice(0,5) + "..." + account.address.slice(-7);
+
+    return (
+      <div
+        key={account.name}
+        className="Dropdown-option-row"
+        style={{height: `${rowHeight}px`}}
+        onClick={onClickRow(index)}>
+        <div className="Dropdown-row-left" style={leftStyle}>
+          <p
+            className={nameStyle}
+            style={{lineHeight: `${rowHeight}px`}}>
+            {account.name}
+          </p>
+        </div>
+        <div className="Dropdown-row-right" style={rightStyle}>
+          <p
+            className={addressStyle}
+            style={{lineHeight: `${rowHeight}px`}}>
+            {shortAddress}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  const totalHeight = accountOptions.length * 30;
+
   return (
-    <div className="Dropdown-options-container" ref={toggleContainer} onClick={onClickOptions}>
+    <div
+      className="Dropdown-options-container"
+      style={{height: `${totalHeight}px`}}
+      ref={toggleContainer}>
+      {accountOptions.map((option, index) => renderRow(index))}
     </div>
   );
 }
@@ -54,31 +113,42 @@ export default function AccountSelector (props) {
   const { keyring } = useSubstrate();
   const { setAccountAddress } = props;
   const [open, setOpen] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [selectedAccount, setSelectedAccount] = useState({name: "", address: ""});
 
-  // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map(account => ({
-    key: account.address,
-    value: account.address,
-    name: account.meta.name,
-    text: account.meta.name.toUpperCase()
-  }));
+  const injectedKeyringOptions =
+    keyring.getPairs().filter(account => account.meta.isInjected)
+    // keyring.getPairs()
+    .map(account => {
+      const shortAddress = account.address.slice(0,6) + "..." + account.address.slice(-4);
+      return {
+        name: account.meta.name,
+        address: account.address
+      };
+    });
 
-  const initialAccount =
-      keyringOptions.length > 0 ? keyringOptions[0] : null;
   const initialAddress =
-      keyringOptions.length > 0 ? keyringOptions[0].value : '';
+    injectedKeyringOptions.length > 0 ? injectedKeyringOptions[0].address : '';
 
+  // Set the initial address
   useEffect(() => {
-    setAccountAddress(initialAddress);
-    setSelectedAccount(initialAccount);
+    setSelectedAccount(injectedKeyringOptions[0]);
+    if (initialAddress !== "") {
+      setAccountAddress(initialAddress);
+    }
   }, [setAccountAddress, initialAddress]);
 
   const renderDropdown = () => {
-    if (!open) {
+    if (!open || injectedKeyringOptions.length === 1) {
       return <DropdownBaseButton setOpen={setOpen} account={selectedAccount} />
     } else {
-      return <DropdownOptions setOpen={setOpen} />
+      return (
+        <DropdownOptions
+          setAccountAddress={setAccountAddress}
+          setOpen={setOpen}
+          setSelectedAccount={setSelectedAccount}
+          accountOptions={injectedKeyringOptions}
+          selectedAccount={selectedAccount}/>
+      );
     }
   }
 
@@ -88,175 +158,3 @@ export default function AccountSelector (props) {
     </div>
   )
 }
-
-// function Main (props) {
-//   const { keyring } = useSubstrate();
-//   const { setAccountAddress } = props;
-//   const [isOpen, setOpen] = useState(false);
-//   const [accountSelected, setAccountSelected] = useState('');
-//
-//   const toggleContainer = React.createRef();
-//
-//   // Get the list of accounts we possess the private key for
-//   const keyringOptions = keyring.getPairs().map(account => ({
-//     key: account.address,
-//     value: account.address,
-//     name: account.meta.name,
-//     text: account.meta.name.toUpperCase()
-//   }));
-//
-//   const initialAddress =
-//     keyringOptions.length > 0 ? keyringOptions[0].value : '';
-//
-//   const onClickOutsideHandler = (event) => {
-//     if (
-//       isOpen &&
-//       !toggleContainer.current.contains(event.target)
-//     ) {
-//       setOpen(false);
-//     }
-//   };
-//
-//   // Set the initial address
-//   useEffect(() => {
-//     setAccountAddress(initialAddress);
-//     setAccountSelected(initialAddress);
-//     window.addEventListener("click", onClickOutsideHandler);
-//     return () => {
-//       window.removeEventListener("click", onClickOutsideHandler);
-//     }
-//   }, [setAccountAddress, initialAddress]);
-//
-//   const onClickHandler = () => {
-//     setOpen(true);
-//   };
-//
-//   const onChange = (item) => {
-//     return () => {
-//       setAccountAddress(item.address);
-//       setAccountSelected(item.address);
-//       setOpen(false);
-//     }
-//   };
-//
-//   return (
-//     <div style={{ width: '200px', paddingTop: '10px' }}>
-//       <Dropdown
-//         basic
-//         selection
-//         fluid
-//         placeholder='Account'
-//         options={keyringOptions}
-//         onChange={(_, dropdown) => {
-//           onChange(dropdown.value);
-//         }}
-//         value={accountSelected}
-//       />
-//     </div>
-//   );
-// }
-//
-// export default function AccountSelector (props) {
-//   const { api, keyring } = useSubstrate();
-//   return keyring.getPairs && api.query ? <Main {...props} /> : null;
-// }
-//
-// import React, { Component } from "react";
-//
-// export default class AccountSelector extends Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = { isOpen: false, value: "" };
-//     this.toggleContainer = React.createRef();
-//   }
-//   componentDidMount() {
-//     window.addEventListener("click", this.onClickOutsideHandler);
-//   }
-//
-//   componentWillUnmount() {
-//     window.removeEventListener("click", this.onClickOutsideHandler);
-//   }
-//
-//   onClickHandler = () => {
-//     this.setState(currentState => ({
-//       isOpen: !currentState.isOpen
-//     }));
-//   };
-//
-//   onClickOutsideHandler = event => {
-//     if (
-//       this.state.isOpen &&
-//       !this.toggleContainer.current.contains(event.target)
-//     ) {
-//       this.setState({ isOpen: false });
-//     }
-//   };
-//
-//   onChange = item => {
-//     this.setState({
-//       value: item.value,
-//       isOpen: false
-//     });
-//     this.props.onChange(item);
-//   };
-//   render() {
-//     const { isOpen, value } = this.state;
-//     const { label, options, placeholder } = this.props;
-//     return (
-//       <div className="select-box">
-//         {label && <label className="label">{label}:</label>}
-//
-//         <div className="select" ref={this.toggleContainer}>
-//           <input
-//             class="self-input"
-//             className={cx({
-//               "self-input": true,
-//               "input-hover": isOpen
-//             })}
-//             readonly=""
-//             value={value}
-//             onClick={this.onClickHandler}
-//             placeholder={placeholder}
-//           />
-//           <svg
-//             viewBox="64 64 896 896"
-//             focusable="false"
-//             class="svg"
-//             className={cx({
-//               up: isOpen,
-//               down: !isOpen
-//             })}
-//             data-icon="down"
-//             width="1em"
-//             height="1em"
-//             fill="currentColor"
-//             aria-hidden="true"
-//           >
-//             <path d="M884 256h-75c-5.1 0-9.9 2.5-12.9 6.6L512 654.2 227.9 262.6c-3-4.1-7.8-6.6-12.9-6.6h-75c-6.5 0-10.3 7.4-6.5 12.7l352.6 486.1c12.8 17.6 39 17.6 51.7 0l352.6-486.1c3.9-5.3.1-12.7-6.4-12.7z"></path>
-//           </svg>
-//
-//           <div
-//             className="options"
-//             className={cx({
-//               options: true,
-//               "options-hidden": !isOpen
-//             })}
-//           >
-//             {options &&
-//               options.map((item) => {
-//                 return (
-//                   <div
-//                     key={item.key}
-//                     className="item"
-//                     onClick={this.onChange.bind(this, item)}
-//                   >
-//                     {item.value}
-//                   </div>
-//                 );
-//               })}
-//           </div>
-//         </div>
-//       </div>
-//     );
-//   }
-// }

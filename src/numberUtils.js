@@ -33,7 +33,10 @@ const numberToReadableString = (number) => {
     const finalNumber = Math.floor(number / 10) / 100;
     return finalNumber + 'K';
   }
-  return Math.floor(number * 100) / 100;
+  if (number > 1) {
+    return Math.floor(number * 100) / 100;
+  }
+  return number;
 }
 
 const intToReadableString = (number, base) => {

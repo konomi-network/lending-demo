@@ -3,7 +3,7 @@ import { Button, Icon, Menu } from 'semantic-ui-react';
 
 import { useSubstrate } from '../substrate-lib';
 import { KNTxButton } from '../substrate-lib/components';
-import { balanceToInt, balanceToUnitNumber, numberToReadableString, intToReadableString } from '../numberUtils';
+import { balanceToInt, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
@@ -139,7 +139,7 @@ export default function Main (props) {
         <p className="MarketModal-trans-info-text">Current Supplying</p>
         <div className="MarketModal-trans-info-row-middle"></div>
         <p className="MarketModal-trans-info-number">
-          ${intToReadableString(accountBalance.supplyBalance, moneyBase)}
+          ${numberToReadableString(accountBalance.supplyBalance)}
         </p>
       </div>
     );
@@ -195,6 +195,8 @@ export default function Main (props) {
         // New supply exceeds wallet balance.
         return null;
       } else {
+        console.log('supply input');
+        console.log(BigInt(inputNumberValue * moneyBase));
         return BigInt(inputNumberValue * moneyBase);
       }
     } else {

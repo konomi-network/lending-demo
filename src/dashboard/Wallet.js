@@ -35,6 +35,13 @@ export default function Main (props) {
     // let unsubWallet = [];
     let interval = null;
 
+    // Recalculate the wallet balance.
+    let newWalletBalance = 0;
+    for (var asset of assetList) {
+      newWalletBalance += asset.balance * asset.price;
+    }
+    setWalletBalance(newWalletBalance);
+
     if (accountPair != null) {
       const getAsset = async () => {
         let needUpdateState = false;
@@ -61,7 +68,7 @@ export default function Main (props) {
           setAssetList(currentAssetList);
         }
       };
-      getAsset();
+      // getAsset();
       interval = setInterval(() => {
         getAsset();
       }, 5000);
@@ -71,6 +78,7 @@ export default function Main (props) {
       // for (let unsubAsset of unsubWallet) {
       //   unsubAsset && unsubAsset();
       // }
+      console.log('clear');
       clearInterval(interval);
     };
   }, [api.query.assets, assetList, accountPair]);
@@ -117,6 +125,9 @@ export default function Main (props) {
       </div>
     );
   }
+
+  console.log("wallet");
+  console.log(walletBalance);
 
   return (
     <div className="Wallet-container">

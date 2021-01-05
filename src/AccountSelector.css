@@ -1,3 +1,11 @@
+.AccountSelector-container {
+  position: relative;
+  min-width: 300px;
+  width: 300px;
+  height: 30px;
+  margin: 11px 0px 9px 0px;
+}
+
 .Dropdown-base-container {
   display: flex;
   flex-direction: row;
@@ -9,14 +17,44 @@
   border-width: 2px;
 }
 
-.Dropdown-left {
-  width: 120px;
-  background-color: white;
+.Dropdown-base-container:hover {
+  cursor: pointer;
 }
 
-.Dropdown-right {
+.Dropdown-base-left {
+  width: 120px;
+  background-color: white;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.Dropdown-left-name {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 26px;
+  color: #6A6A6A;
+}
+
+.Dropdown-base-right {
   width: 180px;
   background-color: #3650FA;
+  border-top-right-radius: 11px;
+  border-bottom-right-radius: 11px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.Dropdown-right-address {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 26px;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .Dropdown-options-container {
@@ -32,10 +70,51 @@
   border-width: 2px;
 }
 
-.AccountSelector-container {
-  position: relative;
-  min-width: 300px;
+.Dropdown-option-row {
+  display: flex;
+  flex-direction: row;
   width: 300px;
-  height: 30px;
-  margin: 10px 0px;
+}
+
+.Dropdown-row-left {
+  width: 120px;
+  background-color: white;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.Dropdown-row-left-name {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 26px;
+  color: #6A6A6A;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Dropdown-row-right {
+  width: 178px;
+  background-color: #3650FA;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.Dropdown-row-right-address {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 26px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.name-selected {
+  color: #3650FA;
+}
+
+.address-selected {
+  color: white;
 }

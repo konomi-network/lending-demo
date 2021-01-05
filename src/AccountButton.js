@@ -3,6 +3,7 @@ import { Dropdown } from 'semantic-ui-react';
 import { useCookies, Cookies } from 'react-cookie';
 
 import { useSubstrate } from './substrate-lib';
+import AccountSelector from './AccountSelector';
 import './AccountButton.css';
 
 function Main (props) {
@@ -11,7 +12,7 @@ function Main (props) {
   const [accountSelected, setAccountSelected] = useState('');
 
   // Get the list of accounts we possess the private key for
-  const keyringOptions = keyring.getPairs().map(account => {
+  const allKeyringOptions = keyring.getPairs().map(account => {
     const shortAddress = account.address.slice(0,6) + "..." + account.address.slice(-4);
     return {
       key: account.address,
@@ -20,8 +21,19 @@ function Main (props) {
     };
   });
 
+  const injectedKeyringOptions =
+    keyring.getPairs().filter(account => account.meta.isInjected)
+    .map(account => {
+      const shortAddress = account.address.slice(0,6) + "..." + account.address.slice(-4);
+      return {
+        key: account.address,
+        value: account.address,
+        text: `${account.meta.name.toUpperCase()}    ${shortAddress}`
+      };
+    });
+
   const initialAddress =
-    keyringOptions.length > 0 ? keyringOptions[0].value : '';
+    injectedKeyringOptions.length > 0 ? injectedKeyringOptions[0].value : '';
 
   // Set the initial address
   useEffect(() => {
@@ -35,6 +47,15 @@ function Main (props) {
     setAccountSelected(address);
   };
 
+  if (!injectedKeyringOptions || injectedKeyringOptions.length === 0) {
+    return (
+      <button
+        className="ConnectAccountButton">
+        Please add account
+      </button>
+    )
+  }
+
   return (
     <div style={{ width: '400px', paddingTop: '10px' }}>
       <Dropdown
@@ -42,7 +63,7 @@ function Main (props) {
         selection
         fluid
         placeholder='Account'
-        options={keyringOptions}
+        options={injectedKeyringOptions}
         onChange={(_, dropdown) => {
           onChange(dropdown.value);
         }}
@@ -72,9 +93,9 @@ export default function AccountButton (props) {
   const { api, keyring, loadAccounts } = useSubstrate();
   const [cookies, setCookie] = useCookies(['konomiLoggedIn']);
   if (keyring && keyring.getPairs && api && api.query) {
-    return (<Main {...props} />);
+    // return (<Main {...props} />);
+    return (<AccountSelector {...props} />)
   } else if (cookies.konomiLoggedIn) {
-    console.log(cookies.konomiLoggedIn);
     loadAccounts();
     return null;
   } else {
