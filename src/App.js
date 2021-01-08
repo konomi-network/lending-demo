@@ -3,17 +3,16 @@ import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { CookiesProvider } from 'react-cookie';
 
-import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
-
 import AccountBalance from './AccountBalance';
 import AccountButton from './AccountButton';
-import AccountSelector from './AccountSelector';
-import { DashboardPage } from './dashboard';
-import ExchangePage from './ExchangePage';
 import FaucetButton from './FaucetButton';
-import TransactionsPage from './TransactionsPage';
-import { MarketLists } from './invest';
 import TabBar from './TabBar';
+import { DashboardPage } from './dashboard';
+import { ExchangePage } from './exchange';
+import { MarketLists } from './invest';
+import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
+import { TransactionsPage } from './transactions';
+
 import './App.css';
 
 import KonomiImage from './resources/img/KONO.png';
@@ -47,11 +46,7 @@ function Main () {
     </Grid>;
 
   if (apiState === 'ERROR') return message(apiError);
-  else if (apiState !== 'READY') return loader('Connecting to Substrate');
-
-  // if (keyringState !== 'READY') {
-  //   return loader('Loading accounts (please review any extension\'s authorization)');
-  // }
+  else if (apiState !== 'READY') return loader('Connecting...');
 
   const contextRef = createRef();
 
@@ -60,11 +55,7 @@ function Main () {
       case "Dashboard":
         return <DashboardPage accountPair={accountPair} />;
       case "Invest":
-        return (
-          <div>
-            <MarketLists accountPair={accountPair} />
-          </div>
-        );
+        return <MarketLists accountPair={accountPair} />;
       case "Exchange":
         return <ExchangePage />;
       case "Transactions":

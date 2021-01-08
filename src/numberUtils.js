@@ -1,14 +1,14 @@
 /* global BigInt */
 
-const balanceToInt = (balance) => {
-  const balanceString = balance.toString();
-  const balanceInt = parseInt(balanceString);
-  return balanceInt || 0;
-};
-
 const balanceToBigInt = (balance) => {
   const balanceString = balance.toString();
   return BigInt(balanceString);
+}
+
+const balanceToAPY = (balance) => {
+  const balanceNumber = balanceToBigInt(balance);
+  const apyNumber = Number(balanceNumber) / 10000;
+  return apyNumber.toFixed(2);
 }
 
 // Convert balance to a unit number, based on money base 10^12.
@@ -39,27 +39,14 @@ const numberToReadableString = (number) => {
   return number;
 }
 
-const intToReadableString = (number, base) => {
-  const intNumber = number / base;
-  if (intNumber > 1000000000) {
-    const finalNumber = intNumber / 1000000000;
-    return finalNumber.toFixed(2) + 'b';
-  }
-  if (intNumber > 1000000) {
-    const finalNumber = intNumber / 1000000;
-    return finalNumber.toFixed(2) + 'm';
-  }
-  if (intNumber > 1000) {
-    const finalNumber = intNumber / 1000;
-    return finalNumber.toFixed(2) + 'k';
-  }
-  return intNumber.toFixed(2);
-};
-
 const balanceToReadableString = (balance, base) => {
-  const balanceInt = balanceToInt(balance, 1);
-  return intToReadableString(balanceInt / base);
+  const balanceNumber = balanceToUnitNumber(balance);
+  return numberToReadableString(balanceNumber);
 };
 
-export { balanceToInt, balanceToUnitNumber, numberToReadableString,
-  intToReadableString, balanceToReadableString };
+export {
+  balanceToAPY,
+  balanceToUnitNumber,
+  numberToReadableString,
+  balanceToReadableString
+};

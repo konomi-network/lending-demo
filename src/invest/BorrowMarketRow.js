@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useSubstrate } from '../substrate-lib';
-import { balanceToInt, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { balanceToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
@@ -39,7 +39,7 @@ export default function Main (props) {
         unsubAPY = await api.query.lending.pools(assetId, assetPool => {
           if (assetPool.isSome) {
             const unwrappedPool = assetPool.unwrap();
-            setAPY((balanceToInt(unwrappedPool.debtAPY) / 10000).toFixed(2));
+            setAPY(balanceToAPY(unwrappedPool.debtAPY));
             const liquidityInt = balanceToUnitNumber(unwrappedPool.supply)
                 - balanceToUnitNumber(unwrappedPool.debt);
             setLiquidity(liquidityInt);
