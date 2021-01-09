@@ -1,12 +1,15 @@
 /* global BigInt */
 
+// Convert balance to BigInt number.
 const balanceToBigInt = (balance) => {
   const balanceString = balance.toString();
   return BigInt(balanceString);
 }
 
+// Convert balance to APY number with 2 fixed decimal.
 const balanceToAPY = (balance) => {
   const balanceNumber = balanceToBigInt(balance);
+  // APY number is timed by 10000 in the server side
   const apyNumber = Number(balanceNumber) / 10000;
   return apyNumber.toFixed(2);
 }
@@ -20,6 +23,8 @@ const balanceToUnitNumber = (balance) => {
   return midNumber / 1000000;
 }
 
+// Convert a number to readable string.
+// Cut the number to a float with 2 decimals when it's too large.
 const numberToReadableString = (number) => {
   if (number > 1000000000) {
     const finalNumber = Math.floor(number / 10000000) / 100;
@@ -39,12 +44,14 @@ const numberToReadableString = (number) => {
   return number;
 }
 
+// Convert the balance to a readable string.
 const balanceToReadableString = (balance, base) => {
   const balanceNumber = balanceToUnitNumber(balance);
   return numberToReadableString(balanceNumber);
 };
 
 export {
+  balanceToBigInt,
   balanceToAPY,
   balanceToUnitNumber,
   numberToReadableString,
