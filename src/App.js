@@ -3,10 +3,9 @@ import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { CookiesProvider } from 'react-cookie';
 
-import AccountBalance from './AccountBalance';
 import AccountButton from './AccountButton';
 import FaucetButton from './FaucetButton';
-import TabBar from './TabBar';
+import { TabBar, TAB_NAME_ARRAY } from './TabBar';
 import { DashboardPage } from './dashboard';
 import { ExchangePage } from './exchange';
 import { MarketLists } from './invest';
@@ -19,16 +18,8 @@ import KonomiImage from './resources/img/KONO.png';
 
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
-
-  // The tab name array is defined in TabBar.js.
-  const [selectedTabItem, setSelectedTabItem] = useState("Dashboard");
-  const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const { loadAccounts } = useSubstrate();
-
-  const accountPair =
-    accountAddress &&
-    keyringState === 'READY' &&
-    keyring.getPair(accountAddress);
+  const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
+  const { apiError, apiState, keyring, keyringState } = useSubstrate();
 
   const loader = text =>
     <Dimmer active>
@@ -48,7 +39,12 @@ function Main () {
   if (apiState === 'ERROR') return message(apiError);
   else if (apiState !== 'READY') return loader('Connecting...');
 
-  const contextRef = createRef();
+  // Account address could be null before user link the polkadot extension or
+  // doesn't have an account.
+  const accountPair =
+    accountAddress &&
+    keyringState === 'READY' &&
+    keyring.getPair(accountAddress);
 
   const renderPage = () => {
     switch (selectedTabItem) {
@@ -61,9 +57,12 @@ function Main () {
       case "Transactions":
         return <TransactionsPage />;
       default:
-        return <ExchangePage />;
+        console.log("Invalid tab item. Return dashboard tab by default.");
+        return <DashboardPage accountPair={accountPair} />;
     }
   }
+
+  const contextRef = createRef();
 
   return (
     <div className="App-container" ref={contextRef}>

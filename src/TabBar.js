@@ -21,7 +21,7 @@ const tabIconMap = {
   Transactions: [ TransactionsInactiveIcon, TransactionsActiveIcon ],
 };
 
-export default function Main (props) {
+function TabBar (props) {
   const { onChangeTabItemName } = props;
 
   const [selectedTabItem, setSelectedTabItem] = useState("Dashboard");
@@ -83,3 +83,5 @@ export default function Main (props) {
     </div>
   );
 }
+
+export { TabBar, TAB_NAME_ARRAY };
