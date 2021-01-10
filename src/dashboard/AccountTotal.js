@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSubstrate } from '../substrate-lib';
 import { balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { useSubstrate } from '../substrate-lib';
 
 import './AccountTotal.css';
 
-const moneyBase = 1000000000000;
 
 const INIT_ACCOUNT_BALANCE = {
   borrowLimit: 0,

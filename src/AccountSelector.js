@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Dropdown } from 'semantic-ui-react';
-
 import { useSubstrate } from './substrate-lib';
-
 import './AccountSelector.css';
 
 function DropdownBaseButton (props) {

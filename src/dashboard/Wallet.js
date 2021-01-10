@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSubstrate } from '../substrate-lib';
 import { balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { useSubstrate } from '../substrate-lib';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
 import EthImage from '../resources/img/ETH.png';
 import BtcImage from '../resources/img/BTC.png';
-
 import WalletAssetRow from './WalletAssetRow';
 
 import './Wallet.css';
@@ -21,31 +20,25 @@ const INIT_ASSET_LIST = [
   { id: 4, name: 'Bitcoin', abbr: 'BTC', image: BtcImage, balance: null, price: 20000 }
 ];
 
-const moneyBase = 1000000000000;
-
 export default function Main (props) {
   const { accountPair } = props;
 
   const { api } = useSubstrate();
 
-  const [assetList, setAssetList] = useState(INIT_ASSET_LIST);
-  const [walletBalance, setWalletBalance] = useState(0);
+  const [assetList, setAssetList] = useState({value: INIT_ASSET_LIST});
 
   useEffect(() => {
-    // let unsubWallet = [];
     let interval = null;
-
-    // Recalculate the wallet balance.
-    let newWalletBalance = 0;
-    for (var asset of assetList) {
-      newWalletBalance += asset.balance * asset.price;
-    }
-    setWalletBalance(newWalletBalance);
+    // let unsubAsset1 = null;
+    // let unsubAsset2 = null;
+    // let unsubAsset3 = null;
+    // let unsubAsset4 = null;
+    // let unsubAsset5 = null;
 
     if (accountPair != null) {
       const getAsset = async () => {
         let needUpdateState = false;
-        const currentAssetList = assetList;
+        const currentAssetList = assetList.value;
         const assetBalanceArray = await Promise.all(
           INIT_ASSET_LIST.map((asset) =>
             api.query.assets.balances([asset.id, accountPair.address])
@@ -60,12 +53,7 @@ export default function Main (props) {
           }
         }
         if (needUpdateState) {
-          let newWalletBalance = 0;
-          for (var asset of currentAssetList) {
-            newWalletBalance += asset.balance * asset.price;
-          }
-          setWalletBalance(newWalletBalance);
-          setAssetList(currentAssetList);
+          setAssetList({value: currentAssetList});
         }
       };
       // getAsset();
@@ -75,16 +63,13 @@ export default function Main (props) {
     }
 
     return () => {
-      // for (let unsubAsset of unsubWallet) {
-      //   unsubAsset && unsubAsset();
-      // }
       console.log('clear');
       clearInterval(interval);
     };
-  }, [api.query.assets, assetList, accountPair]);
+  }, [api.query.assets, accountPair]);
 
   const renderTableRows = () => {
-    const tableRows = assetList.map((asset) => {
+    const tableRows = assetList.value.map((asset) => {
       if (!asset.balance || asset.balance == 0) {
         return null;
       }
@@ -95,8 +80,8 @@ export default function Main (props) {
 
   const renderAssetTable = () => {
     let isTableEmply = true;
-    for (let index in assetList) {
-      const asset = assetList[index];
+    for (let index in assetList.value) {
+      const asset = assetList.value[index];
       if (!!asset.balance) {
         isTableEmply = false;
         break;
@@ -126,14 +111,17 @@ export default function Main (props) {
     );
   }
 
-  console.log("wallet");
-  console.log(walletBalance);
+  // Recalculate the wallet balance before each re-render cycle.
+  let newWalletBalance = 0;
+  for (var asset of assetList.value) {
+    newWalletBalance += asset.balance * asset.price;
+  }
 
   return (
     <div className="Wallet-container">
       <div className="Wallet-total">
         <p className="Wallet-total-label">Wallet</p>
-        <p className="Wallet-total-number">${numberToReadableString(walletBalance)}</p>
+        <p className="Wallet-total-number">${numberToReadableString(newWalletBalance)}</p>
       </div>
       {renderAssetTable()}
     </div>
