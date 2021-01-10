@@ -28,49 +28,75 @@ export default function Main (props) {
   const [assetList, setAssetList] = useState({value: INIT_ASSET_LIST});
 
   useEffect(() => {
-    let interval = null;
-    // let unsubAsset1 = null;
-    // let unsubAsset2 = null;
-    // let unsubAsset3 = null;
-    // let unsubAsset4 = null;
-    // let unsubAsset5 = null;
+    let unsubAsset0 = null;
+    let unsubAsset1 = null;
+    let unsubAsset2 = null;
+    let unsubAsset3 = null;
+    let unsubAsset4 = null;
 
     if (accountPair != null) {
       const getAsset = async () => {
-        let needUpdateState = false;
-        const currentAssetList = assetList.value;
-        const assetBalanceArray = await Promise.all(
-          INIT_ASSET_LIST.map((asset) =>
-            api.query.assets.balances([asset.id, accountPair.address])
-          )
-        );
-        for (let assetId = 0; assetId < assetBalanceArray.length; assetId++) {
-          const newBalance = balanceToUnitNumber(assetBalanceArray[assetId]);
-          const currentBalance = currentAssetList[assetId].balance;
-          if (currentBalance == null || currentBalance != newBalance) {
-            currentAssetList[assetId].balance = newBalance;
-            needUpdateState = true;
-          }
-        }
-        if (needUpdateState) {
-          setAssetList({value: currentAssetList});
-        }
+        unsubAsset0 =
+          await api.query.assets.balances([0, accountPair.address], (balance) => {
+            const newBalance = balanceToUnitNumber(balance);
+            const list = assetList.value;
+            if (newBalance !== list[0].balance) {
+              list[0].balance = newBalance;
+              setAssetList({value: list});
+            }
+          });
+        unsubAsset1 =
+          await api.query.assets.balances([1, accountPair.address], (balance) => {
+            const newBalance = balanceToUnitNumber(balance);
+            const list = assetList.value;
+            if (newBalance !== list[1].balance) {
+              list[1].balance = newBalance;
+              setAssetList({value: list});
+            }
+          });
+        unsubAsset2 =
+          await api.query.assets.balances([2, accountPair.address], (balance) => {
+            const newBalance = balanceToUnitNumber(balance);
+            const list = assetList.value;
+            if (newBalance !== list[2].balance) {
+              list[2].balance = newBalance;
+              setAssetList({value: list});
+            }
+          });
+        unsubAsset3 =
+          await api.query.assets.balances([3, accountPair.address], (balance) => {
+            const newBalance = balanceToUnitNumber(balance);
+            const list = assetList.value;
+            if (newBalance !== list[3].balance) {
+              list[3].balance = newBalance;
+              setAssetList({value: list});
+            }
+          });
+        unsubAsset4 =
+          await api.query.assets.balances([4, accountPair.address], (balance) => {
+            const newBalance = balanceToUnitNumber(balance);
+            const list = assetList.value;
+            if (newBalance !== list[4].balance) {
+              list[4].balance = newBalance;
+              setAssetList({value: list});
+            }
+          });
       };
-      // getAsset();
-      interval = setInterval(() => {
-        getAsset();
-      }, 5000);
+      getAsset();
     }
 
     return () => {
-      console.log('clear');
-      clearInterval(interval);
+      unsubAsset0 && unsubAsset0();
+      unsubAsset1 && unsubAsset1();
+      unsubAsset2 && unsubAsset2();
+      unsubAsset3 && unsubAsset3();
+      unsubAsset4 && unsubAsset4();
     };
-  }, [api.query.assets, accountPair]);
+  }, [api.query.assets, accountPair, assetList.value]);
 
   const renderTableRows = () => {
     const tableRows = assetList.value.map((asset) => {
-      if (!asset.balance || asset.balance == 0) {
+      if (!asset.balance || asset.balance === 0) {
         return null;
       }
       return (<WalletAssetRow rowData={asset} key={asset.id} />)
