@@ -41,7 +41,7 @@ const numberToReadableString = (number) => {
   if (number > 1) {
     return Math.floor(number * 100) / 100;
   }
-  return number;
+  return Math.floor(number * 10000) / 10000;
 }
 
 // Convert the balance to a readable string.
