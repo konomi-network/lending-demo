@@ -22,7 +22,7 @@ export default function Main (props) {
         <p className="WalletAssetRow-number">${rowData.price}</p>
       </div>
       <div className="WalletAssetRow-column-value">
-        <p className="WalletAssetRow-number">${numberToReadableString(assetValue)}</p>
+        <p className="WalletAssetRow-number">${numberToReadableString(assetValue, true)}</p>
       </div>
     </div>
   );

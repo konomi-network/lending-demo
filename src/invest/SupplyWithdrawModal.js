@@ -146,19 +146,19 @@ export default function Main (props) {
   };
 
   const renderSupplyLimitText = () => {
-    const oldBorrowText = '$' + numberToReadableString(accountBalance.borrowLimit);
+    const oldBorrowText = '$' + numberToReadableString(accountBalance.borrowLimit, true);
     if (!inputNumberValue) {
       return oldBorrowText;
     }
     if (activeItem === 'Supply') {
       const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price * 2 / 3;
       const newBorrowLimit = accountBalance.borrowLimit + increasedBorrow;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newBorrowLimit);
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newBorrowLimit, true);
     } else {
       const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price * 2 / 3;
       let newBorrowLimit = accountBalance.borrowLimit - decreasedBorrow;
       newBorrowLimit = newBorrowLimit < 0 ? 0 : newBorrowLimit;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newBorrowLimit);
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newBorrowLimit, true);
     }
   };
 

@@ -67,7 +67,7 @@ export default function Main (props) {
           unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
             const balanceNum = balanceToUnitNumber(balance);
             setWalletBalanceNumber(balanceNum);
-            setWalletBalance(numberToReadableString(balanceNum));
+            setWalletBalance(numberToReadableString(balanceNum, true));
           });
         };
         getWallet();
@@ -133,7 +133,7 @@ export default function Main (props) {
           </p>
           <div className="MarketModal-trans-info-row-middle"></div>
           <p className="MarketModal-trans-info-number">
-            ${numberToReadableString(accountBalance.debtBalance)}
+            ${numberToReadableString(accountBalance.debtBalance, true)}
           </p>
         </div>
       );
@@ -148,19 +148,19 @@ export default function Main (props) {
   };
 
   const renderBorrowBalanceText = () => {
-    const oldBorrowText = '$' + numberToReadableString(accountBalance.debtBalance);
+    const oldBorrowText = '$' + numberToReadableString(accountBalance.debtBalance, true);
     if (!inputNumberValue) {
       return oldBorrowText;
     }
     if (activeItem === 'Borrow') {
       const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
       const newDebt = accountBalance.debtBalance + increasedBorrow;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt);
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt, true);
     } else {
       const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
       let newDebt = accountBalance.debtBalance - decreasedBorrow;
       newDebt = newDebt < 0 ? 0 : newDebt;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt);
+      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt, true);
     }
   };
 

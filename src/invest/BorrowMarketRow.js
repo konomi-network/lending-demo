@@ -82,7 +82,7 @@ export default function Main (props) {
         <p className="Market-table-cell-text">{`${walletBalance} ${rowData.abbr}`}</p>
       </div>
       <div className="BorrowMarket-liquidity-column Market-table-cell">
-        <p className="Market-table-cell-text">${numberToReadableString(liquidity * rowData.price)}</p>
+        <p className="Market-table-cell-text">${numberToReadableString(liquidity * rowData.price, true)}</p>
       </div>
     </div>
   );

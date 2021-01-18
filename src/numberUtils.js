@@ -18,14 +18,14 @@ const balanceToAPY = (balance) => {
 const balanceToUnitNumber = (balance) => {
   const balanceString = balance.toString();
   const balanceBigInt = BigInt(balanceString);
-  const mid = balanceBigInt / 1000000n;
-  const midNumber = Number(mid);
-  return midNumber / 1000000;
+  const tmp = balanceBigInt / 1000000n;
+  const tmpNumber = Number(tmp);
+  return tmpNumber / 1000000;
 }
 
 // Convert a number to readable string.
-// Cut the number to a float with 2 decimals when it's too large.
-const numberToReadableString = (number) => {
+// Cut the number to a float with at most 2 decimals when it's too large.
+const numberToReadableString = (number, isUSD = false) => {
   if (number > 1000000000) {
     const finalNumber = Math.floor(number / 10000000) / 100;
     return finalNumber + 'B';
@@ -39,6 +39,9 @@ const numberToReadableString = (number) => {
     return finalNumber + 'K';
   }
   if (number > 1) {
+    return Math.floor(number * 100) / 100;
+  }
+  if (isUSD) {
     return Math.floor(number * 100) / 100;
   }
   return Math.floor(number * 10000) / 10000;

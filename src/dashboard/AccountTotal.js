@@ -50,7 +50,7 @@ export default function Main (props) {
       <div className="AccountTotal-cell">
         <p className="AccountTotal-cell-label">Total Supply</p>
         <p className="AccountTotal-cell-number">
-          ${numberToReadableString(accountBalance.supplyBalance)}
+          ${numberToReadableString(accountBalance.supplyBalance, true)}
         </p>
       </div>
       <div className="AccountTotal-divider">
@@ -58,7 +58,7 @@ export default function Main (props) {
       <div className="AccountTotal-cell">
         <p className="AccountTotal-cell-label">Total Borrow</p>
         <p className="AccountTotal-cell-number">
-          ${numberToReadableString(accountBalance.debtBalance)}
+          ${numberToReadableString(accountBalance.debtBalance, true)}
         </p>
       </div>
       <div className="AccountTotal-divider">
@@ -66,7 +66,7 @@ export default function Main (props) {
       <div className="AccountTotal-cell">
         <p className="AccountTotal-cell-label">Borrow Limit</p>
         <p className="AccountTotal-cell-number">
-          ${numberToReadableString(accountBalance.borrowLimit)}
+          ${numberToReadableString(accountBalance.borrowLimit, true)}
         </p>
       </div>
     </div>
