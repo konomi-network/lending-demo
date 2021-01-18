@@ -10,8 +10,6 @@ import BtcImage from '../resources/img/BTC.png';
 
 import './BorrowMarketRow.css';
 
-const moneyBase = 1000000000000;
-
 const BORROW_ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
   { id: 1, name: 'Polkadot', abbr: 'DOT', image: DotImage, apy: 0.0204, price: 60 },

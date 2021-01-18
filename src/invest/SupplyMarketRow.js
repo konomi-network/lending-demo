@@ -19,8 +19,6 @@ const SUPPLY_ASSET_LIST = [
   { id: 4, name: 'Bitcoin', abbr: 'BTC', image: BtcImage, apy: 0.0078, price: 20000 }
 ];
 
-const moneyBase = 1000000000000;
-
 export default function Main (props) {
   const { accountPair, rowId, onClickSupplyMarketRow } = props;
 

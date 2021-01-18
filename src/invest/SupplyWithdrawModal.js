@@ -196,7 +196,6 @@ export default function Main (props) {
         return null;
       } else {
         console.log('supply input');
-        console.log(BigInt(inputNumberValue * moneyBase));
         return BigInt(inputNumberValue * moneyBase);
       }
     } else {
