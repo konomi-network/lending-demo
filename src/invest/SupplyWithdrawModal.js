@@ -40,6 +40,8 @@ export default function Main (props) {
 
   const { api } = useSubstrate();
 
+  const numberInput = React.createRef();
+
   useEffect(() => {
     let unsubAPY = null;
     let unsubWallet = null;
@@ -114,6 +116,27 @@ export default function Main (props) {
       setInputNumberValue(0);
     }
   };
+
+  // const onClickMaxButton = () => {
+  //   if (activeItem === 'Supply') {
+  //     setInputNumberValue(walletBalanceNumber);
+  //     setInputValue(walletBalanceNumber);
+  //   } else {
+  //
+  //   }
+  // }
+  //
+  const renderMaxButton = () => {
+    // if (activeItem === 'Supply') {
+    //   return (
+    //     <button className="MarketModal-max-button" onClick={onClickMaxButton}>
+    //       Max
+    //     </button>
+    //   )
+    // } else {
+      return null;
+    // }
+  }
 
   const onClickMenuItem = (event, { name }) => {
     setActiveItem(name);
@@ -195,7 +218,6 @@ export default function Main (props) {
         // New supply exceeds wallet balance.
         return null;
       } else {
-        console.log('supply input');
         return BigInt(inputNumberValue * moneyBase);
       }
     } else {
@@ -222,7 +244,13 @@ export default function Main (props) {
         </Button>
       </div>
       <div className="MarketModal-input-container">
-        <input className="MarketModal-input" value={inputValue} autoFocus={true} onChange={onChangeInput} />
+        <input
+          className="MarketModal-input"
+          ref={numberInput}
+          value={inputValue}
+          autoFocus={true}
+          onChange={onChangeInput} />
+        {renderMaxButton()}
       </div>
       <Menu pointing secondary color={'green'} widths={2}>
         <Menu.Item

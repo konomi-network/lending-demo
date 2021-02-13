@@ -37,10 +37,12 @@
   flex-direction: row;
   justify-content: center;
   margin: 20px 0px;
+  /* position: relative; */
 }
 
 .MarketModal-input {
   width: 300px;
+  /* width: 350px; */
   font-size: 32px;
   text-align: center;
   border: 0px;
@@ -50,6 +52,25 @@ input.MarketModal-input:focus {
   border: 0px;
   outline: none;
 }
+
+/* .MarketModal-max-button {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  bottom: 20px;
+  width: 80px;
+  height: 30px;
+  text-align: center;
+  color: #657786;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  font-size: 18px;
+}
+
+button.MarketModal-max-button:hover {
+  color: #3650FA;
+} */
 
 .MarketModal-trans-info {
 
