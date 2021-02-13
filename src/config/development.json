@@ -15,14 +15,22 @@
       "asset": "AssetId",
       "supply": "Balance",
       "debt": "Balance",
-      "liquidationThreshold": "u128",
-      "supplyThreshold": "u128",
-      "liquidationBonus": "u128",
+      "safeFactor": "u128",
+      "closeFactor": "u128",
+      "discountFactor": "u128",
       "totalSupplyIndex": "u128",
       "totalDebtIndex": "u128",
       "lastUpdated": "BlockNumber",
-      "supplyAPY": "Balance",
-      "debtAPY": "Balance"
+      "utilizationFactor": "u128",
+      "initialInterestRate": "u128"
+    },
+    "UserSupply": {
+      "amount": "Balance",
+      "index": "u128"
+    },
+    "UserDebt": {
+      "amount": "Balance",
+      "index": "u128"
     }
   },
   "PROVIDER_SOCKET": "ws://127.0.0.1:9944"
