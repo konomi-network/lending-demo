@@ -3,7 +3,7 @@ import { Button, Icon, Menu } from 'semantic-ui-react';
 
 import { useSubstrate } from '../substrate-lib';
 import { KNTxButton } from '../substrate-lib/components';
-import { fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { fixed32ToNumber, fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
@@ -33,33 +33,31 @@ export default function Main (props) {
   const [txCallable, setTxCallable] = useState('borrow');
   const [txStatus, setTxStatus] = useState(null);
   const [apy, setAPY] = useState(0);
-  const [liquidity, setLiquidity] = useState(0);
+  const [price, setPrice] = useState(0);
   const [walletBalanceNumber, setWalletBalanceNumber] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
-  const [accountBalance, setAccountBalance] = useState({ borrowLimit: 0, supplyBalance: 0, debtBalance: 0, usedPercent: 0 });
+  const [currentBorrow, setCurrentBorrow] = useState(0);
+  const [debtBalance, setDebtBalance] = useState(0);
+  const [borrowLimit, setBorrowLimit] = useState(0);
 
   const { api } = useSubstrate();
 
   useEffect(() => {
-    let unsubLiquidity = null;
+    let unsubPrice = null;
     let unsubAPY = null;
     let unsubWallet = null;
+    let unsubBorrow = null;
     let unsubUser = null;
 
     if (assetId != null) {
-      const getLiquidity = async () => {
-        unsubLiquidity = await api.query.lending.pools(assetId, assetPool => {
-          if (assetPool.isSome) {
-            const unwrappedPool = assetPool.unwrap();
-            const liquidityInt = balanceToUnitNumber(unwrappedPool.supply)
-                - balanceToUnitNumber(unwrappedPool.debt);
-            setLiquidity(liquidityInt);
-          } else {
-            setLiquidity(0);
+      const getPrice = async () => {
+        unsubPrice = await api.query.assets.price(assetId, (priceData) => {
+          if (priceData) {
+            setPrice(fixed32ToNumber(priceData));
           }
         });
       };
-      getLiquidity();
+      getPrice();
 
       const getBorrowAPY = async () => {
         unsubAPY = await api.rpc.lending.debtRate(assetId, rate => {
@@ -85,36 +83,36 @@ export default function Main (props) {
     }
 
     if (accountPair) {
-      const getAccountBalance = async () => {
-        unsubUser = await api.query.lending.users(accountPair.address, userData => {
+      const getCurrentBorrow = async () => {
+        unsubBorrow = await api.query.lending.userDebts(assetId, accountPair.address, userData => {
           if (userData.isSome) {
             const dataUnwrap = userData.unwrap();
-            const borrowLimit = dataUnwrap.borrowLimit
-              ? balanceToUnitNumber(dataUnwrap.borrowLimit) : 0;
-            const supplyBalance = dataUnwrap.supplyBalance
-              ? balanceToUnitNumber(dataUnwrap.supplyBalance) : 0;
-            const debtBalance = dataUnwrap.debtBalance
-              ? balanceToUnitNumber(dataUnwrap.debtBalance) : 0;
-            let usedPercent = 0;
-            if (borrowLimit !== 0) {
-              usedPercent = (debtBalance / borrowLimit * 100).toFixed(2);
-            }
-            setAccountBalance({ borrowLimit, supplyBalance, debtBalance, usedPercent });
+            setCurrentBorrow(balanceToUnitNumber(dataUnwrap.amount));
           } else {
-            setAccountBalance({ borrowLimit: 0, supplyBalance: 0, debtBalance: 0, usedPercent: 0 });
+            setCurrentBorrow(0);
           }
+        });
+      };
+      getCurrentBorrow();
+
+      const getAccountBalance = async () => {
+        unsubUser = await api.rpc.lending.getUserInfo(accountPair.address, userData => {
+          const [supplyBalance, borrowLimit, debtBalance] = userData;
+          setBorrowLimit(balanceToUnitNumber(borrowLimit));
+          setDebtBalance(balanceToUnitNumber(debtBalance));
         });
       };
       getAccountBalance();
     }
 
     return () => {
-      unsubLiquidity && unsubLiquidity();
+      unsubPrice && unsubPrice();
       unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
+      unsubBorrow && unsubBorrow();
       unsubUser && unsubUser();
     };
-  }, [api.query.lending, api.query.assets, accountPair, assetId]);
+  }, [api.query.lending, api.query.assets, api.rpc.lending, accountPair, assetId]);
 
   const onChangeInput = (event) => {
     setInputValue(event.target.value);
@@ -136,19 +134,19 @@ export default function Main (props) {
   };
 
   const renderWalletRow = () => {
-    if (activeItem === 'Borrow') {
-      return (
-        <div className="MarketModal-trans-info-row">
-          <p className="MarketModal-trans-info-text">
-            Curently Borrowing
-          </p>
-          <div className="MarketModal-trans-info-row-middle"></div>
-          <p className="MarketModal-trans-info-number">
-            ${numberToReadableString(accountBalance.debtBalance, true)}
-          </p>
-        </div>
-      );
-    }
+    // if (activeItem === 'Borrow') {
+    //   return (
+    //     <div className="MarketModal-trans-info-row">
+    //       <p className="MarketModal-trans-info-text">
+    //         Curently Borrowing
+    //       </p>
+    //       <div className="MarketModal-trans-info-row-middle"></div>
+    //       <p className="MarketModal-trans-info-number">
+    //         ${numberToReadableString(accountBalance.debtBalance, true)}
+    //       </p>
+    //     </div>
+    //   );
+    // }
     return (
       <div className="MarketModal-trans-info-row">
         <p className="MarketModal-trans-info-text">Wallet Balance</p>
@@ -158,67 +156,24 @@ export default function Main (props) {
     );
   };
 
-  const renderBorrowBalanceText = () => {
-    const oldBorrowText = '$' + numberToReadableString(accountBalance.debtBalance, true);
-    if (!inputNumberValue) {
-      return oldBorrowText;
-    }
-    if (activeItem === 'Borrow') {
-      const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      const newDebt = accountBalance.debtBalance + increasedBorrow;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt, true);
-    } else {
-      const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      let newDebt = accountBalance.debtBalance - decreasedBorrow;
-      newDebt = newDebt < 0 ? 0 : newDebt;
-      return oldBorrowText + ' -> ' + '$' + numberToReadableString(newDebt, true);
-    }
-  };
-
-  const renderUsedPercentText = () => {
-    const oldUsedPercent = accountBalance.usedPercent + '%';
-    if (!inputNumberValue) {
-      return oldUsedPercent;
-    }
-    if (activeItem === 'Borrow') {
-      const increasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      const newDebt = accountBalance.debtBalance + increasedBorrow;
-      const newUsedPercent = (newDebt / accountBalance.borrowLimit * 100).toFixed(2) + '%';
-      return oldUsedPercent + ' -> ' + newUsedPercent;
-    } else {
-      const decreasedBorrow = inputNumberValue * ASSET_LIST[assetId].price;
-      let newDebt = accountBalance.debtBalance - decreasedBorrow;
-      newDebt = newDebt < 0 ? 0 : newDebt;
-      let newUsedPercent = null;
-      if (newDebt === 0) {
-        newUsedPercent = '0%';
-      } else {
-        newUsedPercent = (newDebt / accountBalance.borrowLimit * 100).toFixed(2) + '%';
-      }
-      return oldUsedPercent + ' -> ' + newUsedPercent;
-    }
-  };
-
   const txInputValue = () => {
     if (inputNumberValue <= 0) {
       return null;
     }
     if (activeItem === 'Borrow') {
-      const newDebt = inputNumberValue * ASSET_LIST[assetId].price;
-      if (accountBalance.debtBalance + newDebt > accountBalance.borrowLimit) {
-        // New borrow balance exceeds borrow limit.
-        return null;
-      } else if (inputNumberValue > liquidity) {
-        // Borrow value exceeds liquidity.
+      const newDebt = inputNumberValue * price;
+      console.log("new input");
+      console.log(newDebt);
+      console.log(debtBalance);
+      console.log(borrowLimit);
+      if (debtBalance + newDebt > borrowLimit * 0.9) {
+        // New borrow balance exceeds borrow limit * 0.9.
         return null;
       } else {
         return BigInt(inputNumberValue * moneyBase);
       }
     } else {
-      if (inputNumberValue * ASSET_LIST[assetId].price > accountBalance.debtBalance) {
-        // Repay value exceeds borrow balance.
-        return null;
-      } else if (inputNumberValue > walletBalanceNumber) {
+      if (inputNumberValue > walletBalanceNumber) {
         // Repay exceeds wallet balance.
         return null;
       } else {
@@ -264,13 +219,15 @@ export default function Main (props) {
           <p className="MarketModal-trans-info-text">Borrow Balance</p>
           <div className="MarketModal-trans-info-row-middle"></div>
           <p className="MarketModal-trans-info-number">
-            {renderBorrowBalanceText()}
+            {`${numberToReadableString(currentBorrow)} ${ASSET_LIST[assetId].abbr}`}
           </p>
         </div>
         <div className="MarketModal-trans-info-row">
-          <p className="MarketModal-trans-info-text">Borrow Limit Used</p>
+          <p className="MarketModal-trans-info-text">Price</p>
           <div className="MarketModal-trans-info-row-middle"></div>
-          <p className="MarketModal-trans-info-number">{renderUsedPercentText()}</p>
+          <p className="MarketModal-trans-info-number">
+            {`$ ${numberToReadableString(price, true)}`}
+          </p>
         </div>
         <KNTxButton
           accountPair={accountPair}
