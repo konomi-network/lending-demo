@@ -24,11 +24,7 @@ export default function Main (props) {
 
     if (accountPair) {
       const getAccountBalance = async () => {
-        console.log("rpc");
-        console.log(api.rpc.lending);
         unsubUser = await api.rpc.lending.getUserInfo(accountPair.address, userData => {
-          console.log("user info");
-          console.log(userData);
           const [supplyBalance, borrowLimit, debtBalance] = userData;
           setAccountBalance({
             supplyBalance: balanceToUnitNumber(supplyBalance),
@@ -42,6 +38,24 @@ export default function Main (props) {
 
     return () => unsubUser && unsubUser();
   }, [api.rpc.lending, accountPair]);
+
+  useEffect(() => {
+    const interval = setInterval( async () => {
+      const userData = await api.rpc.lending.getUserInfo(accountPair.address);
+      const [supplyBalance, borrowLimit, debtBalance] = userData;
+      const isSame = (supplyBalance === accountBalance.supplyBalance) ||
+          (borrowLimit === accountBalance.borrowLimit) ||
+          (debtBalance === accountBalance.debtBalance);
+      if (!isSame) {
+        setAccountBalance({
+          supplyBalance: balanceToUnitNumber(supplyBalance),
+          borrowLimit: balanceToUnitNumber(borrowLimit),
+          debtBalance: balanceToUnitNumber(debtBalance),
+        });
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [accountPair]);
 
   return (
     <div className="AccountTotal-container">

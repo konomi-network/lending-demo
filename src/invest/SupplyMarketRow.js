@@ -28,38 +28,34 @@ export default function Main (props) {
   const [walletBalance, setWalletBalance] = useState(0);
 
   useEffect(() => {
-    let unsubAPY = null;
     let unsubWallet = null;
     const assetId = rowId;
 
-    if (assetId != null) {
-      const getSupplyAPY = async () => {
-        unsubAPY = await api.rpc.lending.supplyRate(assetId, rate => {
-          if (rate) {
-            setAPY(fixed32ToAPY(rate));
-          } else {
-            setAPY(0);
-          }
+    if (assetId != null && accountPair) {
+      const getSupplyWallet = async () => {
+        unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
+          const balanceNum = balanceToUnitNumber(balance);
+          setWalletBalance(numberToReadableString(balanceNum));
         });
       };
-      getSupplyAPY();
-
-      if (accountPair) {
-        const getSupplyWallet = async () => {
-          unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
-            const balanceNum = balanceToUnitNumber(balance);
-            setWalletBalance(numberToReadableString(balanceNum));
-          });
-        };
-        getSupplyWallet();
-      }
+      getSupplyWallet();
     }
 
     return () => {
-      unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
     };
   }, [api.query.assets, api.rpc.lending, accountPair, rowId]);
+
+  useEffect(() => {
+    const interval = setInterval( async () => {
+      const rate = await api.rpc.lending.supplyRate(rowId);
+      const newAPY = fixed32ToAPY(rate);
+      if (newAPY !== apy) {
+        setAPY(newAPY);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [rowId]);
 
   const renderCollateralSlider = () => {
     return (

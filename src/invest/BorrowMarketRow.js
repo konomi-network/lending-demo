@@ -29,7 +29,6 @@ export default function Main (props) {
 
   useEffect(() => {
     let unsubLiquidity = null;
-    let unsubAPY = null;
     let unsubWallet = null;
     const assetId = rowId;
 
@@ -48,17 +47,6 @@ export default function Main (props) {
       };
       getLiquidity();
 
-      const getBorrowAPY = async () => {
-        unsubAPY = await api.rpc.lending.debtRate(assetId, rate => {
-          if (rate) {
-            setAPY(fixed32ToAPY(rate));
-          } else {
-            setAPY(0);
-          }
-        });
-      };
-      getBorrowAPY();
-
       if (accountPair) {
         const getBorrowWallet = async () => {
           unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
@@ -72,10 +60,20 @@ export default function Main (props) {
 
     return () => {
       unsubLiquidity && unsubLiquidity();
-      unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
     };
   }, [api.query.assets, api.query.lending, accountPair, rowId]);
+
+  useEffect(() => {
+    const interval = setInterval( async () => {
+      const rate = await api.rpc.lending.debtRate(rowId);
+      const newAPY = fixed32ToAPY(rate);
+      if (newAPY !== apy) {
+        setAPY(newAPY);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [rowId]);
 
   const rowData = BORROW_ASSET_LIST[rowId];
   return (
