@@ -59,7 +59,7 @@ export default function Main (props) {
       unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
     };
-  }, [api.query.assets, api.query.lending, accountPair, rowId]);
+  }, [api.query.assets, api.rpc.lending, accountPair, rowId]);
 
   const renderCollateralSlider = () => {
     return (
