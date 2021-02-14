@@ -53,10 +53,29 @@ const balanceToReadableString = (balance, base) => {
   return numberToReadableString(balanceNumber);
 };
 
+// Convert the FixedU128 number to regular int number. (Divided by 10^18)
+const fixed32ToNumber = (number) => {
+  const balanceString = number.toString();
+  const balanceBigInt = BigInt(balanceString);
+  const tmp = balanceBigInt / 1000000000000n;
+  const tmpNumber = Number(tmp);
+  return tmpNumber / 1000000;
+}
+
+// Convert the FixedU128 number to APY
+const fixed32ToAPY = (number) => {
+  // APY number is timed by 10^18 in the server side
+  const tmp = balanceToUnitNumber(number);
+  const apy = tmp * 518400 / 100000 * 100;
+  return apy.toFixed(2);
+}
+
 export {
   balanceToBigInt,
   balanceToAPY,
   balanceToUnitNumber,
   numberToReadableString,
-  balanceToReadableString
+  balanceToReadableString,
+  fixed32ToNumber,
+  fixed32ToAPY
 };

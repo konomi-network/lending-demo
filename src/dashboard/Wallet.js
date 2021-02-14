@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { balanceToUnitNumber, numberToReadableString, fixed32ToNumber } from '../numberUtils';
 import { useSubstrate } from '../substrate-lib';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
@@ -28,6 +28,67 @@ export default function Main (props) {
   const [assetList, setAssetList] = useState({value: INIT_ASSET_LIST});
 
   useEffect(() => {
+    let unsubPool0 = null;
+    let unsubPool1 = null;
+    let unsubPool2 = null;
+    let unsubPool3 = null;
+    let unsubPool4 = null;
+    const getPool = async () => {
+      unsubPool0 = await api.query.assets.price(0, (price) => {
+        if (price) {
+          const newPrice = fixed32ToNumber(price);
+          console.log('price0');
+          console.log(newPrice);
+          const list = assetList.value;
+          if (newPrice !== list[0].price) {
+            list[0].price = newPrice;
+            setAssetList({value: list});
+          }
+        }
+      });
+      unsubPool1 = await api.query.assets.price(1, (price) => {
+        if (price) {
+          const newPrice = fixed32ToNumber(price);
+          const list = assetList.value;
+          if (newPrice !== list[1].price) {
+            list[1].price = newPrice;
+            setAssetList({value: list});
+          }
+        }
+      });
+      unsubPool2 = await api.query.assets.price(2, (price) => {
+        if (price) {
+          const newPrice = fixed32ToNumber(price);
+          const list = assetList.value;
+          if (newPrice !== list[2].price) {
+            list[2].price = newPrice;
+            setAssetList({value: list});
+          }
+        }
+      });
+      unsubPool3 = await api.query.assets.price(3, (price) => {
+        if (price) {
+          const newPrice = fixed32ToNumber(price);
+          const list = assetList.value;
+          if (newPrice !== list[3].price) {
+            list[3].price = newPrice;
+            setAssetList({value: list});
+          }
+        }
+      });
+      unsubPool4 = await api.query.assets.price(4, (price) => {
+        if (price) {
+          const newPrice = fixed32ToNumber(price);
+          const list = assetList.value;
+          if (newPrice !== list[4].price) {
+            list[4].price = newPrice;
+            setAssetList({value: list});
+          }
+        }
+      });
+    }
+    getPool();
+
     let unsubAsset0 = null;
     let unsubAsset1 = null;
     let unsubAsset2 = null;
@@ -86,6 +147,11 @@ export default function Main (props) {
     }
 
     return () => {
+      unsubPool0 && unsubPool0();
+      unsubPool1 && unsubPool1();
+      unsubPool2 && unsubPool2();
+      unsubPool3 && unsubPool3();
+      unsubPool4 && unsubPool4();
       unsubAsset0 && unsubAsset0();
       unsubAsset1 && unsubAsset1();
       unsubAsset2 && unsubAsset2();
