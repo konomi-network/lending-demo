@@ -31,10 +31,7 @@
     "UserDebt": {
       "amount": "Balance",
       "index": "u128"
-    },
-    "UserInfo": [
-      "u64", "u64", "u64"
-    ]
+    }
   },
   "PROVIDER_SOCKET": "ws://127.0.0.1:9944",
   "RPC": {
@@ -78,7 +75,7 @@
           }
         ],
         "section": "lending",
-        "type": "UserInfo"
+        "type": "(u64, u64, u64)"
       }
     }
   }

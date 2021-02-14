@@ -24,26 +24,24 @@ export default function Main (props) {
 
     if (accountPair) {
       const getAccountBalance = async () => {
-        unsubUser = await api.query.lending.users(accountPair.address, userData => {
-          if (userData.isSome) {
-            const dataUnwrap = userData.unwrap();
-            const borrowLimit = dataUnwrap.borrowLimit
-              ? balanceToUnitNumber(dataUnwrap.borrowLimit) : 0;
-            const supplyBalance = dataUnwrap.supplyBalance
-              ? balanceToUnitNumber(dataUnwrap.supplyBalance) : 0;
-            const debtBalance = dataUnwrap.debtBalance
-              ? balanceToUnitNumber(dataUnwrap.debtBalance) : 0;
-            setAccountBalance({ borrowLimit, supplyBalance, debtBalance });
-          } else {
-            setAccountBalance(INIT_ACCOUNT_BALANCE);
-          }
+        console.log("rpc");
+        console.log(api.rpc.lending);
+        unsubUser = await api.rpc.lending.getUserInfo(accountPair.address, userData => {
+          console.log("user info");
+          console.log(userData);
+          const [supplyBalance, borrowLimit, debtBalance] = userData;
+          setAccountBalance({
+            supplyBalance: balanceToUnitNumber(supplyBalance),
+            borrowLimit: balanceToUnitNumber(borrowLimit),
+            debtBalance: balanceToUnitNumber(debtBalance),
+          });
         });
       };
       getAccountBalance();
     }
 
     return () => unsubUser && unsubUser();
-  }, [api.query.lending, accountPair]);
+  }, [api.rpc.lending, accountPair]);
 
   return (
     <div className="AccountTotal-container">
