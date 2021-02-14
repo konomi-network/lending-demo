@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useSubstrate } from '../substrate-lib';
-import { balanceToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
@@ -28,26 +28,36 @@ export default function Main (props) {
   const [liquidity, setLiquidity] = useState(0);
 
   useEffect(() => {
+    let unsubLiquidity = null;
     let unsubAPY = null;
     let unsubWallet = null;
     const assetId = rowId;
 
     if (assetId != null) {
-      const getSupplyAPY = async () => {
-        unsubAPY = await api.query.lending.pools(assetId, assetPool => {
+      const getLiquidity = async () => {
+        unsubLiquidity = await api.query.lending.pools(assetId, assetPool => {
           if (assetPool.isSome) {
             const unwrappedPool = assetPool.unwrap();
-            setAPY(balanceToAPY(unwrappedPool.debtAPY));
             const liquidityInt = balanceToUnitNumber(unwrappedPool.supply)
                 - balanceToUnitNumber(unwrappedPool.debt);
             setLiquidity(liquidityInt);
           } else {
-            setAPY(0);
             setLiquidity(0);
           }
         });
       };
-      getSupplyAPY();
+      getLiquidity();
+
+      const getBorrowAPY = async () => {
+        unsubAPY = await api.rpc.lending.debtRate(assetId, rate => {
+          if (rate) {
+            setAPY(fixed32ToAPY(rate));
+          } else {
+            setAPY(0);
+          }
+        });
+      };
+      getBorrowAPY();
 
       if (accountPair) {
         const getBorrowWallet = async () => {
@@ -61,6 +71,7 @@ export default function Main (props) {
     }
 
     return () => {
+      unsubLiquidity && unsubLiquidity();
       unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
     };

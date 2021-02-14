@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'semantic-ui-react';
 
 import { useSubstrate } from '../substrate-lib';
-import { balanceToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
+import { fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import KonomiImage from '../resources/img/KONO.png';
 import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
@@ -34,11 +34,9 @@ export default function Main (props) {
 
     if (assetId != null) {
       const getSupplyAPY = async () => {
-        unsubAPY = await api.query.lending.pools(assetId, assetPool => {
-          if (assetPool.isSome) {
-            const unwrappedPool = assetPool.unwrap();
-            const apyNumber = balanceToAPY(unwrappedPool.supplyAPY);
-            setAPY(apyNumber);
+        unsubAPY = await api.rpc.lending.supplyRate(assetId, rate => {
+          if (rate) {
+            setAPY(fixed32ToAPY(rate));
           } else {
             setAPY(0);
           }
