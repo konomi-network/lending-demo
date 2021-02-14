@@ -10,6 +10,9 @@ function KNTxButton ({
   accountPair = null,
   label,
   setStatus,
+  onSuccess,
+  onProcessing,
+  onFail,
   color = 'blue',
   style = null,
   type = 'QUERY',
@@ -61,13 +64,28 @@ function KNTxButton ({
     return fromAcct;
   };
 
-  const txResHandler = ({ status }) =>
-    status.isFinalized
-      ? setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`)
-      : setStatus(`Current transaction status: ${status.type}`);
+  const txResHandler = ({ status }) => {
+    console.log('button, status');
+    console.log(status);
+    if (status.isFinalized) {
+      setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`);
+      if (onSuccess) {
+        onSuccess(status);
+      }
+    } else {
+      setStatus(`Current transaction status: ${status.type}`);
+      if (onProcessing) {
+        onProcessing(status);
+      }
+    }
+  }
 
-  const txErrHandler = err =>
+  const txErrHandler = (err) => {
     setStatus(`😞 Transaction Failed: ${err.toString()}`);
+    if (onFail) {
+      onFail(err);
+    }
+  }
 
   const sudoTx = async () => {
     const fromAcct = await getFromAcct();

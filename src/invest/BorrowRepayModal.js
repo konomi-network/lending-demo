@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Icon, Menu } from 'semantic-ui-react';
+import { Button, Dimmer, Icon, Loader, Menu } from 'semantic-ui-react';
 
 import { useSubstrate } from '../substrate-lib';
 import { KNTxButton } from '../substrate-lib/components';
@@ -39,6 +39,8 @@ export default function Main (props) {
   const [currentBorrow, setCurrentBorrow] = useState(0);
   const [debtBalance, setDebtBalance] = useState(0);
   const [borrowLimit, setBorrowLimit] = useState(0);
+  const [loaderActive, setLoaderActive] = useState(false);
+  const [processingText, setProcessingText] = useState('Processing');
 
   const { api } = useSubstrate();
 
@@ -130,8 +132,27 @@ export default function Main (props) {
   };
 
   const onClickSubmitButton = () => {
-    setModalOpen(false);
+    setLoaderActive(true);
   };
+
+  const onTxSuccess = (status) => {
+    setLoaderActive(false);
+    setModalOpen(false);
+  }
+
+  const onTxProcessing = (status) => {
+    // Ready -> InBlock -> Finalized
+    if (status.isReady) {
+      setProcessingText('Processing: Ready');
+    } else if (status.isInBlock) {
+      setProcessingText('Processing: In block');
+    }
+  }
+
+  const onTxFail = (err) => {
+    setLoaderActive(false);
+    alert(`Transaction Failed: ${err.toString()}`);
+  }
 
   const renderWalletRow = () => {
     // if (activeItem === 'Borrow') {
@@ -184,6 +205,9 @@ export default function Main (props) {
 
   return (
     <div className="MarketModal-container">
+      <Dimmer active={loaderActive}>
+        <Loader size='small' active={loaderActive}>{processingText}</Loader>
+      </Dimmer>
       <div className="MarketModal-header">
         <img className="MarketModal-header-image" src={ASSET_LIST[assetId].image} alt="header-asset-icon"/>
         <p className="MarketModal-header-title">{ASSET_LIST[assetId].name}</p>
@@ -234,6 +258,9 @@ export default function Main (props) {
           label={activeItem}
           type='SIGNED-TX'
           setStatus={setTxStatus}
+          onSuccess={onTxSuccess}
+          onProcessing={onTxProcessing}
+          onFail={onTxFail}
           style={{ width: '100%', height: '60px', backgroundColor: '#9669ed', color: 'white', fontSize: '18px' }}
           attrs={{
             palletRpc: 'lending',
