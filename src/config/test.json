@@ -1,3 +1,63 @@
 {
-  "PROVIDER_SOCKET": ""
+  "PROVIDER_SOCKET": "",
+  "RPC": {
+    "lending": {
+      "supplyRate" :{
+        "description": "get asset supply rate",
+        "isSubscription": "false",
+        "jsonrpc": "lending_supplyRate",
+        "method": "supplyRate",
+        "params": [
+          {
+            "name": "id",
+            "type": "AssetId"
+          },
+          {
+            "name": "at",
+            "type": "Hash",
+            "isOptional": true
+          }
+        ],
+        "type": "u128"
+      }
+    },
+    "debtRate" :{
+      "description": "get asset debt rate",
+      "isSubscription": "true",
+      "jsonrpc": "lending_debtRate",
+      "method": "debtRate",
+      "params": [
+        {
+          "name": "id",
+          "type": "AssetId"
+        },
+        {
+          "name": "at",
+          "type": "Hash",
+          "isOptional": true
+        }
+      ],
+      "section": "lending",
+      "type": "u128"
+    },
+    "getUserInfo" :{
+      "description": "get user info",
+      "isSubscription": "true",
+      "jsonrpc": "lending_getUserInfo",
+      "method": "getUserInfo",
+      "params": [
+        {
+          "name": "user",
+          "type": "AccountId"
+        },
+        {
+          "name": "at",
+          "type": "Hash",
+          "isOptional": true
+        }
+      ],
+      "section": "lending",
+      "type": "(Balance, Balance, Balance)"
+    }
+  }
 }
