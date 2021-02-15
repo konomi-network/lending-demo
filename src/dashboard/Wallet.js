@@ -37,8 +37,6 @@ export default function Main (props) {
       unsubPool0 = await api.query.assets.price(0, (price) => {
         if (price) {
           const newPrice = fixed32ToNumber(price);
-          console.log('price0');
-          console.log(newPrice);
           const list = assetList.value;
           if (newPrice !== list[0].price) {
             list[0].price = newPrice;

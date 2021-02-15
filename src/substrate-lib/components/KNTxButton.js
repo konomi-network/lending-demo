@@ -65,8 +65,6 @@ function KNTxButton ({
   };
 
   const txResHandler = ({ status }) => {
-    console.log('button, status');
-    console.log(status);
     if (status.isFinalized) {
       setStatus(`😉 Finalized. Block hash: ${status.asFinalized.toString()}`);
       if (onSuccess) {

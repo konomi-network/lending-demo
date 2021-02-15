@@ -183,10 +183,6 @@ export default function Main (props) {
     }
     if (activeItem === 'Borrow') {
       const newDebt = inputNumberValue * price;
-      console.log("new input");
-      console.log(newDebt);
-      console.log(debtBalance);
-      console.log(borrowLimit);
       if (debtBalance + newDebt > borrowLimit * 0.9) {
         // New borrow balance exceeds borrow limit * 0.9.
         return null;

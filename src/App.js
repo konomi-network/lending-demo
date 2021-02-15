@@ -91,17 +91,14 @@ function Main () {
     keyring.getPair(accountAddress);
 
   const renderLiquidationAlert = () => {
-    console.log('warning1');
     if (!accountPair || !accountPair.address) {
       return null;
     }
-    console.log('warning2');
     if (accountBalance.borrowLimit == null ||
         accountBalance.debtBalance == null ||
         threshold == null) {
       return null;
     }
-    console.log('warning');
     if (accountBalance.debtBalance > accountBalance.borrowLimit / threshold) {
       return (
         <Message negative>
