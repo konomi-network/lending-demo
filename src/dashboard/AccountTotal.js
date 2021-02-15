@@ -13,49 +13,9 @@ const INIT_ACCOUNT_BALANCE = {
 };
 
 export default function Main (props) {
-  const { accountPair } = props;
-
-  const [accountBalance, setAccountBalance] = useState(INIT_ACCOUNT_BALANCE);
+  const { accountPair, accountBalance } = props;
 
   const { api } = useSubstrate();
-
-  useEffect(() => {
-    let unsubUser = null;
-
-    if (accountPair) {
-      const getAccountBalance = async () => {
-        unsubUser = await api.rpc.lending.getUserInfo(accountPair.address, userData => {
-          const [supplyBalance, borrowLimit, debtBalance] = userData;
-          setAccountBalance({
-            supplyBalance: balanceToUnitNumber(supplyBalance),
-            borrowLimit: balanceToUnitNumber(borrowLimit),
-            debtBalance: balanceToUnitNumber(debtBalance),
-          });
-        });
-      };
-      getAccountBalance();
-    }
-
-    return () => unsubUser && unsubUser();
-  }, [api.rpc.lending, accountPair]);
-
-  useEffect(() => {
-    const interval = setInterval( async () => {
-      const userData = await api.rpc.lending.getUserInfo(accountPair.address);
-      const [supplyBalance, borrowLimit, debtBalance] = userData;
-      const isSame = (supplyBalance === accountBalance.supplyBalance) ||
-          (borrowLimit === accountBalance.borrowLimit) ||
-          (debtBalance === accountBalance.debtBalance);
-      if (!isSame) {
-        setAccountBalance({
-          supplyBalance: balanceToUnitNumber(supplyBalance),
-          borrowLimit: balanceToUnitNumber(borrowLimit),
-          debtBalance: balanceToUnitNumber(debtBalance),
-        });
-      }
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [accountPair]);
 
   return (
     <div className="AccountTotal-container">

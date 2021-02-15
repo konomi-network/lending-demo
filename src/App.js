@@ -1,4 +1,4 @@
-import React, { useState, createRef } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { CookiesProvider } from 'react-cookie';
@@ -9,6 +9,7 @@ import { TabBar, TAB_NAME_ARRAY } from './TabBar';
 import { DashboardPage } from './dashboard';
 import { ExchangePage } from './exchange';
 import { MarketLists } from './invest';
+import { fixed32ToNumber, balanceToUnitNumber } from './numberUtils';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { TransactionsPage } from './transactions';
 
@@ -19,7 +20,50 @@ import KonomiImage from './resources/img/KONO.png';
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
-  const { apiError, apiState, keyring, keyringState } = useSubstrate();
+  const { api, apiError, apiState, keyring, keyringState } = useSubstrate();
+  const [supplyBalance, setSupplyBalance] = useState(null);
+  const [accountBalance, setAccountBalance] = useState({
+    supplyBalance: null,
+    borrowLimit: null,
+    debtBalance: null,
+  })
+  const [threshold, setThreshold] = useState(null);
+
+  useEffect(() => {
+    const interval = setInterval( async () => {
+      if (accountAddress && api && api.rpc.lending) {
+        const userData = await api.rpc.lending.getUserInfo(accountPair.address);
+        const [supplyBalance, borrowLimit, debtBalance] = userData;
+        const isSame = (supplyBalance === accountBalance.supplyBalance) ||
+            (borrowLimit === accountBalance.borrowLimit) ||
+            (debtBalance === accountBalance.debtBalance);
+        if (!isSame) {
+          setAccountBalance({
+            supplyBalance: balanceToUnitNumber(supplyBalance),
+            borrowLimit: balanceToUnitNumber(borrowLimit),
+            debtBalance: balanceToUnitNumber(debtBalance),
+          });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [accountAddress]);
+
+  useEffect(() => {
+    let unsubThreshold = null;
+
+    if (api && api.query.lending) {
+      const getThreshold = async () => {
+        unsubThreshold = await api.query.lending.liquidationThreshold(data => {
+          if (data) {
+            setThreshold(fixed32ToNumber(data));
+          }
+        });
+      };
+      getThreshold();
+    }
+    return () => unsubThreshold && unsubThreshold();
+  }, [accountAddress, api]);
 
   const loader = text =>
     <Dimmer active>
@@ -30,7 +74,7 @@ function Main () {
     <Grid centered columns={2} padded>
       <Grid.Column>
         <Message negative compact floating
-          header='Error Connecting to Substrate'
+          header='Error Connecting to server'
           content={`${JSON.stringify(err, null, 4)}`}
         />
       </Grid.Column>
@@ -46,10 +90,31 @@ function Main () {
     keyringState === 'READY' &&
     keyring.getPair(accountAddress);
 
+  const renderLiquidationAlert = () => {
+    console.log('warning1');
+    if (!accountPair || !accountPair.address) {
+      return null;
+    }
+    console.log('warning2');
+    if (accountBalance.borrowLimit == null ||
+        accountBalance.debtBalance == null ||
+        threshold == null) {
+      return null;
+    }
+    console.log('warning');
+    if (accountBalance.debtBalance > accountBalance.borrowLimit / threshold) {
+      return (
+        <Message negative>
+          <p>Warning. Liquidation is triggered. Please repay your debt to avoid liquidation.</p>
+        </Message>
+      );
+    }
+  }
+
   const renderPage = () => {
     switch (selectedTabItem) {
       case "Dashboard":
-        return <DashboardPage accountPair={accountPair} />;
+        return <DashboardPage accountPair={accountPair} accountBalance={accountBalance} />;
       case "Invest":
         return <MarketLists accountPair={accountPair} />;
       case "Exchange":
@@ -67,6 +132,7 @@ function Main () {
   return (
     <div className="App-container" ref={contextRef}>
       <div className="App-content-container">
+        {renderLiquidationAlert()}
         <div className="App-header">
           <img className="App-header-img" src={KonomiImage} alt="konomi-logo" />
           <p className="App-header-title">KONOMI</p>
