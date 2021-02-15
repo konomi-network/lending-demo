@@ -33,50 +33,5 @@
       "index": "u128"
     }
   },
-  "PROVIDER_SOCKET": "ws://127.0.0.1:9944",
-  "RPC": {
-    "lending": {
-      "supplyRate": {
-        "description": "get asset supply rate",
-        "isSubscription": "true",
-        "jsonrpc": "lending_supplyRate",
-        "method": "supplyRate",
-        "params": [
-          {
-            "name": "id",
-            "type": "AssetId"
-          }
-        ],
-        "type": "FixedU128"
-      },
-      "debtRate": {
-        "description": "get asset debt rate",
-        "isSubscription": "true",
-        "jsonrpc": "lending_debtRate",
-        "method": "debtRate",
-        "params": [
-          {
-            "name": "id",
-            "type": "AssetId"
-          }
-        ],
-        "section": "lending",
-        "type": "FixedU128"
-      },
-      "getUserInfo": {
-        "description": "get user info",
-        "isSubscription": "true",
-        "jsonrpc": "lending_getUserInfo",
-        "method": "getUserInfo",
-        "params": [
-          {
-            "name": "user",
-            "type": "AccountId"
-          }
-        ],
-        "section": "lending",
-        "type": "(u64, u64, u64)"
-      }
-    }
-  }
+  "PROVIDER_SOCKET": "ws://127.0.0.1:9944"
 }

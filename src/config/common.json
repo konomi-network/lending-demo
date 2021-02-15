@@ -1,5 +1,83 @@
 {
   "APP_NAME": "konomi-front-end-v2",
   "DEVELOPMENT_KEYRING": true,
-  "RPC": {}
+  "CUSTOM_TYPES": {
+    "Address": "AccountId",
+    "AssetId": "u64",
+    "FeeRate": "u64",
+    "LookupSource": "AccountId",
+    "User": {
+      "borrowLimit": "Balance",
+      "supplyBalance": "Balance",
+      "debtBalance": "Balance"
+    },
+    "Pool": {
+      "enabled": "bool",
+      "canBeCollateral": "bool",
+      "asset": "AssetId",
+      "supply": "Balance",
+      "debt": "Balance",
+      "safeFactor": "u128",
+      "closeFactor": "u128",
+      "discountFactor": "u128",
+      "totalSupplyIndex": "u128",
+      "totalDebtIndex": "u128",
+      "lastUpdated": "BlockNumber",
+      "utilizationFactor": "u128",
+      "initialInterestRate": "u128"
+    },
+    "UserSupply": {
+      "amount": "Balance",
+      "index": "u128"
+    },
+    "UserDebt": {
+      "amount": "Balance",
+      "index": "u128"
+    }
+  },
+  "RPC": {
+    "lending": {
+      "supplyRate": {
+        "description": "get asset supply rate",
+        "isSubscription": "true",
+        "jsonrpc": "lending_supplyRate",
+        "method": "supplyRate",
+        "params": [
+          {
+            "name": "id",
+            "type": "AssetId"
+          }
+        ],
+        "type": "FixedU128"
+      },
+      "debtRate": {
+        "description": "get asset debt rate",
+        "isSubscription": "true",
+        "jsonrpc": "lending_debtRate",
+        "method": "debtRate",
+        "params": [
+          {
+            "name": "id",
+            "type": "AssetId"
+          }
+        ],
+        "section": "lending",
+        "type": "FixedU128"
+      },
+      "getUserInfo": {
+        "description": "get user info",
+        "isSubscription": "true",
+        "jsonrpc": "lending_getUserInfo",
+        "method": "getUserInfo",
+        "params": [
+          {
+            "name": "user",
+            "type": "AccountId"
+          }
+        ],
+        "section": "lending",
+        "type": "(u64, u64, u64)"
+      }
+    }
+  }
 }
