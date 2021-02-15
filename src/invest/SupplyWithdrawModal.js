@@ -46,7 +46,6 @@ export default function Main (props) {
 
   useEffect(() => {
     let unsubPrice = null;
-    let unsubAPY = null;
     let unsubWallet = null;
     let unsubSupply = null;
 
@@ -61,13 +60,12 @@ export default function Main (props) {
       getPrice();
 
       const getSupplyAPY = async () => {
-        unsubAPY = await api.rpc.lending.supplyRate(assetId, rate => {
-          if (rate) {
-            setAPY(fixed32ToAPY(rate));
-          } else {
-            setAPY(0);
-          }
-        });
+        const rate = await api.rpc.lending.supplyRate(assetId);
+        if (rate) {
+          setAPY(fixed32ToAPY(rate));
+        } else {
+          setAPY(0);
+        }
       };
       getSupplyAPY();
 
@@ -99,7 +97,6 @@ export default function Main (props) {
 
     return () => {
       unsubPrice && unsubPrice();
-      unsubAPY && unsubAPY();
       unsubWallet && unsubWallet();
       unsubSupply && unsubSupply();
     };
