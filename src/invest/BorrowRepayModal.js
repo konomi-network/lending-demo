@@ -41,6 +41,7 @@ export default function Main (props) {
   const [borrowLimit, setBorrowLimit] = useState(0);
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
+  const [threshold, setThreshold] = useState(null);
 
   const { api } = useSubstrate();
 
@@ -48,7 +49,7 @@ export default function Main (props) {
     let unsubPrice = null;
     let unsubWallet = null;
     let unsubBorrow = null;
-    let unsubUser = null;
+    let unsubThreshold = null;
 
     if (assetId != null) {
       const getPrice = async () => {
@@ -96,7 +97,7 @@ export default function Main (props) {
       getCurrentBorrow();
 
       const getAccountBalance = async () => {
-        unsubUser = await api.rpc.lending.getUserInfo(accountPair.address, userData => {
+        await api.rpc.lending.getUserInfo(accountPair.address, userData => {
           const [supplyBalance, borrowLimit, debtBalance] = userData;
           setBorrowLimit(balanceToUnitNumber(borrowLimit));
           setDebtBalance(balanceToUnitNumber(debtBalance));
@@ -105,11 +106,22 @@ export default function Main (props) {
       getAccountBalance();
     }
 
+    if (api && api.query.lending) {
+      const getThreshold = async () => {
+        unsubThreshold = await api.query.lending.liquidationThreshold(data => {
+          if (data) {
+            setThreshold(fixed32ToNumber(data));
+          }
+        });
+      };
+      getThreshold();
+    }
+
     return () => {
       unsubPrice && unsubPrice();
       unsubWallet && unsubWallet();
       unsubBorrow && unsubBorrow();
-      unsubUser && unsubUser();
+      unsubThreshold && unsubThreshold();
     };
   }, [api.query.lending, api.query.assets, api.rpc.lending, accountPair, assetId]);
 
@@ -180,7 +192,7 @@ export default function Main (props) {
     }
     if (activeItem === 'Borrow') {
       const newDebt = inputNumberValue * price;
-      if (debtBalance + newDebt > borrowLimit * 0.9) {
+      if (debtBalance + newDebt > borrowLimit * 0.9 / threshold) {
         // New borrow balance exceeds borrow limit * 0.9.
         return null;
       } else {
