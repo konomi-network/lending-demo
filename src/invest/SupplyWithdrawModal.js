@@ -104,8 +104,8 @@ export default function Main (props) {
 
   const onChangeInput = (event) => {
     setInputValue(event.target.value);
-    const numberValue = parseFloat(event.target.value);
-    if (numberValue) {
+    const numberValue = parseFloat(event.target.value).toPrecision(12);
+    if (numberValue && !isNaN(numberValue)) {
       setInputNumberValue(numberValue);
     } else {
       setInputNumberValue(0);
@@ -183,7 +183,7 @@ export default function Main (props) {
   };
 
   const txInputValue = () => {
-    if (inputNumberValue <= 0) {
+    if (inputNumberValue <= 0 || isNaN(inputNumberValue)) {
       return null;
     }
     if (activeItem === 'Supply') {

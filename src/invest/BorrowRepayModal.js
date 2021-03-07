@@ -127,11 +127,11 @@ export default function Main (props) {
 
   const onChangeInput = (event) => {
     setInputValue(event.target.value);
-    const numberValue = parseFloat(event.target.value);
-    if (numberValue) {
+    const numberValue = parseFloat(event.target.value).toPrecision(12);
+    if (numberValue && !isNaN(numberValue)) {
       setInputNumberValue(numberValue);
     } else {
-      setInputNumberValue(null);
+      setInputNumberValue(0);
     }
   };
 
@@ -187,7 +187,7 @@ export default function Main (props) {
   };
 
   const txInputValue = () => {
-    if (inputNumberValue <= 0) {
+    if (inputNumberValue <= 0 || inputNumberValue === NaN) {
       return null;
     }
     if (activeItem === 'Borrow') {
@@ -203,6 +203,7 @@ export default function Main (props) {
         // Repay exceeds wallet balance.
         return null;
       } else {
+        console.log('tx input '+ (inputNumberValue * moneyBase));
         return BigInt(inputNumberValue * moneyBase);
       }
     }
