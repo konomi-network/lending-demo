@@ -23,7 +23,10 @@ const INIT_STATE = {
   keyringState: null,
   api: null,
   apiError: null,
-  apiState: null
+  apiState: null,
+  invitationActiveState: null,
+  invitationVerificationMessage: null,
+  invitationActivationMessage: null,
 };
 
 ///
@@ -51,6 +54,21 @@ const reducer = (state, action) => {
 
     case 'KEYRING_ERROR':
       return { ...state, keyring: null, keyringState: 'ERROR' };
+
+    case 'INVITATION_VERIFIED':
+      return { ...state, invitationActiveState: 'Activiated', invitationVerificationMessage: null, invitationActivationMessage: null };
+
+    case 'INVITATION_VERIFICATION_FAIL':
+      return { ...state, invitationActiveState: 'Verification_failed', invitationVerificationMessage: action.payload };
+    
+    case 'INVITATION_VERIFICATION_ERROR':
+      return { ...state, invitationActiveState: 'Verification_error' };
+
+    case 'INVITATION_ACTIVATION_FAIL':
+      return {...state, invitationActiveState: 'Activation_failed', invitationActivationMessage: action.payload};
+
+    case 'INVITATION_ACTIVATION_ERROR':
+      return {...state, invitationActiveState: 'Activation_error'};
 
     default:
       throw new Error(`Unknown type: ${action.type}`);
@@ -115,6 +133,64 @@ const loadAccounts = (state, dispatch) => {
   asyncLoadAccounts();
 };
 
+const verifyInvitation = (state, dispatch, addressList) => {
+  const asyncVerify = async (accountAddressList) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ walletIds: accountAddressList }),
+      redirect: 'follow'
+    };
+    console.log('address');
+    console.log(accountAddressList);
+    await fetch('https://code.konomi.tech/login', requestOptions)
+      .then(response => {
+        const asyncHandleResponse = async () => {
+          const data = await response.json();
+          if (response.status == 200 && response.ok) {
+            dispatch({ type: 'INVITATION_VERIFIED' });
+          } else {
+            dispatch({ type: 'INVITATION_VERIFICATION_FAIL', payload:data.message });
+          }
+        }
+        asyncHandleResponse();
+      })
+      .catch(error => {
+        console.log('error', error)
+        dispatch({ type: 'INVITATION_VERIFICATION_ERROR' });
+      });
+  }
+  asyncVerify(addressList);
+}
+
+const activateInvitation = (state, dispatch, addressList, code) => {
+  const asyncActivate = async (accountAddressList, code) => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ walletIds: accountAddressList, code }),
+      redirect: 'follow'
+    };
+    await fetch('https://code.konomi.tech/activate', requestOptions)
+      .then(response => {
+        const asyncHandleResponse = async () => {
+          const data = await response.json();
+          if (response.status == 200 && response.ok) {
+            dispatch({ type: 'INVITATION_VERIFIED' });
+          } else {
+            dispatch({ type: 'INVITATION_ACTIVATION_FAIL', payload:data.message });
+          }
+        }
+        asyncHandleResponse();
+      })
+      .catch(error => {
+        console.log('error', error)
+        dispatch({ type: 'INVITATION_ACTIVATION_ERROR' });
+      });
+  }
+  asyncActivate(addressList, code);
+}
+
 const SubstrateContext = React.createContext();
 
 const SubstrateContextProvider = (props) => {
@@ -132,6 +208,13 @@ const SubstrateContextProvider = (props) => {
     loadAccounts(state, dispatch);
   };
   // loadAccounts(state, dispatch);
+  state.verifyInvitation = (accountAddressList) => {
+    verifyInvitation(state, dispatch, accountAddressList);
+  }
+
+  state.activateInvitation = (accountAddressList, code) => {
+    activateInvitation(state, dispatch, accountAddressList, code);
+  }
 
   return <SubstrateContext.Provider value={state}>
     {props.children}

@@ -21,7 +21,7 @@ function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
   const { api, apiError, apiState, keyring, keyringState } = useSubstrate();
-  const [supplyBalance, setSupplyBalance] = useState(null);
+  const { invitationActiveState, verifyInvitation } = useSubstrate();
   const [accountBalance, setAccountBalance] = useState({
     supplyBalance: null,
     borrowLimit: null,
@@ -30,8 +30,17 @@ function Main () {
   const [threshold, setThreshold] = useState(null);
 
   useEffect(() => {
+    if (invitationActiveState == null && accountAddress) {
+      const addressList = 
+        keyring.getPairs().filter(account => account.meta.isInjected)
+        .map(account => account.address);
+      verifyInvitation(addressList);
+    }
+  }, [invitationActiveState, keyring, accountAddress]);
+
+  useEffect(() => {
     const interval = setInterval( async () => {
-      if (accountAddress && api && api.rpc.lending) {
+      if (accountAddress && invitationActiveState === 'Activiated' && api && api.rpc.lending) {
         const userData = await api.rpc.lending.getUserInfo(accountPair.address);
         const [supplyBalance, borrowLimit, debtBalance] = userData;
         const isSame = (supplyBalance === accountBalance.supplyBalance) ||
@@ -47,12 +56,12 @@ function Main () {
       }
     }, 3000);
     return () => clearInterval(interval);
-  }, [accountAddress]);
+  }, [accountAddress, invitationActiveState]);
 
   useEffect(() => {
     let unsubThreshold = null;
 
-    if (api && api.query.lending) {
+    if (invitationActiveState === 'Activiated' && api && api.query.lending) {
       const getThreshold = async () => {
         unsubThreshold = await api.query.lending.liquidationThreshold(data => {
           if (data) {
@@ -63,7 +72,7 @@ function Main () {
       getThreshold();
     }
     return () => unsubThreshold && unsubThreshold();
-  }, [accountAddress, api]);
+  }, [invitationActiveState, api]);
 
   const loader = text =>
     <Dimmer active>
@@ -92,6 +101,9 @@ function Main () {
 
   const renderLiquidationAlert = () => {
     if (!accountPair || !accountPair.address) {
+      return null;
+    }
+    if (invitationActiveState !== 'Activiated') {
       return null;
     }
     if (accountBalance.borrowLimit == null ||

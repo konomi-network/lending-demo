@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Modal } from 'semantic-ui-react';
 
+import { InvitationDialog } from '../invitation';
+import { useSubstrate } from '../substrate-lib';
 import BorrowMarketRow from './BorrowMarketRow';
 import BorrowRepayModal from './BorrowRepayModal';
 import SupplyMarketRow from './SupplyMarketRow';
@@ -25,6 +27,7 @@ const ASSET_LIST = [
 
 export default function Main (props) {
   const { accountPair } = props;
+  const { invitationActiveState } = useSubstrate();
 
   const [supplyModalOpen, setSupplyModalOpen] = useState(false);
   const [borrowModalOpen, setBorrowModalOpen] = useState(false);
@@ -120,6 +123,18 @@ export default function Main (props) {
       </div>
     );
   };
+
+  if (!accountPair || !accountPair.address) {
+    return (
+      <h1 style={{marginLeft: "25px", marginTop: "40px"}}>Please connect to your wallet first.</h1>
+    );
+  }
+
+  if (invitationActiveState !== 'Activiated') {
+    return (
+      <InvitationDialog />
+    )
+  }
 
   return (
     <div className="MarketLists-container">
