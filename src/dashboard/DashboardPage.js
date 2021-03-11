@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { InvitationDialog } from '../invitation';
 import { useSubstrate } from '../substrate-lib';
 import AccountTotal from './AccountTotal';
+import Dashboard from './Dashboard';
 import Wallet from './Wallet';
 import './DashboardPage.css';
 
@@ -24,7 +25,7 @@ export default function Main (props) {
 
   return (
     <div className="DashboardPage-container">
-      <AccountTotal accountPair={accountPair} accountBalance={accountBalance} />
+      <Dashboard accountPair={accountPair} accountBalance={accountBalance} />
       <p className="DashboardPage-account-overview-header">Account Overview</p>
       <Wallet accountPair={accountPair} />
     </div>

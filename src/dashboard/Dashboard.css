@@ -1,0 +1,104 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
+.Dashboard-container {
+  display: grid;
+  grid-template-columns: 350px 350px 350px;
+  grid-template-rows: 200px 200px;
+  width: 1050px;
+  margin: 0px auto;
+}
+
+.Dashboard-item  {
+  background-color: #2A2E85;
+  border-radius: 15px;
+  position: relative;
+  margin: 15px 15px;
+}
+
+.Dashboard-health {
+  grid-column-start: 3;
+  grid-column-end: 4;
+  grid-row-start: 1;
+  grid-row-end: 3; 
+}
+
+.Dashboard-cell-label {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  color: #8797FF;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.Dashboard-cell-number {
+  position: absolute;
+  left: 20px;
+  top: 60px;
+  color: white;
+  line-height: 60px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 72px;
+}
+
+.Dashboard-health-label {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  color: #8797FF;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.Dashboard-health-circle {
+  /* Ellipse 106 */
+  position: absolute;
+  top: 50px;
+  left: 20px;
+}
+
+.Dashboard-health-index {
+  position: absolute;
+  top: 140px;
+  left: 110px;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 64px;
+  line-height: 96px;
+
+  color: #20EFEF;
+}
+
+.Dashboard-health-threshold {
+  position: absolute;
+  top: 300px;
+  left: 20px;
+  color: #8797FF;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 19px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
