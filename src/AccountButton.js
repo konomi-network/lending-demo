@@ -4,6 +4,7 @@ import { useCookies, Cookies } from 'react-cookie';
 
 import { useSubstrate } from './substrate-lib';
 import AccountSelector from './AccountSelector';
+import AccountSelectorNew from './AccountSelectorNew';
 import './AccountButton.css';
 
 function ConnectAccountButton (props) {
@@ -27,7 +28,7 @@ export default function AccountButton (props) {
   const [cookies, setCookie] = useCookies(['konomiLoggedIn']);
   if (keyring && keyring.getPairs && api && api.query) {
     // Already logged in, show selector.
-    return (<AccountSelector {...props} />)
+    return (<AccountSelectorNew {...props} />)
   } else if (cookies.konomiLoggedIn) {
     // Connected before, load account and wait for re-render.
     loadAccounts();
