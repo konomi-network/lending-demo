@@ -17,7 +17,7 @@ export default function Main (props) {
     );
   }
 
-  if (invitationActiveState !== 'Activiated') {
+  if (invitationActiveState !== 'Activated') {
     return (
       <InvitationDialog />
     )
@@ -26,7 +26,6 @@ export default function Main (props) {
   return (
     <div className="DashboardPage-container">
       <Dashboard accountPair={accountPair} accountBalance={accountBalance} />
-      <p className="DashboardPage-account-overview-header">Account Overview</p>
       <Wallet accountPair={accountPair} />
     </div>
   );

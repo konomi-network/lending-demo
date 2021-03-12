@@ -2,43 +2,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@500&display=swap');
 
 .Wallet-container {
+  margin-top: 80px;
+  background-color: #2D3988;
+  padding: 60px 0px;
 
-}
-
-.Wallet-total {
-  width: 300px;
-  height: 80px;
-  border-radius: 10px;
+  width: 100%;
   position: relative;
-  background-color: #3650FA;
+  z-index: 0;
+  overflow: hidden;
 }
 
-.Wallet-total-label {
+.Wallet-container::after {
+  content: '';
+  width: 120%;
   position: absolute;
-  top: 5px;
-  left: 10px;
-  font-family: 'Poppins', sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-  line-height: 27px;
-  color: #FFFFFF;
+  left: -10%;
+  top: 0;
+  border-radius: 0 0 50% 50%;
+  background-color: #2D3988;
 }
 
-.Wallet-total-number {
-  position: absolute;
-  right: 15px;
-  bottom: 5px;
-  font-family: 'Work Sans';
+.Wallet-asset-summary {
+  font-family: Poppins;
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 36px;
-  line-height: 42px;
-  color: #FFFFFF;
+  line-height: 54px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8797FF;
+  margin: 50px 0px;
+  text-align: center;
 }
 
 .Wallet-asset-table {
   margin-top: 30px;
+  width: 1400px;
+  margin: 0px auto;
 }
 
 .Wallet-asset-table-header {
@@ -48,10 +48,14 @@
 }
 
 .Wallet-asset-table-header-text {
-  font-family: "Poppins";
+  font-family: Poppins;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 19px;
   line-height: 50px;
-  color: #162064;
+  color: #7D7E8C;
+}
+
+.Wallet-asset-header-margin {
+  margin-left: 40px;
 }

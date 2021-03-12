@@ -1,29 +1,42 @@
 .WalletAssetRow-container {
   display: flex;
   flex-direction: row;
-  height: 50px;
-  border-top: 1px solid #E5E5E5;
+  height: 80px;
+  background: #182048;
+  box-shadow: 0px 4px 18px rgba(23, 34, 96, 0.3);
+  border-radius: 7px;
+  margin: 5px 0px;
 }
 
 .WalletAssetRow-column-asset {
   padding-left: 45px;
-  width: 20%;
+  width: 15%;
 }
 
-.WalletAssetRow-column-balance {
-  width: 26%;
-  text-align: right;
+.WalletAssetRow-column-supply-balance {
+  width: 17%;
+  text-align: center;
+}
+
+.WalletAssetRow-column-borrow-balance {
+  width: 17%;
+  text-align: center;
+}
+
+.WalletAssetRow-column-wallet-balance {
+  width: 17%;
+  text-align: center;
 }
 
 .WalletAssetRow-column-price {
-  width: 26%;
-  text-align: right;
+  width: 17%;
+  text-align: center;
 }
 
 .WalletAssetRow-column-value {
   padding-right: 60px;
-  width: 28%;
-  text-align: right;
+  width: 17%;
+  text-align: center;
 }
 
 .WalletAssetRow-cell {
@@ -34,22 +47,26 @@
 .WalletAssetRow-asset-icon {
   width: 30px;
   height: 30px;
-  margin: 10px 0px;
+  margin: 25px 0px;
 }
 
 .WalletAssetRow-asset-text {
-  font-family: "Work Sans", sans-serif;
+  font-family: Gotham;
   font-style: normal;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 18px;
-  line-height: 50px;
-  margin-left: 10px;
+  line-height: 80px;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  margin-left: 20px;
 }
 
 .WalletAssetRow-number {
-  font-family: "Work Sans", sans-serif;
+  font-family: Gotham;
   font-style: normal;
-  font-weight: normal;
+  font-weight: bold;
   font-size: 18px;
-  line-height: 50px;
+  line-height: 80px;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
 }
