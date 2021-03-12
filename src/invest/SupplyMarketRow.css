@@ -1,8 +1,13 @@
 .Market-table-row {
   display: flex;
   flex-direction: row;
-  height: 70px;
+  height: 80px;
   cursor: pointer;
+
+  background: #182048;
+  box-shadow: 0px 4px 18px rgba(23, 34, 96, 0.3);
+  border-radius: 7px;
+  margin: 8px 0px;
 }
 
 .Market-table-cell {
@@ -11,34 +16,28 @@
 }
 
 .Market-asset-icon {
-  width: 50px;
-  height: 50px;
-  margin: 10px 20px 10px 0px;
+  width: 30px;
+  height: 30px;
+  margin: 25px 20px 25px 30px;
 }
 
 .Market-table-cell-text {
-  font-size: 16px;
-  line-height: 70px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 80px;
+  letter-spacing: 0.05em;
+  color: #FFFFFF;
+  text-align: center;
 }
 
 .SupplyMarket-asset-column {
-  /* width: 45%; */
-  width: 50%;
+  width: 40%;
 }
 .SupplyMarket-apy-column {
-  /* width: 20%; */
-  width: 25%;
+  width: 30%;
 }
 .SupplyMarket-wallet-column {
-  /* width: 20%; */
-  width: 25%;
-}
-/* .SupplyMarket-collateral-column {
-  width: 15%;
-} */
-
-
-
-.SupplyMarket-table-cell-slider {
-  margin-top: 25px;
+  width: 30%;
 }

@@ -70,12 +70,12 @@ export default function Main (props) {
     <div className="Market-table-row" key={`supply ${rowId}`} onClick={() => onClickSupplyMarketRow(rowId)}>
       <div className="SupplyMarket-asset-column Market-table-cell">
         <img className="Market-asset-icon" src={rowData.image} alt="asset-icon" />
-        <p className="Market-table-cell-text">{rowData.name}</p>
+        <p className="Market-table-cell-text">{rowData.abbr}</p>
       </div>
-      <div className="SupplyMarket-apy-column Market-table-cell">
+      <div className="SupplyMarket-apy-column">
         <p className="Market-table-cell-text">{apy}%</p>
       </div>
-      <div className="SupplyMarket-wallet-column Market-table-cell">
+      <div className="SupplyMarket-wallet-column">
         <p className="Market-table-cell-text">{`${walletBalance} ${rowData.abbr}`}</p>
       </div>
     </div>
