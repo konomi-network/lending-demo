@@ -11,6 +11,7 @@ import { DashboardPage } from './dashboard';
 import { ExchangePage } from './exchange';
 import { MarketLists } from './invest';
 import { fixed32ToNumber, balanceToUnitNumber } from './numberUtils';
+import ArrowImage from './resources/img/arrow_right.png';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { TransactionsPage } from './transactions';
 
@@ -119,6 +120,15 @@ function Main () {
     }
   }
 
+  const renderArrow = () => {
+    if (!accountPair) {
+      return null;
+    }
+    return (
+      <img className="App-header-arrow" src={ArrowImage} alt="arrow-right-icon" />
+    );
+  }
+
   const renderPage = () => {
     switch (selectedTabItem) {
       case "Dashboard":
@@ -150,6 +160,7 @@ function Main () {
           <CookiesProvider>
             <AccountButton setAccountAddress={setAccountAddress} />
           </CookiesProvider>
+          {renderArrow()}
           <FaucetButton accountPair={accountPair} />
         </div>
         {renderPage()}
