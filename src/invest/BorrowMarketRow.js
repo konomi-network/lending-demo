@@ -80,7 +80,7 @@ export default function Main (props) {
     <div className="Market-table-row" key={`borrow ${rowId}`} onClick={() => onClickBorrowMarketRow(rowId)}>
       <div className="BorrowMarket-asset-column Market-table-cell">
         <img className="Market-asset-icon" src={rowData.image} alt="asset-icon" />
-        <p className="Market-table-cell-text">{rowData.abbr}</p>
+        <p className="Market-table-asset-text">{rowData.abbr}</p>
       </div>
       <div className="BorrowMarket-apy-column">
         <p className="Market-table-cell-text">{apy}%</p>

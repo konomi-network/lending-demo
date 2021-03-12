@@ -18,7 +18,7 @@
 .Market-asset-icon {
   width: 30px;
   height: 30px;
-  margin: 25px 20px 25px 30px;
+  margin: 25px 17px 25px 30px;
 }
 
 .Market-table-cell-text {
@@ -30,6 +30,16 @@
   letter-spacing: 0.05em;
   color: #FFFFFF;
   text-align: center;
+}
+
+.Market-table-asset-text {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 80px;
+  letter-spacing: 0.1em;
+  color: #37BCEC;
 }
 
 .SupplyMarket-asset-column {

@@ -18,7 +18,7 @@
 .Market-asset-icon {
   width: 30px;
   height: 30px;
-  margin: 25px 20px 25px 30px;
+  margin: 25px 17px 25px 30px;
 }
 
 .Market-table-cell-text {
@@ -32,14 +32,24 @@
   text-align: center;
 }
 
+.Market-table-asset-text {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 80px;
+  letter-spacing: 0.1em;
+  color: #37BCEC;
+}
+
 .BorrowMarket-asset-column {
-  width: 25%;
+  width: 28%;
 }
 .BorrowMarket-apy-column {
-  width: 20%;
+  width: 19%;
 }
 .BorrowMarket-wallet-column {
-  width: 32%;
+  width: 30%;
 }
 .BorrowMarket-liquidity-column {
   width: 23%;
