@@ -16,8 +16,6 @@ import { TransactionsPage } from './transactions';
 
 import './App.css';
 
-import KonomiImage from './resources/img/KONO.png';
-
 function Main () {
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);

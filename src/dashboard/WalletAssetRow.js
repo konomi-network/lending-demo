@@ -96,7 +96,7 @@ export default function Main (props) {
         <p className="WalletAssetRow-number">{numberToReadableString(walletBalance)}</p>
       </div>
       <div className="WalletAssetRow-column-price">
-        <p className="WalletAssetRow-number">${rowData.price}</p>
+        <p className="WalletAssetRow-number">${price}</p>
       </div>
       <div className="WalletAssetRow-column-value">
         <p className="WalletAssetRow-number">${numberToReadableString(assetValue, true)}</p>
