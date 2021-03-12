@@ -41,7 +41,7 @@ function Main () {
 
   useEffect(() => {
     const interval = setInterval( async () => {
-      if (accountAddress && invitationActiveState === 'Activiated' && api && api.rpc.lending) {
+      if (accountAddress && invitationActiveState === 'Activated' && api && api.rpc.lending) {
         const userData = await api.rpc.lending.getUserInfo(accountPair.address);
         const [supplyBalance, borrowLimit, debtBalance] = userData;
         const isSame = (supplyBalance === accountBalance.supplyBalance) ||
@@ -62,7 +62,7 @@ function Main () {
   useEffect(() => {
     let unsubThreshold = null;
 
-    if (invitationActiveState === 'Activiated' && api && api.query.lending) {
+    if (invitationActiveState === 'Activated' && api && api.query.lending) {
       const getThreshold = async () => {
         unsubThreshold = await api.query.lending.liquidationThreshold(data => {
           if (data) {
@@ -104,7 +104,7 @@ function Main () {
     if (!accountPair || !accountPair.address) {
       return null;
     }
-    if (invitationActiveState !== 'Activiated') {
+    if (invitationActiveState !== 'Activated') {
       return null;
     }
     if (accountBalance.borrowLimit == null ||

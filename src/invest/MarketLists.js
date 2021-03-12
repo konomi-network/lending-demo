@@ -130,7 +130,7 @@ export default function Main (props) {
     );
   }
 
-  if (invitationActiveState !== 'Activiated') {
+  if (invitationActiveState !== 'Activated') {
     return (
       <InvitationDialog />
     )
