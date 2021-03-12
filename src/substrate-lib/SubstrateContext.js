@@ -56,7 +56,7 @@ const reducer = (state, action) => {
       return { ...state, keyring: null, keyringState: 'ERROR' };
 
     case 'INVITATION_VERIFIED':
-      return { ...state, invitationActiveState: 'Activiated', invitationVerificationMessage: null, invitationActivationMessage: null };
+      return { ...state, invitationActiveState: 'Activated', invitationVerificationMessage: null, invitationActivationMessage: null };
 
     case 'INVITATION_VERIFICATION_FAIL':
       return { ...state, invitationActiveState: 'Verification_failed', invitationVerificationMessage: action.payload };
@@ -143,7 +143,7 @@ const verifyInvitation = (state, dispatch, addressList) => {
     };
     console.log('address');
     console.log(accountAddressList);
-    await fetch('https://code.konomi.tech/login', requestOptions)
+    await fetch('https://app.konomi.tech/code/login', requestOptions)
       .then(response => {
         const asyncHandleResponse = async () => {
           const data = await response.json();
@@ -171,7 +171,7 @@ const activateInvitation = (state, dispatch, addressList, code) => {
       body: JSON.stringify({ walletIds: accountAddressList, code }),
       redirect: 'follow'
     };
-    await fetch('https://code.konomi.tech/activate', requestOptions)
+    await fetch('https://app.konomi.tech/code/activate', requestOptions)
       .then(response => {
         const asyncHandleResponse = async () => {
           const data = await response.json();
