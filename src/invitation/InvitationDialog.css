@@ -1,0 +1,57 @@
+.InvitationDialog-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+}
+
+.InvitationDialog-hint {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 54px;
+  letter-spacing: 0.1em;
+  color: #18D5EF;
+  margin: 100px auto;
+}
+
+.InvitationDialog-form {
+  display: flex;
+  flex-direction: row;
+  height: 75px;
+}
+
+.InvitationDialog-input {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 8px 40px #3856F1;
+  border: none;
+  outline: none;
+  width: 340px;
+  text-align: center;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.InvitationDialog-input::placeholder {
+  color: #B9B9B9;
+}
+
+.InvitationDialog-activate {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 20px;
+  color: #FFFFFF;
+  height: 75px;
+  width: 240px;
+  background-color: rgba(37, 228, 240, 0.9);
+  box-shadow: 0px 8px 40px #3856F1;
+  border-radius: 40px;
+  border: none;
+  margin-left: 40px;
+}
