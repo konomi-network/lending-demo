@@ -1,35 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 
-.AccountSelector-container {
+.AccountSelectorNew-container {
   position: relative;
-  min-width: 300px;
-  width: 300px;
+  min-width: 250px;
+  width: 250px;
   height: 50px;
   margin: 13px 0px;
 }
 
 .DropdownNew-base-container {
-  width: 240px;
+  width: 250px;
   height: 50px;
-  margin: 0px 35px;
-  border-radius: 38px;
+  border-radius: 25px;
   box-shadow: 0px 8px 40px #3856F1;
   outline: none;
   border-width: 0px;
   background-color: rgba(37, 228, 240, 0.9);
 }
 
-.Dropdown-base-container:hover {
+.DropdownNew-base-container:hover {
   cursor: pointer;
-}
-
-.Dropdown-base-left {
-  width: 120px;
-  background-color: white;
-  border-top-left-radius: 15px;
-  border-bottom-left-radius: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
 }
 
 .DropdownNew-name {
@@ -39,85 +29,31 @@
   font-size: 20px;
   line-height: 50px;
   text-align: center;
-  color: white;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.Dropdown-base-right {
-  width: 180px;
-  background-color: #3650FA;
-  border-top-right-radius: 11px;
-  border-bottom-right-radius: 11px;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.Dropdown-right-address {
-  font-family: 'Poppins', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 26px;
-  color: rgba(255, 255, 255, 0.5);
-}
-
-.Dropdown-options-container {
+.DropdownNew-options-container {
   position: absolute;
   top: 0px;
   right: 0px;
   z-index: 666;
-  width: 300px;
-  height: 300px;
-  border-style: solid;
-  border-radius: 15px;
-  border-color: #3650FA;
-  border-width: 2px;
+  width: 250px;
+  border-radius: 25px;
+  border-color: rgba(37, 228, 240, 0.9);
 }
 
-.Dropdown-option-row {
-  display: flex;
-  flex-direction: row;
-  width: 300px;
+.DropdownNew-options-container:hover {
+  cursor: pointer;
 }
 
-.Dropdown-row-left {
-  width: 120px;
-  background-color: white;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.Dropdown-row-left-name {
-  font-family: 'Poppins', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 26px;
-  color: #6A6A6A;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.Dropdown-row-right {
-  width: 178px;
-  background-color: #3650FA;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-
-.Dropdown-row-right-address {
-  font-family: 'Poppins', sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 26px;
-  color: rgba(255, 255, 255, 0.5);
+.DropdownNew-option-row {
+  width: 250px;
+  height: 50px;
+  background-color: rgba(37, 228, 240, 0.9);
 }
 
 .name-selected {
-  font-weight: 800;
+  font-weight: 800!important;
+  color: white!important;
 }
 
-.address-selected {
-  color: white;
-}
