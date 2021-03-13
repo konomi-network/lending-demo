@@ -132,9 +132,18 @@ function Main () {
   const renderPage = () => {
     switch (selectedTabItem) {
       case "Dashboard":
-        return <DashboardPage accountPair={accountPair} accountBalance={accountBalance} />;
+        return (
+          <DashboardPage
+            accountPair={accountPair}
+            accountBalance={accountBalance}
+            setAccountAddress={setAccountAddress} />
+        );
       case "Invest":
-        return <MarketLists accountPair={accountPair} />;
+        return (
+          <MarketLists
+            accountPair={accountPair}
+            setAccountAddress={setAccountAddress} />
+        ); 
       // case "Exchange":
       //   return <ExchangePage />;
       // case "Transactions":
@@ -143,6 +152,17 @@ function Main () {
         console.log("Invalid tab item. Return dashboard tab by default.");
         return <DashboardPage accountPair={accountPair} />;
     }
+  }
+
+  const renderAccountButton = () => {
+    if (accountAddress) {
+      return (
+        <CookiesProvider>
+          <AccountButton setAccountAddress={setAccountAddress} />
+        </CookiesProvider>
+      );
+    }
+    return null;
   }
 
   const contextRef = createRef();
@@ -157,9 +177,7 @@ function Main () {
           </div>
           <TabBar onChangeTabItemName={setSelectedTabItem} />
           <div className="App-header-middle"></div>
-          <CookiesProvider>
-            <AccountButton setAccountAddress={setAccountAddress} />
-          </CookiesProvider>
+          {renderAccountButton()}
           {renderArrow()}
           <FaucetButton accountPair={accountPair} />
         </div>

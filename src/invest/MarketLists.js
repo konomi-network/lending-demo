@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from 'semantic-ui-react';
 
+import WelcomePage from '../WelcomePage';
 import { InvitationDialog } from '../invitation';
 import { useSubstrate } from '../substrate-lib';
 import BorrowMarketRow from './BorrowMarketRow';
@@ -26,7 +27,7 @@ const ASSET_LIST = [
 ];
 
 export default function Main (props) {
-  const { accountPair } = props;
+  const { accountPair, setAccountAddress } = props;
   const { invitationActiveState } = useSubstrate();
 
   const [supplyModalOpen, setSupplyModalOpen] = useState(false);
@@ -128,7 +129,7 @@ export default function Main (props) {
 
   if (!accountPair || !accountPair.address) {
     return (
-      <h1 style={{marginLeft: "25px", marginTop: "40px"}}>Please connect to your wallet first.</h1>
+      <WelcomePage setAccountAddress={setAccountAddress} />
     );
   }
 
