@@ -41,8 +41,9 @@ export default function Main (props) {
         onOpen={() => setSupplyModalOpen(true)}
         open={supplyModalOpen}
         size='tiny'
+        style={{backgroundColor: '#27358D'}}
       >
-        <Modal.Content>
+        <Modal.Content style={{backgroundColor: '#27358D', padding: '0px'}}>
           <SupplyWithdrawModal
             accountPair={accountPair}
             assetId={supplyId}
@@ -86,8 +87,9 @@ export default function Main (props) {
         onOpen={() => setBorrowModalOpen(true)}
         open={borrowModalOpen}
         size='tiny'
+        style={{backgroundColor: '#27358D'}}
       >
-        <Modal.Content>
+        <Modal.Content style={{backgroundColor: '#27358D', padding: '0px'}}>
           <BorrowRepayModal
             accountPair={accountPair}
             assetId={borrowId}

@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap');
+
+.MarketModal-container {
+  /* height: 400px; */
+  background-color: #27358D;
+}
+
+.MarketModal-header {
+  height: 90px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+  padding: 20px 0px;
+}
+
+.MarketModal-header-image {
+  width: 30px;
+  height: 30px;
+  margin: 10px 0px;
+}
+
+.MarketModal-header-title {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 50px;
+  margin: 0px 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #4FE6FF;
+}
+
+.MarketModal-header-close-button {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  bottom: 35px;
+  top: 35px;
+  right: 35px;
+}
+
+.MarketModal-header-close-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.MarketModal-input-container {
+  height: 200px;
+  background-color: #212A5F;
+  /* position: relative; */
+}
+
+.MarketModal-input-box-container {
+  height: 130px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 30px 0px;
+  position: relative;
+}
+
+.MarketModal-input {
+  width: 300px;
+  /* width: 350px; */
+  font-size: 32px;
+  text-align: center;
+  border: 0px;
+
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 48px;
+  line-height: 72px;
+  color: white;
+  background-color: #212A5F;
+}
+
+input.MarketModal-input:focus {
+  border: 0px;
+  outline: none;
+}
+
+.MarketModal-input-abbr {
+  font-family: Poppins;
+  font-size: 12px;
+  line-height: 14px;
+  text-align: center;
+  letter-spacing: 0.03em;
+  color: #AEAEAE;
+
+  position: absolute;
+  right: 30px;
+  top: 60px;
+}
+
+.MarketModal-input-wallet-container {
+  height: 70px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 20px 0px;
+}
+
+.MarketModal-input-wallet-balance {
+  display: inline-block;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 30px;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  margin-right: 10px
+}
+
+.MarketModal-input-wallet-text {
+  display: inline-block;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 30px;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+}
+
+.MarketModal-menu {
+  display: flex;
+  width: 100%;
+  height: 80px;
+}
+
+.MarketModal-menu-item {
+  width: 50%;
+  text-align: center;
+  justify-content: center;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 80px;
+  color: #676FA8;
+  border-color: #161C45;
+  border-bottom-style: solid;
+  border-radius: 0;
+  border-bottom-width: 0.3px;
+}
+
+.MarketModal-menu-active {
+  border-color: #8CD6FF!important;
+  color: #8CD6FF!important;
+}
+
+.MarketModal-trans-info {
+  padding: 0px 30px 30px 30px;
+}
+
+.MarketModal-trans-info-row {
+  height: 60px;
+  display: flex;
+  flex-direction: row;
+}
+
+.MarketModal-trans-info-row-middle {
+  width: 100%;
+}
+
+.MarketModal-rate-icon {
+  width: 30px;
+  height: 30px;
+  margin: 15px 10px 15px 0px;
+}
+
+.MarketModal-trans-info-text {
+  display: inline-block;
+  min-width: 200px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 60px;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+}
+
+.MarketModal-trans-info-number {
+  text-align: right;
+  min-width: 200px;
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+  line-height: 60px;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+}

@@ -9,8 +9,9 @@ import DotImage from '../resources/img/DOT.png';
 import KsmImage from '../resources/img/KSM.png';
 import EthImage from '../resources/img/ETH.png';
 import BtcImage from '../resources/img/BTC.png';
+import CloseIcon from '../resources/img/close_black.png';
 
-import './SupplyWithdrawModal.css';
+import './MarketModal.css';
 
 const ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
@@ -112,30 +113,18 @@ export default function Main (props) {
     }
   };
 
-  // const onClickMaxButton = () => {
-  //   if (activeItem === 'Supply') {
-  //     setInputNumberValue(walletBalanceNumber);
-  //     setInputValue(walletBalanceNumber);
-  //   } else {
-  //
-  //   }
-  // }
-  //
-  const renderMaxButton = () => {
-    // if (activeItem === 'Supply') {
-    //   return (
-    //     <button className="MarketModal-max-button" onClick={onClickMaxButton}>
-    //       Max
-    //     </button>
-    //   )
-    // } else {
-      return null;
-    // }
+  const getTabItemStyle = (name) => {
+    if (name === activeItem) {
+      return "MarketModal-menu-item MarketModal-menu-active";  
+    }
+    return "MarketModal-menu-item";
   }
 
-  const onClickMenuItem = (event, { name }) => {
-    setActiveItem(name);
-    setTxCallable(name === 'Supply' ? 'supply' : 'withdraw');
+  const onClickMenuItem = (name) => {
+    return () => {
+      setActiveItem(name);
+      setTxCallable(name === 'Supply' ? 'supply' : 'withdraw');
+    }
   };
 
   const onClickSubmitButton = () => {;
@@ -160,27 +149,6 @@ export default function Main (props) {
     setLoaderActive(false);
     alert(`Transaction Failed: ${err.toString()}`);
   }
-
-  const renderWalletRow = () => {
-    // if (activeItem === 'Supply') {
-      return (
-        <div className="MarketModal-trans-info-row">
-          <p className="MarketModal-trans-info-text">Wallet Balance</p>
-          <div className="MarketModal-trans-info-row-middle"></div>
-          <p className="MarketModal-trans-info-number">{`${walletBalance} ${ASSET_LIST[assetId].abbr}`}</p>
-        </div>
-      );
-    // }
-    // return (
-    //   <div className="MarketModal-trans-info-row">
-    //     <p className="MarketModal-trans-info-text">Current Supplying</p>
-    //     <div className="MarketModal-trans-info-row-middle"></div>
-    //     <p className="MarketModal-trans-info-number">
-    //       ${numberToReadableString(currentSupply)}
-    //     </p>
-    //   </div>
-    // );
-  };
 
   const txInputValue = () => {
     if (inputNumberValue <= 0 || isNaN(inputNumberValue)) {
@@ -211,37 +179,35 @@ export default function Main (props) {
       <div className="MarketModal-header">
         <img className="MarketModal-header-image" src={ASSET_LIST[assetId].image} alt="header-asset-icon" />
         <p className="MarketModal-header-title">{ASSET_LIST[assetId].name}</p>
-        <Button icon onClick={() => setModalOpen(false)} className="MarketModal-header-close-button">
-          <Icon name='close' />
-        </Button>
+        <div onClick={() => setModalOpen(false)} className="MarketModal-header-close-button">
+          <img className='MarketModal-header-close-icon' src={CloseIcon} alt='supply-modal-close-icon' />
+        </div>
       </div>
       <div className="MarketModal-input-container">
-        <input
-          className="MarketModal-input"
-          ref={numberInput}
-          value={inputValue}
-          autoFocus={true}
-          onChange={onChangeInput} />
-        {renderMaxButton()}
+        <div className="MarketModal-input-box-container">
+          <input
+            className="MarketModal-input"
+            ref={numberInput}
+            value={inputValue}
+            autoFocus={true}
+            onChange={onChangeInput} />
+          <p className="MarketModal-input-abbr">{ASSET_LIST[assetId].abbr}</p>
+        </div>
+        <div className="MarketModal-input-wallet-container">
+          <p className="MarketModal-input-wallet-balance">{walletBalance}</p>
+          <p className="MarketModal-input-wallet-text">AVAILABLE IN WALLET</p>
+        </div>
       </div>
-      <Menu pointing secondary color={'green'} widths={2}>
-        <Menu.Item
-          name='Supply'
-          active={activeItem === 'Supply'}
-          onClick={onClickMenuItem}
-        />
-        <Menu.Item
-          name='Withdraw'
-          active={activeItem === 'Withdraw'}
-          onClick={onClickMenuItem}
-        />
-      </Menu>
+      <div className="MarketModal-menu">
+        <a className={getTabItemStyle('Supply')} onClick={onClickMenuItem('Supply')}>Supply</a>
+        <a className={getTabItemStyle('Withdraw')} onClick={onClickMenuItem('Withdraw')}>Withdraw</a>
+      </div>
       <div className="MarketModal-trans-info">
         <div className="MarketModal-trans-info-row">
-          <img className="MarketModal-supply-rate-icon" src={ASSET_LIST[assetId].image} alt="asset-icon" />
+          <img className="MarketModal-rate-icon" src={ASSET_LIST[assetId].image} alt="asset-icon" />
           <p className="MarketModal-trans-info-text">Supply APY</p>
           <div className="MarketModal-trans-info-row-middle"></div>
-          <p className="MarketModal-trans-info-apy-number">{apy}%</p>
+          <p className="MarketModal-trans-info-number">{apy}%</p>
         </div>
         <div className="MarketModal-trans-info-row">
           <p className="MarketModal-trans-info-text">Current Supply</p>
@@ -265,7 +231,7 @@ export default function Main (props) {
           onSuccess={onTxSuccess}
           onProcessing={onTxProcessing}
           onFail={onTxFail}
-          style={{ width: '100%', height: '60px', backgroundColor: '#00d395', color: 'white', fontSize: '18px' }}
+          style={{ width: '100%', height: '60px', backgroundColor: '#25C1D5', color: 'white', fontSize: '18px' }}
           attrs={{
             palletRpc: 'lending',
             callable: txCallable,
@@ -274,7 +240,6 @@ export default function Main (props) {
           }}
           onClick={onClickSubmitButton}
         />
-        {renderWalletRow()}
       </div>
     </div>
   );
