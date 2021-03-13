@@ -124,8 +124,23 @@ function Main () {
     if (!accountPair) {
       return null;
     }
+    if (invitationActiveState !== 'Activated') {
+      return null;
+    }
     return (
       <img className="App-header-arrow" src={ArrowImage} alt="arrow-right-icon" />
+    );
+  }
+
+  const renderFaucetButton = () => {
+    if (!accountPair) {
+      return null;
+    }
+    if (invitationActiveState !== 'Activated') {
+      return null;
+    }
+    return (
+      <FaucetButton accountPair={accountPair} />
     );
   }
 
@@ -179,7 +194,7 @@ function Main () {
           <div className="App-header-middle"></div>
           {renderAccountButton()}
           {renderArrow()}
-          <FaucetButton accountPair={accountPair} />
+          {renderFaucetButton()}
         </div>
         {renderPage()}
       </div>
