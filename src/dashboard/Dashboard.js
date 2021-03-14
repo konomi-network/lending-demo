@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
 import { numberToReadableString } from '../numberUtils';
-
+import { useWallet } from './WalletContext';
 import './Dashboard.css';
 
 export default function Main (props) {
   const { accountBalance } = props;
+  const { prices, setPrices, balances, setBalances} = useWallet();
+
+  let result = 0;
+  for (let index = 0; index < 5; index++) {
+    result += prices[index] * balances[index];
+  }
 
   const getHealthIndex = () => {
     if (!accountBalance || accountBalance.debtBalance == 0 || accountBalance.borrowLimit == 0) {
@@ -102,9 +108,9 @@ export default function Main (props) {
         </p>
       </div>
       <div className="Dashboard-item Dashboard-apy">
-        <p className="Dashboard-cell-label">AGGREGATED SUPPLY APY</p>
+        <p className="Dashboard-cell-label">TOTAL WALLET BALLANCE</p>
         <p className="Dashboard-cell-number">
-          8.5%
+          ${numberToReadableString(result, true)}
         </p>
       </div>
     </div>

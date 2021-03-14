@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { fixed32ToNumber, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
 import { useSubstrate } from '../substrate-lib';
+import { useWallet } from './WalletContext';
 
 import './WalletAssetRow.css';
 
@@ -14,6 +15,8 @@ export default function Main (props) {
   const [price, setPrice] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
 
+  const { prices, setPrices, balances, setBalances} = useWallet();
+
   const { api } = useSubstrate();
 
   useEffect(() => {
@@ -24,6 +27,9 @@ export default function Main (props) {
           const newPrice = fixed32ToNumber(price);
           if (newPrice !== price) {
             setPrice(newPrice);
+            const newPriceList = prices;
+            newPriceList[assetId] = newPrice;
+            setPrices(newPriceList);
           }
         }
       });
@@ -40,6 +46,9 @@ export default function Main (props) {
             const newBalance = balanceToUnitNumber(balance);
             if (newBalance !== walletBalance) {
               setWalletBalance(newBalance);
+              const newBalanceList = balances;
+              newBalanceList[assetId] = newBalance;
+              setBalances(newBalanceList);
             }
           });
       };

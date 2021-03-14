@@ -5,6 +5,7 @@ import WelcomePage from '../WelcomePage';
 import { useSubstrate } from '../substrate-lib';
 import Dashboard from './Dashboard';
 import Wallet from './Wallet';
+import { WalletContextProvider } from './WalletContext';
 import './DashboardPage.css';
 
 export default function Main (props) {
@@ -24,9 +25,13 @@ export default function Main (props) {
   }
 
   return (
-    <div className="DashboardPage-container">
-      <Dashboard accountPair={accountPair} accountBalance={accountBalance} />
-      <Wallet accountPair={accountPair} />
-    </div>
+    <WalletContextProvider>
+      <div className="DashboardPage-container">
+        <Dashboard
+          accountPair={accountPair}
+          accountBalance={accountBalance} />
+        <Wallet accountPair={accountPair}/>
+      </div>
+    </WalletContextProvider>
   );
 }
