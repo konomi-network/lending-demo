@@ -14,7 +14,7 @@ import { fixed32ToNumber, balanceToUnitNumber } from './numberUtils';
 import ArrowImage from './resources/img/arrow_right.png';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { TransactionsPage } from './transactions';
-import Watermark from './resources/img/watermark.png';
+import Watermark from './resources/img/watermark_new.png';
 
 import './App.css';
 
@@ -199,6 +199,9 @@ function Main () {
         </div>
         <div className="App-watermark" >
           <img className="App-watermark-image" src={Watermark} alt='watermark-img' />
+        </div>
+        <div className="App-oval-box">
+          <div className="App-oval-background"></div>
         </div>
         {renderPage()}
       </div>

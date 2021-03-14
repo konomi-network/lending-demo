@@ -4,7 +4,7 @@
 .Wallet-container {
   margin-top: 80px;
   /* background-color: #2D3988; */
-  padding: 0px 0px 60px 0px;
+  padding: 60px 0px 60px 0px;
 
   width: 100%;
   position: relative;
@@ -12,7 +12,7 @@
   overflow: hidden;
 }
 
-.Wallet-container::after {
+/* .Wallet-container::after {
   content: '';
   width: 120%;
   position: absolute;
@@ -20,7 +20,7 @@
   top: 0;
   border-radius: 0 0 50% 50%;
   background-color: #2D3988;
-}
+} */
 
 .Wallet-asset-summary {
   font-family: Poppins;
@@ -53,7 +53,7 @@
   font-weight: 600;
   font-size: 19px;
   line-height: 50px;
-  color: #7D7E8C;
+  color: #B1B1B1;
 }
 
 .Wallet-asset-header-margin {

@@ -3,11 +3,13 @@
   flex-direction: row;
   margin: 40px auto;
   width: 1400px;
+  position: relative;
+  /* z-index: 100; */
 }
 
 .Market-container {
   width: 47%;
-  padding: 60px 50px;
+  padding: 40px 50px 60px 50px;
   background-color: #28337A;
   box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
@@ -22,11 +24,12 @@
   font-family: Poppins;
   font-style: normal;
   font-weight: 500;
-  font-size: 48px;
+  font-size: 40px;
   line-height: 72px;
   letter-spacing: 0.02em;
 
-  color: #8797FF;
+  color: #DDDCDC;
+  margin: 0 0 0.7em;
 }
 
 .Market-table-header {
@@ -42,5 +45,5 @@
   font-weight: 600;
   font-size: 19px;
   line-height: 35px;
-  color: #707285;
+  color: #CECECE;
 }

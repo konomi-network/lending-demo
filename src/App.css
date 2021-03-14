@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@500&display=swap');
 
 .App-container {
-  /* background-color: #2F3FA4; */
-  background-image: linear-gradient(#2F3FA4, #2F3FA4, #2D3988, #2D3988);
+  background-color: #2F3FA4;
+  /* background-image: linear-gradient(#2F3FA4, #2F3FA4, #2D3988, #2D3988); */
   /* display: flex; */
   /* justify-content: center; */
   /* min-width: 100vw; */
@@ -17,6 +17,7 @@
   /* display: flex; */
   /* justify-content: center; */
   min-width: 1100px;
+  min-height: 100vh;
   /* height: 100vh; */
   position: relative;
 }
@@ -51,10 +52,32 @@
   top: 126px;
   right: 0px;
   width: 569px;
-  height: 897px;
+  height: 695px;
 }
 
 .App-watermark-image {
   width: 569px;
-  height: 897px;
+  height: 695px;
+}
+
+.App-oval-box {
+  position: absolute;
+  z-index: 0;
+  top: 600px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  /* background-color: wheat; */
+  overflow: hidden;
+}
+
+.App-oval-background {
+  width: 140vw;
+  height: 1200px;
+  border-radius: 120%;
+  background: #2D3988;
+  position: absolute ;
+  top: 40px;
+  left: -20vw;
+  z-index: -1;
 }

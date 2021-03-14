@@ -27,7 +27,7 @@ export default function Main (props) {
   const getHealthIndexText = () => {
     const indexNumber = getHealthIndex();
     if (indexNumber >= 10) {
-      return ">10";
+      return "10.0+";
     } else if (indexNumber >= 0.1) {
       return indexNumber.toFixed(1);
     } else if (indexNumber == 0) {
@@ -37,6 +37,18 @@ export default function Main (props) {
     }{
       return "<1";
     }
+  }
+
+  const getHealthIndexStyle = () => {
+    const indexNumber = getHealthIndex();
+    if (indexNumber >= 10) {
+      return {
+        'color': getHealthIndexColor(),
+        'font-size': '50px',
+        'left': '95px',
+      };
+    }
+    return {color: getHealthIndexColor()};
   }
 
   const getHealthIndexColor = () => {
@@ -94,7 +106,7 @@ export default function Main (props) {
         <div className="Dashboard-health-circle">
           {renderHealthCircle()}
         </div>
-        <p className="Dashboard-health-index" style={{color: getHealthIndexColor()}}>
+        <p className="Dashboard-health-index" style={getHealthIndexStyle()}>
           {getHealthIndexText()}
         </p>
         <p className="Dashboard-health-threshold">
