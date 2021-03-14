@@ -14,6 +14,7 @@ import { fixed32ToNumber, balanceToUnitNumber } from './numberUtils';
 import ArrowImage from './resources/img/arrow_right.png';
 import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
 import { TransactionsPage } from './transactions';
+import Watermark from './resources/img/watermark.png';
 
 import './App.css';
 
@@ -195,6 +196,9 @@ function Main () {
           {renderAccountButton()}
           {renderArrow()}
           {renderFaucetButton()}
+        </div>
+        <div className="App-watermark" >
+          <img className="App-watermark-image" src={Watermark} alt='watermark-img' />
         </div>
         {renderPage()}
       </div>

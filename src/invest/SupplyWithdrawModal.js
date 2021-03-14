@@ -147,7 +147,11 @@ export default function Main (props) {
 
   const onTxFail = (err) => {
     setLoaderActive(false);
-    alert(`Transaction Failed: ${err.toString()}`);
+    if (err.toString() === 'Error: Cancelled') {
+      // TODO: show something for cancel case;
+    } else {
+      alert(`Transaction Failed: ${err.toString()}`);
+    }
   }
 
   const txInputValue = () => {

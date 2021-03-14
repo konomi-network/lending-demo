@@ -18,6 +18,7 @@
   /* justify-content: center; */
   min-width: 1100px;
   /* height: 100vh; */
+  position: relative;
 }
 
 .App-header {
@@ -35,21 +36,6 @@
   margin-right: 8vw;
 }
 
-/* .App-header-img {
-  height: 50px;
-  width: 50px;
-}
-
-.App-header-title {
-  color: #3650FA;
-  font-family: 'Rubik', sans-serif;
-  font-size: 24px;
-  font-weight: 500;
-  letter-spacing: 4px;
-  margin-left: 15px;
-  line-height: 50px;
-} */
-
 .App-header-middle {
   width: 100%;
 }
@@ -58,4 +44,17 @@
   width: 30px;
   height: 30px;
   margin: 23px 0px 23px 15px;
+}
+
+.App-watermark {
+  position: absolute;
+  top: 126px;
+  right: 0px;
+  width: 569px;
+  height: 897px;
+}
+
+.App-watermark-image {
+  width: 569px;
+  height: 897px;
 }
