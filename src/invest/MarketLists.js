@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from 'semantic-ui-react';
 
+import LiquidationAlert from '../LiquidationAlert';
 import WelcomePage from '../WelcomePage';
 import { InvitationDialog } from '../invitation';
 import { useSubstrate } from '../substrate-lib';
@@ -140,28 +141,31 @@ export default function Main (props) {
   }
 
   return (
-    <div className="MarketLists-container">
-      {renderSupplyModal()}
-      {renderBorrowModal()}
-      <div className="Market-container">
-        <p className="Market-title">Supply Markets</p>
-        <div className="Market-table-header">
-          <p className="SupplyMarket-asset-column Market-table-header-text">Asset</p>
-          <p className="SupplyMarket-apy-column Market-table-header-text">APY</p>
-          <p className="SupplyMarket-wallet-column Market-table-header-text">Wallet</p>
+    <div className="MarketLists-container-plus-alert">
+      <LiquidationAlert {...props} />
+      <div className="MarketLists-container">
+        {renderSupplyModal()}
+        {renderBorrowModal()}
+        <div className="Market-container">
+          <p className="Market-title">Supply Markets</p>
+          <div className="Market-table-header">
+            <p className="SupplyMarket-asset-column Market-table-header-text">Asset</p>
+            <p className="SupplyMarket-apy-column Market-table-header-text">APY</p>
+            <p className="SupplyMarket-wallet-column Market-table-header-text">Wallet</p>
+          </div>
+          {renderSupplyMarketTableContent()}
         </div>
-        {renderSupplyMarketTableContent()}
-      </div>
-      <div className="MarketLists-middle-padding"></div>
-      <div className="Market-container">
-        <p className="Market-title">Borrow Markets</p>
-        <div className="Market-table-header">
-          <p className="BorrowMarket-asset-column Market-table-header-text">Asset</p>
-          <p className="BorrowMarket-apy-column Market-table-header-text">APY</p>
-          <p className="BorrowMarket-wallet-column Market-table-header-text">Wallet</p>
-          <p className="BorrowMarket-liquidity-column Market-table-header-text">Liquidity</p>
+        <div className="MarketLists-middle-padding"></div>
+        <div className="Market-container">
+          <p className="Market-title">Borrow Markets</p>
+          <div className="Market-table-header">
+            <p className="BorrowMarket-asset-column Market-table-header-text">Asset</p>
+            <p className="BorrowMarket-apy-column Market-table-header-text">APY</p>
+            <p className="BorrowMarket-wallet-column Market-table-header-text">Wallet</p>
+            <p className="BorrowMarket-liquidity-column Market-table-header-text">Liquidity</p>
+          </div>
+          {renderBorrowMarketTableContent()}
         </div>
-        {renderBorrowMarketTableContent()}
       </div>
     </div>
   );

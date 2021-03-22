@@ -44,6 +44,7 @@ function Main () {
       if (accountAddress && invitationActiveState === 'Activated' && api && api.rpc.lending) {
         const userData = await api.rpc.lending.getUserInfo(accountPair.address);
         const [supplyBalance, borrowLimit, debtBalance] = userData;
+        // TODO: Always update since the accountBalance is not binded.
         const isSame = (supplyBalance === accountBalance.supplyBalance) ||
             (borrowLimit === accountBalance.borrowLimit) ||
             (debtBalance === accountBalance.debtBalance);
@@ -152,13 +153,16 @@ function Main () {
           <DashboardPage
             accountPair={accountPair}
             accountBalance={accountBalance}
-            setAccountAddress={setAccountAddress} />
+            setAccountAddress={setAccountAddress}
+            liquidationThreshold={threshold} />
         );
       case "Invest":
         return (
           <MarketLists
             accountPair={accountPair}
-            setAccountAddress={setAccountAddress} />
+            accountBalance={accountBalance}
+            setAccountAddress={setAccountAddress}
+            liquidationThreshold={threshold} />
         ); 
       // case "Exchange":
       //   return <ExchangePage />;

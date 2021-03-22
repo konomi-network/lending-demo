@@ -7,7 +7,7 @@
   grid-template-columns: 350px 350px 350px;
   grid-template-rows: 200px 200px;
   width: 1050px;
-  margin: 0px auto;
+  margin: 40px auto 0px auto;
 }
 
 .Dashboard-item  {

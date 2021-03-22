@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { InvitationDialog } from '../invitation';
+import LiquidationAlert from '../LiquidationAlert';
 import WelcomePage from '../WelcomePage';
 import { useSubstrate } from '../substrate-lib';
 import Dashboard from './Dashboard';
@@ -27,6 +28,7 @@ export default function Main (props) {
   return (
     <WalletContextProvider>
       <div className="DashboardPage-container">
+        <LiquidationAlert {...props} />
         <Dashboard
           accountPair={accountPair}
           accountBalance={accountBalance} />

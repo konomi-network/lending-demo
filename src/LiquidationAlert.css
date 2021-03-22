@@ -1,0 +1,16 @@
+.LiquidationAlert-container {
+  height: 60px;
+  background-color: #E88C20;
+}
+
+.LiquidationAlert-warning-text {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 60px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #FFFFFF;
+}
