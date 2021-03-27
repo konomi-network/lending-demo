@@ -7,3 +7,11 @@ package-lock.json
 
 # Local Netlify folder
 .netlify
+
+# Local VSCode config
+.vscode
+
+# disable webpack config until DONE
+webpack.*
+src/index.html
+.babelrc
