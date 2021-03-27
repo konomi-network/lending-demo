@@ -7,7 +7,7 @@ import { ApiPromise, WsProvider } from '@polkadot/api';
 import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import keyring from '@polkadot/ui-keyring';
 
-import config from '../config';
+import config from '../../config';
 
 const parsedQuery = queryString.parse(window.location.search);
 const connectedSocket = parsedQuery.rpc || config.PROVIDER_SOCKET;
@@ -24,7 +24,7 @@ const INIT_STATE = {
   api: null,
   apiError: null,
   apiState: null,
-  invitationActiveState: null,
+  invitationActiveState: 'Activated',
   invitationVerificationMessage: null,
   invitationActivationMessage: null,
 };

@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-import { useSubstrate } from './substrate-lib';
+import { useSubstrate } from 'services/substrate-lib';
 import './AccountSelector.css';
 
 function DropdownBaseButton (props) {
   const { setOpen, account } = props;
 
-  const shortAddress = account.address.slice(0,5) + "..." + account.address.slice(-7);
-
   return (
-    <div className="Dropdown-base-container" onClick={() => setOpen(true)}>
-      <div className="Dropdown-base-left">
-        <p className="Dropdown-left-name name-selected">{account.name}</p>
-      </div>
-      <div className="Dropdown-base-right">
-        <p className="Dropdown-right-address address-selected">{shortAddress}</p>
-      </div>
+    <div className="DropdownNew-base-container" onClick={() => setOpen(true)}>
+      <p className="DropdownNew-name name-selected">{account.name}</p>
     </div>
   );
 }
@@ -53,52 +46,33 @@ function DropdownOptions (props) {
     const isLast = index === accountOptions.length - 1;
     const isSelected = account.address === selectedAccount.address;
 
-    const rowHeight = 30 - (isFirst ? 2 : 0) - (isLast ? 2 : 0);
-
-    const nameStyle = "Dropdown-row-left-name" + (isSelected ? " name-selected" : "");
-    const addressStyle = "Dropdown-row-right-address" + (isSelected ? " address-selected" : "");
-    const leftStyle = {};
-    const rightStyle = {};
+    const nameStyle = "DropdownNew-name" + (isSelected ? " name-selected" : "");
+    const rowStyle = {};
     if (isFirst) {
-      leftStyle["borderTopLeftRadius"] = "11px";
-      rightStyle["borderTopRightRadius"] = "11px";
+      rowStyle["borderTopLeftRadius"] = "25px";
+      rowStyle["borderTopRightRadius"] = "25px";
     }
     if (isLast) {
-      leftStyle["borderBottomLeftRadius"] = "11px";
-      rightStyle["borderBottomRightRadius"] = "11px";
+      rowStyle["borderBottomLeftRadius"] = "25px";
+      rowStyle["borderBottomRightRadius"] = "25px";
     }
-
-    const shortAddress = account.address.slice(0,5) + "..." + account.address.slice(-7);
 
     return (
       <div
         key={account.name}
-        className="Dropdown-option-row"
-        style={{height: `${rowHeight}px`}}
+        className="DropdownNew-option-row"
+        style={rowStyle}
         onClick={onClickRow(index)}>
-        <div className="Dropdown-row-left" style={leftStyle}>
-          <p
-            className={nameStyle}
-            style={{lineHeight: `${rowHeight}px`}}>
-            {account.name}
-          </p>
-        </div>
-        <div className="Dropdown-row-right" style={rightStyle}>
-          <p
-            className={addressStyle}
-            style={{lineHeight: `${rowHeight}px`}}>
-            {shortAddress}
-          </p>
-        </div>
+        <p className={nameStyle}>{account.name}</p>
       </div>
     )
   }
 
-  const totalHeight = accountOptions.length * 30;
+  const totalHeight = accountOptions.length * 50;
 
   return (
     <div
-      className="Dropdown-options-container"
+      className="DropdownNew-options-container"
       style={{height: `${totalHeight}px`}}
       ref={toggleContainer}>
       {accountOptions.map((option, index) => renderRow(index))}
@@ -114,9 +88,7 @@ export default function AccountSelector (props) {
 
   const injectedKeyringOptions =
     keyring.getPairs().filter(account => account.meta.isInjected)
-    // keyring.getPairs()
     .map(account => {
-      const shortAddress = account.address.slice(0,6) + "..." + account.address.slice(-4);
       return {
         name: account.meta.name,
         address: account.address
@@ -150,7 +122,7 @@ export default function AccountSelector (props) {
   }
 
   return (
-    <div className="AccountSelector-container">
+    <div className="AccountSelectorNew-container">
       {renderDropdown()}
     </div>
   )

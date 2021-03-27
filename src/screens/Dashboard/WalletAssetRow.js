@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-import { fixed32ToNumber, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
-import { useSubstrate } from '../substrate-lib';
+import { fixed32ToNumber, balanceToUnitNumber, numberToReadableString } from 'utils/numberUtils';
+import { useSubstrate } from 'services/substrate-lib';
 import { useWallet } from './WalletContext';
 
 import './WalletAssetRow.css';

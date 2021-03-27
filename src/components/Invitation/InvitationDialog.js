@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useSubstrate } from '../substrate-lib';
+import { useSubstrate } from 'services/substrate-lib';
 import './InvitationDialog.css';
 
 export default function Main (props) {

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'semantic-ui-react';
 
-import { useSubstrate } from '../substrate-lib';
-import { fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from '../numberUtils';
-import KonomiImage from '../resources/img/KONO.png';
-import DotImage from '../resources/img/DOT.png';
-import KsmImage from '../resources/img/KSM.png';
-import EthImage from '../resources/img/ETH.png';
-import BtcImage from '../resources/img/BTC.png';
+import { useSubstrate } from 'services/substrate-lib';
+import { fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from 'utils/numberUtils';
+import KonomiImage from 'resources/img/KONO.png';
+import DotImage from 'resources/img/DOT.png';
+import KsmImage from 'resources/img/KSM.png';
+import EthImage from 'resources/img/ETH.png';
+import BtcImage from 'resources/img/BTC.png';
 
 import './SupplyMarketRow.css';
 

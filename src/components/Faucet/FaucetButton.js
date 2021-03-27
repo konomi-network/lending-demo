@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { Dropdown } from 'semantic-ui-react';
+import React from 'react';
 
-import { useSubstrate, KNTxButton } from './substrate-lib';
-import {ReactComponent as FaucetIcon} from './resources/img/faucet_blue.svg';
+import { useSubstrate } from 'services/substrate-lib';
 import './FaucetButton.css';
 
 const moneyBase = 1000000000000;
@@ -46,11 +44,6 @@ export default function Main (props) {
     }
   }
 
-  // return (
-  //   <button className="FaucetButton" onClick={onClickButton}>
-  //     <FaucetIcon className="FaucetButton-img" />
-  //   </button>
-  // );
   return (
     <div className="FaucetButton" onClick={onClickButton}>
       <svg width="28" height="22" viewBox="0 0 28 22" fill="none" xmlns="http://www.w3.org/2000/svg">

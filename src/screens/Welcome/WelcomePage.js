@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AccountButton from './AccountButton';
+import AccountButton from 'components/Account/AccountButton';
 import './WelcomePage.css';
 
 export default function Main (props) {

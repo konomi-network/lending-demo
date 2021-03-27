@@ -3,18 +3,16 @@ import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
 import 'semantic-ui-css/semantic.min.css';
 import { CookiesProvider } from 'react-cookie';
 
-import AccountButton from './AccountButton';
-import AppLogo from './AppLogo';
-import FaucetButton from './FaucetButton';
-import { TabBar, TAB_NAME_ARRAY } from './TabBar';
-import { DashboardPage } from './dashboard';
-import { ExchangePage } from './exchange';
-import { MarketLists } from './invest';
-import { fixed32ToNumber, balanceToUnitNumber } from './numberUtils';
-import ArrowImage from './resources/img/arrow_right.png';
-import { SubstrateContextProvider, useSubstrate } from './substrate-lib';
-import { TransactionsPage } from './transactions';
-import Watermark from './resources/img/watermark_new.png';
+import AccountButton from 'components/Account/AccountButton';
+import AppLogo from 'components/App/AppLogo';
+import FaucetButton from 'components/Faucet/FaucetButton';
+import { TabBar, TAB_NAME_ARRAY } from 'components/Tabbar/TabBar';
+import DashboardPage from 'screens/Dashboard/DashboardPage';
+import MarketLists from 'screens/Invest/MarketLists';
+import { fixed32ToNumber, balanceToUnitNumber } from 'utils/numberUtils';
+import ArrowImage from 'resources/img/arrow_right.png';
+import { SubstrateContextProvider, useSubstrate } from 'services/substrate-lib';
+import Watermark from 'resources/img/watermark_new.png';
 
 import './App.css';
 
@@ -164,10 +162,6 @@ function Main () {
             setAccountAddress={setAccountAddress}
             liquidationThreshold={threshold} />
         ); 
-      // case "Exchange":
-      //   return <ExchangePage />;
-      // case "Transactions":
-      //   return <TransactionsPage />;
       default:
         console.log("Invalid tab item. Return dashboard tab by default.");
         return <DashboardPage accountPair={accountPair} />;

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { InvitationDialog } from '../invitation';
-import LiquidationAlert from '../LiquidationAlert';
-import WelcomePage from '../WelcomePage';
-import { useSubstrate } from '../substrate-lib';
+import InvitationDialog from 'components/Invitation/InvitationDialog';
+import LiquidationAlert from 'components/Liquidation/LiquidationAlert';
+import WelcomePage from 'screens/Welcome/WelcomePage';
+import { useSubstrate } from 'services/substrate-lib';
 import Dashboard from './Dashboard';
 import Wallet from './Wallet';
 import { WalletContextProvider } from './WalletContext';

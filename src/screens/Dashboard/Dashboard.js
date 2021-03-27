@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import { numberToReadableString } from '../numberUtils';
+import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
 import './Dashboard.css';
 
@@ -14,7 +14,7 @@ export default function Main (props) {
   }
 
   const getHealthIndex = () => {
-    if (!accountBalance || accountBalance.debtBalance == 0 || accountBalance.borrowLimit == 0) {
+    if (!accountBalance || accountBalance.debtBalance === 0 || accountBalance.borrowLimit === 0) {
       return -1;
     }
     const index = accountBalance.borrowLimit / accountBalance.debtBalance;
@@ -30,7 +30,7 @@ export default function Main (props) {
       return "10.0+";
     } else if (indexNumber >= 0.1) {
       return indexNumber.toFixed(1);
-    } else if (indexNumber == 0) {
+    } else if (indexNumber === 0) {
       return "0.0";
     } else if (indexNumber < 0) {
       return "NA"

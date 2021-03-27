@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Modal } from 'semantic-ui-react';
 
-import LiquidationAlert from '../LiquidationAlert';
-import WelcomePage from '../WelcomePage';
-import { InvitationDialog } from '../invitation';
-import { useSubstrate } from '../substrate-lib';
+import LiquidationAlert from 'components/Liquidation/LiquidationAlert';
+import WelcomePage from 'screens/Welcome/WelcomePage';
+import InvitationDialog from 'components/Invitation/InvitationDialog';
+import { useSubstrate } from 'services/substrate-lib';
 import BorrowMarketRow from './BorrowMarketRow';
 import BorrowRepayModal from './BorrowRepayModal';
 import SupplyMarketRow from './SupplyMarketRow';
@@ -13,11 +13,11 @@ import './BorrowMarketRow.css';
 import './MarketLists.css';
 import './SupplyMarketRow.css';
 
-import KonomiImage from '../resources/img/KONO.png';
-import DotImage from '../resources/img/DOT.png';
-import KsmImage from '../resources/img/KSM.png';
-import EthImage from '../resources/img/ETH.png';
-import BtcImage from '../resources/img/BTC.png';
+import KonomiImage from 'resources/img/KONO.png';
+import DotImage from 'resources/img/DOT.png';
+import KsmImage from 'resources/img/KSM.png';
+import EthImage from 'resources/img/ETH.png';
+import BtcImage from 'resources/img/BTC.png';
 
 const ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage },
