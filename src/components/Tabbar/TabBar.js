@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import './TabBar.css';
+import './TabBar.scss';
 
 const TAB_NAME_ARRAY = [ "Dashboard", "Invest" ];
 

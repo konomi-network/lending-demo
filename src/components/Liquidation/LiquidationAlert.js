@@ -1,6 +1,6 @@
 import React from 'react';
 
-import './LiquidationAlert.css';
+import './LiquidationAlert.scss';
 
 export default function Main (props) {
   const { accountPair, accountBalance, liquidationThreshold } = props;

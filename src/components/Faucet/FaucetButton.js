@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useSubstrate } from 'services/substrate-lib';
-import './FaucetButton.css';
+import './FaucetButton.scss';
 
 const moneyBase = 1000000000000;
 
