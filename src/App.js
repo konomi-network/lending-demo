@@ -1,51 +1,66 @@
-import React, { useState, useEffect, createRef } from 'react';
-import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
-import 'semantic-ui-css/semantic.min.css';
-import { CookiesProvider } from 'react-cookie';
+import React, { useState, useEffect, createRef } from "react";
+import "semantic-ui-css/semantic.min.css";
+import { CookiesProvider } from "react-cookie";
 
-import AccountButton from 'components/Account/AccountButton';
-import AppLogo from 'components/App/AppLogo';
-import FaucetButton from 'components/Faucet/FaucetButton';
-import { TabBar, TAB_NAME_ARRAY } from 'components/Tabbar/TabBar';
-import DashboardPage from 'screens/Dashboard/DashboardPage';
-import MarketLists from 'screens/Invest/MarketLists';
-import { fixed32ToNumber, balanceToUnitNumber } from 'utils/numberUtils';
-import ArrowImage from 'resources/img/arrow_right.png';
-import { SubstrateContextProvider, useSubstrate } from 'services/substrate-lib';
-import Watermark from 'resources/img/watermark_new.png';
+import AccountButton from "components/Account/AccountButton";
+import AppLogo from "components/App/AppLogo";
+import FaucetButton from "components/Faucet/FaucetButton";
+import { TabBar, TAB_NAME_ARRAY } from "components/Tabbar/TabBar";
+import ConnectPage from "screens/Connect/ConnectPage";
+import DashboardPage from "screens/Dashboard/DashboardPage";
+import MarketLists from "screens/Invest/MarketLists";
+import WelcomePage from "screens/Welcome/WelcomePage";
+import { fixed32ToNumber, balanceToUnitNumber } from "utils/numberUtils";
+import ArrowImage from "resources/img/arrow_right.png";
+import { SubstrateContextProvider, useSubstrate } from "services/substrate-lib";
+import Watermark from "resources/img/watermark_new.png";
 
-import './App.css';
+import "./App.css";
 
-function Main () {
+function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
-  const { api, apiError, apiState, keyring, keyringState } = useSubstrate();
+  const {
+    api,
+    apiError,
+    apiState,
+    keyring,
+    keyringState,
+    connectSubstrate,
+  } = useSubstrate();
   const { invitationActiveState, verifyInvitation } = useSubstrate();
   const [accountBalance, setAccountBalance] = useState({
     supplyBalance: null,
     borrowLimit: null,
     debtBalance: null,
-  })
+  });
   const [threshold, setThreshold] = useState(null);
 
   useEffect(() => {
     if (invitationActiveState == null && accountAddress) {
-      const addressList = 
-        keyring.getPairs().filter(account => account.meta.isInjected)
-        .map(account => account.address);
+      const addressList = keyring
+        .getPairs()
+        .filter((account) => account.meta.isInjected)
+        .map((account) => account.address);
       verifyInvitation(addressList);
     }
   }, [invitationActiveState, keyring, accountAddress]);
 
   useEffect(() => {
-    const interval = setInterval( async () => {
-      if (accountAddress && invitationActiveState === 'Activated' && api && api.rpc.lending) {
+    const interval = setInterval(async () => {
+      if (
+        accountAddress &&
+        invitationActiveState === "Activated" &&
+        api &&
+        api.rpc.lending
+      ) {
         const userData = await api.rpc.lending.getUserInfo(accountPair.address);
         const [supplyBalance, borrowLimit, debtBalance] = userData;
         // TODO: Always update since the accountBalance is not binded.
-        const isSame = (supplyBalance === accountBalance.supplyBalance) ||
-            (borrowLimit === accountBalance.borrowLimit) ||
-            (debtBalance === accountBalance.debtBalance);
+        const isSame =
+          supplyBalance === accountBalance.supplyBalance ||
+          borrowLimit === accountBalance.borrowLimit ||
+          debtBalance === accountBalance.debtBalance;
         if (!isSame) {
           setAccountBalance({
             supplyBalance: balanceToUnitNumber(supplyBalance),
@@ -56,95 +71,71 @@ function Main () {
       }
     }, 3000);
     return () => clearInterval(interval);
-  }, [accountAddress, invitationActiveState]);
+  }, [api, accountAddress, invitationActiveState]);
 
   useEffect(() => {
     let unsubThreshold = null;
 
-    if (invitationActiveState === 'Activated' && api && api.query.lending) {
+    if (invitationActiveState === "Activated" && api && api.query.lending) {
       const getThreshold = async () => {
-        unsubThreshold = await api.query.lending.liquidationThreshold(data => {
-          if (data) {
-            setThreshold(fixed32ToNumber(data));
+        unsubThreshold = await api.query.lending.liquidationThreshold(
+          (data) => {
+            if (data) {
+              setThreshold(fixed32ToNumber(data));
+            }
           }
-        });
+        );
       };
       getThreshold();
     }
     return () => unsubThreshold && unsubThreshold();
   }, [invitationActiveState, api]);
 
-  const loader = text =>
-    <Dimmer active>
-      <Loader size='small'>{text}</Loader>
-    </Dimmer>;
-
-  const message = err =>
-    <Grid centered columns={2} padded>
-      <Grid.Column>
-        <Message negative compact floating
-          header='Error Connecting to server'
-          content={`${JSON.stringify(err, null, 4)}`}
-        />
-      </Grid.Column>
-    </Grid>;
-
-  if (apiState === 'ERROR') return message(apiError);
-  else if (apiState !== 'READY') return loader('Connecting...');
-
   // Account address could be null before user link the polkadot extension or
   // doesn't have an account.
   const accountPair =
     accountAddress &&
-    keyringState === 'READY' &&
+    keyringState === "READY" &&
     keyring.getPair(accountAddress);
-
-  const renderLiquidationAlert = () => {
-    if (!accountPair || !accountPair.address) {
-      return null;
-    }
-    if (invitationActiveState !== 'Activated') {
-      return null;
-    }
-    if (accountBalance.borrowLimit == null ||
-        accountBalance.debtBalance == null ||
-        threshold == null) {
-      return null;
-    }
-    if (accountBalance.debtBalance > accountBalance.borrowLimit / threshold) {
-      return (
-        <Message negative>
-          <p>Warning. Liquidation is triggered. Please repay your debt to avoid liquidation.</p>
-        </Message>
-      );
-    }
-  }
 
   const renderArrow = () => {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== "Activated") {
       return null;
     }
     return (
-      <img className="App-header-arrow" src={ArrowImage} alt="arrow-right-icon" />
+      <img
+        className="App-header-arrow"
+        src={ArrowImage}
+        alt="arrow-right-icon"
+      />
     );
-  }
+  };
 
   const renderFaucetButton = () => {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== "Activated") {
       return null;
     }
-    return (
-      <FaucetButton accountPair={accountPair} />
-    );
-  }
+    return <FaucetButton accountPair={accountPair} />;
+  };
 
   const renderPage = () => {
+    if (!accountAddress) {
+      return <WelcomePage setAccountAddress={setAccountAddress} />;
+    }
+    if (apiState == null) {
+      console.log("connect substrate");
+      connectSubstrate();
+      return null;
+    } else if (apiState !== "READY") {
+      return <ConnectPage apiState={apiState} />;
+    }
+
     switch (selectedTabItem) {
       case "Dashboard":
         return (
@@ -152,7 +143,8 @@ function Main () {
             accountPair={accountPair}
             accountBalance={accountBalance}
             setAccountAddress={setAccountAddress}
-            liquidationThreshold={threshold} />
+            liquidationThreshold={threshold}
+          />
         );
       case "Invest":
         return (
@@ -160,13 +152,14 @@ function Main () {
             accountPair={accountPair}
             accountBalance={accountBalance}
             setAccountAddress={setAccountAddress}
-            liquidationThreshold={threshold} />
-        ); 
+            liquidationThreshold={threshold}
+          />
+        );
       default:
         console.log("Invalid tab item. Return dashboard tab by default.");
         return <DashboardPage accountPair={accountPair} />;
     }
-  }
+  };
 
   const renderAccountButton = () => {
     if (accountAddress) {
@@ -177,14 +170,13 @@ function Main () {
       );
     }
     return null;
-  }
+  };
 
   const contextRef = createRef();
 
   return (
     <div className="App-container" ref={contextRef}>
       <div className="App-content-container">
-        {renderLiquidationAlert()}
         <div className="App-header">
           <div className="App-header-logo">
             <AppLogo />
@@ -195,8 +187,12 @@ function Main () {
           {renderArrow()}
           {renderFaucetButton()}
         </div>
-        <div className="App-watermark" >
-          <img className="App-watermark-image" src={Watermark} alt='watermark-img' />
+        <div className="App-watermark">
+          <img
+            className="App-watermark-image"
+            src={Watermark}
+            alt="watermark-img"
+          />
         </div>
         <div className="App-oval-box">
           <div className="App-oval-background"></div>
@@ -207,7 +203,7 @@ function Main () {
   );
 }
 
-export default function App () {
+export default function App() {
   return (
     <SubstrateContextProvider>
       <Main />
