@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useSubstrate } from 'services/substrate-lib';
-import './InvitationDialog.css';
+import './InvitationDialog.scss';
 
 export default function Main (props) {
   const { keyring, invitationActiveState, activateInvitation } = useSubstrate();

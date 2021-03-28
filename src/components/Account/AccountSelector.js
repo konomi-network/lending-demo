@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { useSubstrate } from 'services/substrate-lib';
-import './AccountSelector.css';
+import './AccountSelector.scss';
 
 function DropdownBaseButton (props) {
   const { setOpen, account } = props;

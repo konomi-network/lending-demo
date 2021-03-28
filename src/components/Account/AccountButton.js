@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 
 import { useSubstrate } from 'services/substrate-lib';
 import AccountSelector from './AccountSelector';
-import './AccountButton.css';
+import './AccountButton.scss';
 
 function ConnectAccountButton (props) {
   const { loadAccounts } = useSubstrate();
