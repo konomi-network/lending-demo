@@ -1,21 +1,17 @@
 import React, { useState, useEffect, createRef } from "react";
-import "semantic-ui-css/semantic.min.css";
 import { CookiesProvider } from "react-cookie";
 
-import AccountButton from "components/Account/AccountButton";
 import AppLogo from "components/App/AppLogo";
-import FaucetButton from "components/Faucet/FaucetButton";
-import { TabBar, TAB_NAME_ARRAY } from "components/Tabbar/TabBar";
-import ConnectPage from "screens/Connect/ConnectPage";
-import DashboardPage from "screens/Dashboard/DashboardPage";
-import MarketLists from "screens/Invest/MarketLists";
-import WelcomePage from "screens/Welcome/WelcomePage";
+import { AccountButton, FaucetButton, TabBar } from "components";
+import { TAB_NAME_ARRAY } from "components/Tabbar/TabBar";
+import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from "screens";
 import { fixed32ToNumber, balanceToUnitNumber } from "utils/numberUtils";
 import ArrowImage from "resources/img/arrow_right.png";
 import { SubstrateContextProvider, useSubstrate } from "services/substrate-lib";
 import Watermark from "resources/img/watermark_new.png";
 
-import "./App.css";
+import "semantic-ui-css/semantic.min.css";
+import "./App.scss";
 
 function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
