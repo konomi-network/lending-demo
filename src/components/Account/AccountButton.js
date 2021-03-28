@@ -22,9 +22,9 @@ function ConnectAccountButton (props) {
 }
 
 export default function AccountButton (props) {
-  const { api, keyring, loadAccounts } = useSubstrate();
+  const { keyring, loadAccounts } = useSubstrate();
   const [cookies, setCookie] = useCookies(['konomiLoggedIn']);
-  if (keyring && keyring.getPairs && api && api.query) {
+  if (keyring && keyring.getPairs) {
     // Already logged in, show selector.
     return (<AccountSelector {...props} />)
   } else if (cookies.konomiLoggedIn) {
