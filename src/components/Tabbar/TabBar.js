@@ -4,8 +4,7 @@ import './TabBar.scss';
 
 const TAB_NAME_ARRAY = [ "Dashboard", "Invest" ];
 
-
-function TabBar (props) {
+export default function TabBar (props) {
   const { onChangeTabItemName } = props;
 
   const [selectedTabItem, setSelectedTabItem] = useState("Dashboard");
@@ -55,4 +54,4 @@ function TabBar (props) {
   );
 }
 
-export { TabBar, TAB_NAME_ARRAY };
+export { TAB_NAME_ARRAY };
