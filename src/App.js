@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createRef } from "react";
 import { CookiesProvider } from "react-cookie";
 
-import AppLogo from "components/App/AppLogo";
+import { ReactComponent as AppLogo} from "resources/icons/AppLogo.svg";
 import { AccountButton, FaucetButton, TabBar } from "components";
 import { TAB_NAME_ARRAY } from "components/Tabbar/TabBar";
 import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from "screens";
