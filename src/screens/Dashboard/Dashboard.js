@@ -2,6 +2,7 @@ import React from 'react';
 
 import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
+import { ReactComponent as QuestionMark } from 'resources/icons/question.svg';
 import './Dashboard.scss';
 
 export default function Main (props) {
@@ -102,7 +103,7 @@ export default function Main (props) {
         </p>
       </div>
       <div className="Dashboard-item Dashboard-health">
-        <p className="Dashboard-cell-label">HEALTH INDEX</p>
+        <p className="Dashboard-cell-label">HEALTH INDEX <QuestionMark /></p>
         <div className="Dashboard-health-circle">
           {renderHealthCircle()}
         </div>
@@ -114,7 +115,7 @@ export default function Main (props) {
         </p>
       </div>
       <div className="Dashboard-item Dashboard-borrow-limit">
-        <p className="Dashboard-cell-label">Borrow Limit</p>
+        <p className="Dashboard-cell-label">Borrow Limit <QuestionMark /></p>
         <p className="Dashboard-cell-number">
           ${numberToReadableString(accountBalance.borrowLimit, true)}
         </p>
