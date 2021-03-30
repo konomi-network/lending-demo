@@ -2,7 +2,7 @@ import React from 'react';
 
 import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
-import './Dashboard.css';
+import './Dashboard.scss';
 
 export default function Main (props) {
   const { accountBalance } = props;

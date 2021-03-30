@@ -8,9 +8,9 @@ import BorrowMarketRow from "./BorrowMarketRow";
 import BorrowRepayModal from "./BorrowRepayModal";
 import SupplyMarketRow from "./SupplyMarketRow";
 import SupplyWithdrawModal from "./SupplyWithdrawModal";
-import "./BorrowMarketRow.css";
-import "./MarketLists.css";
-import "./SupplyMarketRow.css";
+import "./BorrowMarketRow.scss";
+import "./MarketLists.scss";
+import "./SupplyMarketRow.scss";
 
 import KonomiImage from "resources/img/KONO.png";
 import DotImage from "resources/img/DOT.png";
