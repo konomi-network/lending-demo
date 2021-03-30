@@ -7,8 +7,8 @@ import EthImage from 'resources/img/ETH.png';
 import BtcImage from 'resources/img/BTC.png';
 import WalletAssetRow from './WalletAssetRow';
 
-import './Wallet.css';
-import './WalletAssetRow.css';
+import './Wallet.scss';
+import './WalletAssetRow.scss';
 
 const INIT_ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, balance: null, price: 100 },

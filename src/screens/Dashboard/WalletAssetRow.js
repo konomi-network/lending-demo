@@ -4,7 +4,7 @@ import { fixed32ToNumber, balanceToUnitNumber, numberToReadableString } from 'ut
 import { useSubstrate } from 'services/substrate-lib';
 import { useWallet } from './WalletContext';
 
-import './WalletAssetRow.css';
+import './WalletAssetRow.scss';
 
 export default function Main (props) {
   const { rowData } = props;

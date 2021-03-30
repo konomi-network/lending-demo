@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard";
 import Wallet from "./Wallet";
 import { WalletContextProvider } from "./WalletContext";
 
-import "./DashboardPage.css";
+import "./DashboardPage.scss";
 
 export default function Main(props) {
   const { accountPair, accountBalance } = props;

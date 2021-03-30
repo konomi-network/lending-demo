@@ -1,7 +1,7 @@
 import React from 'react';
 
 import AccountButton from 'components/Account/AccountButton';
-import './WelcomePage.css';
+import './WelcomePage.scss';
 
 export default function Main (props) {
   const { setAccountAddress } = props;
