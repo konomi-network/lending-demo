@@ -1,9 +1,14 @@
 import React from 'react';
 
+import { Hint } from 'components';
 import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
-import { ReactComponent as QuestionMark } from 'resources/icons/question.svg';
 import './Dashboard.scss';
+
+const EXPLAINATION = {
+  healthIndex: "Liquidation will be triggered when the total supply is lower than the total borrowed, health index is calculated by converted supply divide converted borrow",
+  borrowLimit: "The maximum amount you can borrow"
+}
 
 export default function Main (props) {
   const { accountBalance } = props;
@@ -103,7 +108,7 @@ export default function Main (props) {
         </p>
       </div>
       <div className="Dashboard-item Dashboard-health">
-        <p className="Dashboard-cell-label">HEALTH INDEX <QuestionMark /></p>
+        <p className="Dashboard-cell-label">HEALTH INDEX <Hint text={EXPLAINATION.healthIndex} /></p>
         <div className="Dashboard-health-circle">
           {renderHealthCircle()}
         </div>
@@ -115,7 +120,7 @@ export default function Main (props) {
         </p>
       </div>
       <div className="Dashboard-item Dashboard-borrow-limit">
-        <p className="Dashboard-cell-label">Borrow Limit <QuestionMark /></p>
+        <p className="Dashboard-cell-label">Borrow Limit <Hint text={EXPLAINATION.borrowLimit}/></p>
         <p className="Dashboard-cell-number">
           ${numberToReadableString(accountBalance.borrowLimit, true)}
         </p>
