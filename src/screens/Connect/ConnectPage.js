@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./ConnectPage.css";
+import "./ConnectPage.scss";
 
 export default function Main(props) {
   const { apiState } = props;

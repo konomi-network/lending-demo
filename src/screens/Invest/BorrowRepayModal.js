@@ -11,7 +11,7 @@ import EthImage from 'resources/img/ETH.png';
 import BtcImage from 'resources/img/BTC.png';
 import CloseIcon from 'resources/img/close_black.png';
 
-import './MarketModal.css';
+import './MarketModal.scss';
 
 /* global BigInt */
 

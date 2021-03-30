@@ -8,7 +8,7 @@ import KsmImage from 'resources/img/KSM.png';
 import EthImage from 'resources/img/ETH.png';
 import BtcImage from 'resources/img/BTC.png';
 
-import './BorrowMarketRow.css';
+import './BorrowMarketRow.scss';
 
 const BORROW_ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },

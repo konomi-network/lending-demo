@@ -11,7 +11,7 @@ import EthImage from 'resources/img/ETH.png';
 import BtcImage from 'resources/img/BTC.png';
 import CloseIcon from 'resources/img/close_black.png';
 
-import './MarketModal.css';
+import './MarketModal.scss';
 
 const ASSET_LIST = [
   { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
