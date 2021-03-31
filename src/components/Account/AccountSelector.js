@@ -100,8 +100,8 @@ export default function AccountSelector (props) {
 
   // Set the initial address
   useEffect(() => {
-    setSelectedAccount(injectedKeyringOptions[0]);
     if (initialAddress !== "") {
+      setSelectedAccount(injectedKeyringOptions[0]);
       setAccountAddress(initialAddress);
     }
   }, [setAccountAddress, initialAddress]);

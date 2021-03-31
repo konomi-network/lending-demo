@@ -24,7 +24,7 @@ const INIT_STATE = {
   api: null,
   apiError: null,
   apiState: null,
-  invitationActiveState: "Activated",
+  invitationActiveState: null,
   invitationVerificationMessage: null,
   invitationActivationMessage: null,
 };
