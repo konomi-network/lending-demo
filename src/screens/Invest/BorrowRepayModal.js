@@ -3,7 +3,13 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { useSubstrate } from 'services/substrate-lib';
 import { KNTxButton } from 'services/substrate-lib/components';
-import { fixed32ToNumber, fixed32ToAPY, balanceToUnitNumber, numberToReadableString } from 'utils/numberUtils';
+import { fetchUserInfo } from 'services/user-balance';
+import {
+  fixed32ToNumber,
+  fixed32ToAPY,
+  balanceToUnitNumber,
+  numberToReadableString,
+} from 'utils/numberUtils';
 import KonomiImage from 'resources/img/KONO.png';
 import DotImage from 'resources/img/DOT.png';
 import KsmImage from 'resources/img/KSM.png';
@@ -16,16 +22,16 @@ import './MarketModal.scss';
 /* global BigInt */
 
 const ASSET_LIST = [
-  { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage, apy: 0.0002, price: 100 },
-  { id: 1, name: 'Polkadot', abbr: 'DOT', image: DotImage, apy: 0.0204, price: 60 },
-  { id: 2, name: 'Kusama', abbr: 'KSM', image: KsmImage, apy: 0.039, price: 5 },
-  { id: 3, name: 'Ethereum', abbr: 'ETH', image: EthImage, apy: 0.0004, price: 600 },
-  { id: 4, name: 'Bitcoin', abbr: 'BTC', image: BtcImage, apy: 0.0078, price: 20000 }
+  { id: 0, name: 'Konomi', abbr: 'KONO', image: KonomiImage },
+  { id: 1, name: 'Polkadot', abbr: 'DOT', image: DotImage },
+  { id: 2, name: 'Kusama', abbr: 'KSM', image: KsmImage },
+  { id: 3, name: 'Ethereum', abbr: 'ETH', image: EthImage },
+  { id: 4, name: 'Bitcoin', abbr: 'BTC', image: BtcImage },
 ];
 
 const moneyBase = 1000000000000;
 
-export default function Main (props) {
+export default function Main(props) {
   const { assetId, setModalOpen, accountPair } = props;
 
   const [inputValue, setInputValue] = useState(0);
@@ -38,11 +44,14 @@ export default function Main (props) {
   const [walletBalanceNumber, setWalletBalanceNumber] = useState(0);
   const [walletBalance, setWalletBalance] = useState(0);
   const [currentBorrow, setCurrentBorrow] = useState(0);
-  const [debtBalance, setDebtBalance] = useState(0);
-  const [borrowLimit, setBorrowLimit] = useState(0);
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
   const [threshold, setThreshold] = useState(null);
+  const [accountBalance, setAccountBalance] = useState({
+    supplyBalance: 0,
+    borrowLimit: 0,
+    debtBalance: 0,
+  });
 
   const { api } = useSubstrate();
 
@@ -54,7 +63,7 @@ export default function Main (props) {
 
     if (assetId != null) {
       const getPrice = async () => {
-        unsubPrice = await api.query.assets.price(assetId, (priceData) => {
+        unsubPrice = await api.query.assets.price(assetId, priceData => {
           if (priceData) {
             setPrice(fixed32ToNumber(priceData));
           }
@@ -74,11 +83,14 @@ export default function Main (props) {
 
       if (accountPair) {
         const getWallet = async () => {
-          unsubWallet = await api.query.assets.balances([assetId, accountPair.address], balance => {
-            const balanceNum = balanceToUnitNumber(balance);
-            setWalletBalanceNumber(balanceNum);
-            setWalletBalance(numberToReadableString(balanceNum, true));
-          });
+          unsubWallet = await api.query.assets.balances(
+            [assetId, accountPair.address],
+            balance => {
+              const balanceNum = balanceToUnitNumber(balance);
+              setWalletBalanceNumber(balanceNum);
+              setWalletBalance(numberToReadableString(balanceNum, true));
+            }
+          );
         };
         getWallet();
       }
@@ -86,25 +98,22 @@ export default function Main (props) {
 
     if (accountPair) {
       const getCurrentBorrow = async () => {
-        unsubBorrow = await api.query.lending.userDebts(assetId, accountPair.address, userData => {
-          if (userData.isSome) {
-            const dataUnwrap = userData.unwrap();
-            setCurrentBorrow(balanceToUnitNumber(dataUnwrap.amount));
-          } else {
-            setCurrentBorrow(0);
+        unsubBorrow = await api.query.lending.userDebts(
+          assetId,
+          accountPair.address,
+          userData => {
+            if (userData.isSome) {
+              const dataUnwrap = userData.unwrap();
+              setCurrentBorrow(balanceToUnitNumber(dataUnwrap.amount));
+            } else {
+              setCurrentBorrow(0);
+            }
           }
-        });
+        );
       };
       getCurrentBorrow();
 
-      const getAccountBalance = async () => {
-        await api.rpc.lending.getUserInfo(accountPair.address, userData => {
-          const [supplyBalance, borrowLimit, debtBalance] = userData;
-          setBorrowLimit(balanceToUnitNumber(borrowLimit));
-          setDebtBalance(balanceToUnitNumber(debtBalance));
-        });
-      };
-      getAccountBalance();
+      fetchUserInfo(setAccountBalance, accountPair.address);
     }
 
     if (api && api.query.lending) {
@@ -124,9 +133,15 @@ export default function Main (props) {
       unsubBorrow && unsubBorrow();
       unsubThreshold && unsubThreshold();
     };
-  }, [api.query.lending, api.query.assets, api.rpc.lending, accountPair, assetId]);
+  }, [
+    api.query.lending,
+    api.query.assets,
+    api.rpc.lending,
+    accountPair,
+    assetId,
+  ]);
 
-  const onChangeInput = (event) => {
+  const onChangeInput = event => {
     setInputValue(event.target.value);
     const numberValue = parseFloat(event.target.value).toPrecision(12);
     if (numberValue && !isNaN(numberValue)) {
@@ -136,46 +151,46 @@ export default function Main (props) {
     }
   };
 
-  const getTabItemStyle = (name) => {
+  const getTabItemStyle = name => {
     if (name === activeItem) {
-      return "MarketModal-menu-item MarketModal-menu-active";  
+      return 'MarketModal-menu-item MarketModal-menu-active';
     }
-    return "MarketModal-menu-item";
-  }
+    return 'MarketModal-menu-item';
+  };
 
-  const onClickMenuItem = (name) => {
+  const onClickMenuItem = name => {
     return () => {
       setActiveItem(name);
       setTxCallable(name === 'Borrow' ? 'borrow' : 'repay');
-    }
+    };
   };
 
   const onClickSubmitButton = () => {
     setLoaderActive(true);
   };
 
-  const onTxSuccess = (status) => {
+  const onTxSuccess = status => {
     setLoaderActive(false);
     setModalOpen(false);
-  }
+  };
 
-  const onTxProcessing = (status) => {
+  const onTxProcessing = status => {
     // Ready -> InBlock -> Finalized
     if (status.isReady) {
       setProcessingText('Processing: Ready');
     } else if (status.isInBlock) {
       setProcessingText('Processing: In block');
     }
-  }
+  };
 
-  const onTxFail = (err) => {
+  const onTxFail = err => {
     setLoaderActive(false);
     if (err.toString() === 'Error: Cancelled') {
       // TODO: show something for cancel case;
     } else {
       alert(`Transaction Failed: ${err.toString()}`);
     }
-  }
+  };
 
   const txInputValue = () => {
     if (inputNumberValue <= 0 || isNaN(inputNumberValue)) {
@@ -183,7 +198,10 @@ export default function Main (props) {
     }
     if (activeItem === 'Borrow') {
       const newDebt = inputNumberValue * price;
-      if (debtBalance + newDebt > borrowLimit * 0.9 / threshold) {
+      if (
+        accountBalance.debtBalance + newDebt >
+        (accountBalance.borrowLimit * 0.9) / threshold
+      ) {
         // New borrow balance exceeds borrow limit * 0.9.
         return null;
       } else {
@@ -194,7 +212,7 @@ export default function Main (props) {
         // Repay exceeds wallet balance.
         return null;
       } else {
-        console.log('tx input '+ (inputNumberValue * moneyBase));
+        console.log('tx input ' + inputNumberValue * moneyBase);
         return BigInt(inputNumberValue * moneyBase);
       }
     }
@@ -203,13 +221,26 @@ export default function Main (props) {
   return (
     <div className="MarketModal-container">
       <Dimmer active={loaderActive}>
-        <Loader size='small' active={loaderActive}>{processingText}</Loader>
+        <Loader size="small" active={loaderActive}>
+          {processingText}
+        </Loader>
       </Dimmer>
       <div className="MarketModal-header">
-        <img className="MarketModal-header-image" src={ASSET_LIST[assetId].image} alt="header-asset-icon"/>
+        <img
+          className="MarketModal-header-image"
+          src={ASSET_LIST[assetId].image}
+          alt="header-asset-icon"
+        />
         <p className="MarketModal-header-title">{ASSET_LIST[assetId].name}</p>
-        <div onClick={() => setModalOpen(false)} className="MarketModal-header-close-button">
-          <img className='MarketModal-header-close-icon' src={CloseIcon} alt='supply-modal-close-icon' />
+        <div
+          onClick={() => setModalOpen(false)}
+          className="MarketModal-header-close-button"
+        >
+          <img
+            className="MarketModal-header-close-icon"
+            src={CloseIcon}
+            alt="supply-modal-close-icon"
+          />
         </div>
       </div>
       <div className="MarketModal-input-container">
@@ -218,7 +249,8 @@ export default function Main (props) {
             className="MarketModal-input"
             value={inputValue}
             autoFocus={true}
-            onChange={onChangeInput} />
+            onChange={onChangeInput}
+          />
           <p className="MarketModal-input-abbr">{ASSET_LIST[assetId].abbr}</p>
         </div>
         <div className="MarketModal-input-wallet-container">
@@ -227,23 +259,37 @@ export default function Main (props) {
         </div>
       </div>
       <div className="MarketModal-menu">
-        <a className={getTabItemStyle('Borrow')} onClick={onClickMenuItem('Borrow')}>Borrow</a>
-        <a className={getTabItemStyle('Repay')} onClick={onClickMenuItem('Repay')}>Repay</a>
+        <a
+          className={getTabItemStyle('Borrow')}
+          onClick={onClickMenuItem('Borrow')}
+        >
+          Borrow
+        </a>
+        <a
+          className={getTabItemStyle('Repay')}
+          onClick={onClickMenuItem('Repay')}
+        >
+          Repay
+        </a>
       </div>
       <div className="MarketModal-trans-info">
         <div className="MarketModal-trans-info-row">
-          <img className="MarketModal-rate-icon" src={ASSET_LIST[assetId].image} alt="asset-icon" />
+          <img
+            className="MarketModal-rate-icon"
+            src={ASSET_LIST[assetId].image}
+            alt="asset-icon"
+          />
           <p className="MarketModal-trans-info-text">Borrow APY</p>
           <div className="MarketModal-trans-info-row-middle"></div>
-          <p className="MarketModal-trans-info-number">
-            {apy}%
-          </p>
+          <p className="MarketModal-trans-info-number">{apy}%</p>
         </div>
         <div className="MarketModal-trans-info-row">
           <p className="MarketModal-trans-info-text">Borrow Balance</p>
           <div className="MarketModal-trans-info-row-middle"></div>
           <p className="MarketModal-trans-info-number">
-            {`${numberToReadableString(currentBorrow)} ${ASSET_LIST[assetId].abbr}`}
+            {`${numberToReadableString(currentBorrow)} ${
+              ASSET_LIST[assetId].abbr
+            }`}
           </p>
         </div>
         <div className="MarketModal-trans-info-row">
@@ -256,17 +302,23 @@ export default function Main (props) {
         <KNTxButton
           accountPair={accountPair}
           label={activeItem}
-          type='SIGNED-TX'
+          type="SIGNED-TX"
           setStatus={setTxStatus}
           onSuccess={onTxSuccess}
           onProcessing={onTxProcessing}
           onFail={onTxFail}
-          style={{ width: '100%', height: '60px', backgroundColor: '#25C1D5', color: 'white', fontSize: '18px' }}
+          style={{
+            width: '100%',
+            height: '60px',
+            backgroundColor: '#25C1D5',
+            color: 'white',
+            fontSize: '18px',
+          }}
           attrs={{
             palletRpc: 'lending',
             callable: txCallable,
             inputParams: [assetId, txInputValue()],
-            paramFields: [true, true]
+            paramFields: [true, true],
           }}
           onClick={onClickSubmitButton}
         />

@@ -1,17 +1,18 @@
-import React, { useState, useEffect, createRef } from "react";
-import { CookiesProvider } from "react-cookie";
+import React, { useState, useEffect, createRef } from 'react';
+import { CookiesProvider } from 'react-cookie';
 
-import { ReactComponent as AppLogo} from "resources/icons/AppLogo.svg";
-import { AccountButton, FaucetButton, TabBar } from "components";
-import { TAB_NAME_ARRAY } from "components/Tabbar/TabBar";
-import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from "screens";
-import { fixed32ToNumber, balanceToUnitNumber } from "utils/numberUtils";
-import ArrowImage from "resources/img/arrow_right.png";
-import { SubstrateContextProvider, useSubstrate } from "services/substrate-lib";
-import Watermark from "resources/img/watermark_new.png";
+import { ReactComponent as AppLogo } from 'resources/icons/AppLogo.svg';
+import { AccountButton, FaucetButton, TabBar } from 'components';
+import { TAB_NAME_ARRAY } from 'components/Tabbar/TabBar';
+import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from 'screens';
+import { fixed32ToNumber, balanceToUnitNumber } from 'utils/numberUtils';
+import ArrowImage from 'resources/img/arrow_right.png';
+import { SubstrateContextProvider, useSubstrate } from 'services/substrate-lib';
+import Watermark from 'resources/img/watermark_new.png';
+import { fetchUserInfo } from 'services/user-balance';
 
-import "semantic-ui-css/semantic.min.css";
-import "./App.scss";
+import 'semantic-ui-css/semantic.min.css';
+import './App.scss';
 
 function Main() {
   const [accountAddress, setAccountAddress] = useState(null);
@@ -36,51 +37,32 @@ function Main() {
     if (invitationActiveState == null && accountAddress) {
       const addressList = keyring
         .getPairs()
-        .filter((account) => account.meta.isInjected)
-        .map((account) => account.address);
+        .filter(account => account.meta.isInjected)
+        .map(account => account.address);
       verifyInvitation(addressList);
     }
   }, [invitationActiveState, keyring, accountAddress]);
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      if (
-        accountAddress &&
-        invitationActiveState === "Activated" &&
-        api &&
-        api.rpc.lending
-      ) {
-        const userData = await api.rpc.lending.getUserInfo(accountPair.address);
-        const [supplyBalance, borrowLimit, debtBalance] = userData;
-        // TODO: Always update since the accountBalance is not binded.
-        const isSame =
-          supplyBalance === accountBalance.supplyBalance ||
-          borrowLimit === accountBalance.borrowLimit ||
-          debtBalance === accountBalance.debtBalance;
-        if (!isSame) {
-          setAccountBalance({
-            supplyBalance: balanceToUnitNumber(supplyBalance),
-            borrowLimit: balanceToUnitNumber(borrowLimit),
-            debtBalance: balanceToUnitNumber(debtBalance),
-          });
-        }
+      if (accountAddress && invitationActiveState === 'Activated' && api) {
+        fetchUserInfo(setAccountBalance, accountAddress);
       }
     }, 3000);
+
     return () => clearInterval(interval);
   }, [api, accountAddress, invitationActiveState]);
 
   useEffect(() => {
     let unsubThreshold = null;
 
-    if (invitationActiveState === "Activated" && api && api.query.lending) {
+    if (invitationActiveState === 'Activated' && api && api.query.lending) {
       const getThreshold = async () => {
-        unsubThreshold = await api.query.lending.liquidationThreshold(
-          (data) => {
-            if (data) {
-              setThreshold(fixed32ToNumber(data));
-            }
+        unsubThreshold = await api.query.lending.liquidationThreshold(data => {
+          if (data) {
+            setThreshold(fixed32ToNumber(data));
           }
-        );
+        });
       };
       getThreshold();
     }
@@ -91,14 +73,14 @@ function Main() {
   // doesn't have an account.
   const accountPair =
     accountAddress &&
-    keyringState === "READY" &&
+    keyringState === 'READY' &&
     keyring.getPair(accountAddress);
 
   const renderArrow = () => {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== "Activated") {
+    if (invitationActiveState !== 'Activated') {
       return null;
     }
     return (
@@ -114,7 +96,7 @@ function Main() {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== "Activated") {
+    if (invitationActiveState !== 'Activated') {
       return null;
     }
     return <FaucetButton accountPair={accountPair} />;
@@ -125,15 +107,15 @@ function Main() {
       return <WelcomePage setAccountAddress={setAccountAddress} />;
     }
     if (apiState == null) {
-      console.log("connect substrate");
+      console.log('connect substrate');
       connectSubstrate();
       return null;
-    } else if (apiState !== "READY") {
+    } else if (apiState !== 'READY') {
       return <ConnectPage apiState={apiState} />;
     }
 
     switch (selectedTabItem) {
-      case "Dashboard":
+      case 'Dashboard':
         return (
           <DashboardPage
             accountPair={accountPair}
@@ -142,7 +124,7 @@ function Main() {
             liquidationThreshold={threshold}
           />
         );
-      case "Invest":
+      case 'Invest':
         return (
           <MarketLists
             accountPair={accountPair}
@@ -152,7 +134,7 @@ function Main() {
           />
         );
       default:
-        console.log("Invalid tab item. Return dashboard tab by default.");
+        console.log('Invalid tab item. Return dashboard tab by default.');
         return <DashboardPage accountPair={accountPair} />;
     }
   };
