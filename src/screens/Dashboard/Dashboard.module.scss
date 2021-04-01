@@ -1,0 +1,104 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap'); */
+/* @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans&display=swap');
+
+$purple-dark: #2a2e85;
+$purple: #8797ff;
+
+@mixin fontBasic {
+  color: $purple;
+  font-family: Poppins;
+  font-style: normal;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 350px 350px 350px;
+  grid-template-rows: 200px 200px;
+  width: 1050px;
+  margin: 40px auto 0px auto;
+
+  .item {
+    background-color: $purple-dark;
+    border-radius: 15px;
+    position: relative;
+    margin: 15px 15px;
+  }
+
+  .health {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 3;
+
+    .label {
+      position: absolute;
+      top: 30px;
+      left: 20px;
+
+      @include fontBasic();
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .circle {
+      /* Ellipse 106 */
+      position: absolute;
+      top: 50px;
+      left: 20px;
+    }
+
+    .index {
+      position: absolute;
+      top: 140px;
+      left: 110px;
+
+      @include fontBasic();
+      font-weight: 600;
+      font-size: 64px;
+      line-height: 96px;
+    }
+
+    .threshold {
+      position: absolute;
+      top: 300px;
+      left: 20px;
+
+      @include fontBasic();
+      font-weight: bold;
+      font-size: 13px;
+      line-height: 19px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  }
+
+  .cellLabel {
+    position: absolute;
+    top: 30px;
+    left: 20px;
+
+    @include fontBasic();
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 27px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .cellNumber {
+    position: absolute;
+    left: 20px;
+    top: 60px;
+
+    @include fontBasic();
+    line-height: 60px;
+    color: white;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 72px;
+  }
+}
