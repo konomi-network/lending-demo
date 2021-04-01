@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Hint } from 'components';
+import { ReactComponent as HealthCircleSVG } from 'resources/icons/HealthCircle.svg';
 import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
 import './Dashboard.scss';
@@ -9,6 +10,54 @@ const EXPLAINATION = {
   healthIndex: "Liquidation will be triggered when the total supply is lower than the total borrowed, health index is calculated by converted supply divide converted borrow",
   borrowLimit: "The maximum amount you can borrow"
 }
+
+const COLOR = {
+  blue: "#20EFEF",
+  orange: "#F18B14",
+  pink: "#CF1891"
+}
+
+const getHealthIndexColor = (healthIndex) => {
+  if (healthIndex >= 2) {
+    return COLOR.blue;
+  } else if (healthIndex >= 1) {
+    return COLOR.orange;
+  } else if (healthIndex >= 0){
+    return COLOR.pink;
+  } else {
+    return COLOR.blue;
+  }
+}
+
+const getHealthIndexText = (healthIndex) => {
+  if (healthIndex >= 10) {
+    return "10.0+";
+  } else if (healthIndex >= 0.1) {
+    return healthIndex.toFixed(1);
+  } else if (healthIndex === 0) {
+    return "0.0";
+  } else if (healthIndex < 0) {
+    return "NA"
+  }{
+    return "<1";
+  }
+}
+
+const HealthCircle = ({ healthIndex }) => {
+  if (healthIndex > 2.0 || healthIndex < 0) {
+    return (
+      <HealthCircleSVG stroke={COLOR.blue} />
+    );
+  } else if (healthIndex > 1.0) {
+    return (
+      <HealthCircleSVG stroke={COLOR.orange}/>
+    )
+  }
+  return (
+    <HealthCircleSVG stroke={COLOR.pink} />
+  )
+}
+
 
 export default function Main (props) {
   const { accountBalance } = props;
@@ -30,67 +79,18 @@ export default function Main (props) {
     return index;
   }
 
-  const getHealthIndexText = () => {
-    const indexNumber = getHealthIndex();
-    if (indexNumber >= 10) {
-      return "10.0+";
-    } else if (indexNumber >= 0.1) {
-      return indexNumber.toFixed(1);
-    } else if (indexNumber === 0) {
-      return "0.0";
-    } else if (indexNumber < 0) {
-      return "NA"
-    }{
-      return "<1";
-    }
-  }
+  const healthIndex = getHealthIndex();
 
   const getHealthIndexStyle = () => {
-    const indexNumber = getHealthIndex();
-    if (indexNumber >= 10) {
+    const color = getHealthIndexColor(healthIndex)
+    if (healthIndex >= 10) {
       return {
-        'color': getHealthIndexColor(),
-        'font-size': '50px',
-        'left': '95px',
+        color,
+        fontSize: 50,
+        left: 95
       };
     }
-    return {color: getHealthIndexColor()};
-  }
-
-  const getHealthIndexColor = () => {
-    const indexNumber = getHealthIndex();
-    if (indexNumber >= 2) {
-      return "#37BCEC";
-    } else if (indexNumber >= 1) {
-      return "#F18B14";
-    } else if (indexNumber >= 0){
-      return "#CF1891";
-    } else {
-      return "#37BCEC";
-    }
-  }
-
-  const renderHealthCircle = () => {
-    const healthIndex = getHealthIndex();
-    if (healthIndex > 2.0 || healthIndex < 0) {
-      return (
-        <svg width="274" height="274" viewBox="0 0 274 274" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M201.467 200.356C236.306 164.904 235.809 107.921 200.357 73.0819C164.904 38.2427 107.921 38.74 73.0822 74.1926C38.2431 109.645 38.7403 166.628 74.1929 201.467" stroke="#20EFEF" strokeWidth="13" stroke-linecap="round"/>
-        </svg>
-      );
-    }
-    if (healthIndex > 1.0) {
-      return (
-        <svg width="274" height="274" viewBox="0 0 274 274" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M201.467 200.356C236.306 164.904 235.809 107.921 200.357 73.0819C164.904 38.2427 107.921 38.74 73.0822 74.1926C38.2431 109.645 38.7403 166.628 74.1929 201.467" stroke="#F18B14" strokeWidth="13" stroke-linecap="round"/>
-        </svg>
-      )
-    }
-    return (
-      <svg width="274" height="274" viewBox="0 0 274 274" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M201.467 200.356C236.306 164.904 235.809 107.921 200.357 73.0819C164.904 38.2427 107.921 38.74 73.0822 74.1926C38.2431 109.645 38.7403 166.628 74.1929 201.467" stroke="#CF1891" strokeWidth="13" stroke-linecap="round"/>
-      </svg>
-    )
+    return { color };
   }
 
   return (
@@ -110,10 +110,10 @@ export default function Main (props) {
       <div className="Dashboard-item Dashboard-health">
         <p className="Dashboard-cell-label">HEALTH INDEX <Hint text={EXPLAINATION.healthIndex} /></p>
         <div className="Dashboard-health-circle">
-          {renderHealthCircle()}
+          <HealthCircle healthIndex={healthIndex} />
         </div>
         <p className="Dashboard-health-index" style={getHealthIndexStyle()}>
-          {getHealthIndexText()}
+          {getHealthIndexText(healthIndex)}
         </p>
         <p className="Dashboard-health-threshold">
           LIQUIDATION THRESHOLD: 1.0
