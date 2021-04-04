@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Hint } from 'components';
-import { ReactComponent as HealthCircleSVG } from 'resources/icons/HealthCircle.svg';
+import { ReactComponent as HealthCircle } from 'resources/icons/HealthCircle.svg';
 import { numberToReadableString } from 'utils/numberUtils';
 import { useWallet } from './WalletContext';
 
@@ -9,8 +9,9 @@ import styles from './Dashboard.module.scss';
 
 const EXPLAINATION = {
   healthIndex:
-    'Liquidation will be triggered when the total supply is lower than the total borrowed, health index is calculated by converted supply divide converted borrow',
-  borrowLimit: 'The maximum amount you can borrow',
+    'Indicates how healthy how account it. If this is below Liquidation Threshold, your account will be liquidated.',
+  borrowLimit:
+    'The amount you can borrow. It is the weighted valuation of your collateral.',
 };
 
 const COLOR = {
@@ -19,18 +20,7 @@ const COLOR = {
   pink: '#CF1891',
 };
 
-const getHealthIndexColor = healthIndex => {
-  if (healthIndex >= 2) {
-    return COLOR.blue;
-  } else if (healthIndex >= 1) {
-    return COLOR.orange;
-  } else if (healthIndex >= 0) {
-    return COLOR.pink;
-  } else {
-    return COLOR.blue;
-  }
-};
-
+// TODO: unifiy the logic
 const getHealthIndexText = healthIndex => {
   if (healthIndex >= 10) {
     return '10.0+';
@@ -41,18 +31,22 @@ const getHealthIndexText = healthIndex => {
   } else if (healthIndex < 0) {
     return 'NA';
   }
-  {
-    return '<1';
-  }
+  return '<1';
 };
 
-const HealthCircle = ({ healthIndex }) => {
-  if (healthIndex > 2.0 || healthIndex < 0) {
-    return <HealthCircleSVG stroke={COLOR.blue} />;
-  } else if (healthIndex > 1.0) {
-    return <HealthCircleSVG stroke={COLOR.orange} />;
+const getHealthIndexColor = healthIndex => {
+  // [min, 0) + [2 ~ max ]
+  if (healthIndex >= 2) {
+    return COLOR.blue;
+    // [1 ~ 2)
+  } else if (healthIndex >= 1) {
+    return COLOR.orange;
+    // [0 ~ 1)
+  } else if (healthIndex >= 0) {
+    return COLOR.pink;
   }
-  return <HealthCircleSVG stroke={COLOR.pink} />;
+  // < 0
+  return COLOR.blue;
 };
 
 export default function Main(props) {
@@ -80,6 +74,7 @@ export default function Main(props) {
   };
 
   const healthIndex = getHealthIndex();
+  const indexColor = getHealthIndexColor(healthIndex);
 
   const getHealthIndexStyle = () => {
     const color = getHealthIndexColor(healthIndex);
@@ -112,7 +107,7 @@ export default function Main(props) {
           HEALTH INDEX <Hint text={EXPLAINATION.healthIndex} />
         </p>
         <div className={styles.circle}>
-          <HealthCircle healthIndex={healthIndex} />
+          <HealthCircle stroke={indexColor} />
         </div>
         <p className={styles.index} style={getHealthIndexStyle()}>
           {getHealthIndexText(healthIndex)}
