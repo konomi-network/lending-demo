@@ -3,13 +3,15 @@ import React, { useEffect, useState } from 'react';
 import { useSubstrate } from 'services/substrate-lib';
 import './InvitationDialog.scss';
 
-export default function Main (props) {
+export default function Main(props) {
   const { keyring, invitationActiveState, activateInvitation } = useSubstrate();
   const [code, setCode] = useState('');
   const [message, setMessage] = useState('Please activate your account');
 
-  const addressList =
-    keyring.getPairs().filter(account => account.meta.isInjected).map(account => account.address);
+  const addressList = keyring
+    .getPairs()
+    .filter(account => account.meta.isInjected)
+    .map(account => account.address);
 
   useEffect(() => {
     switch (invitationActiveState) {
@@ -22,22 +24,24 @@ export default function Main (props) {
         setMessage('Invitation code is invalid, please check and re-enter');
         break;
       case 'Activation_error':
-        setMessage('Oops, something wrong happened during activation, please try again');
+        setMessage(
+          'Oops, something wrong happened during activation, please try again'
+        );
         break;
       default:
         break;
     }
   }, [invitationActiveState]);
 
-  const onChangeInput = (event) => {
+  const onChangeInput = event => {
     setCode(event.target.value);
-  }
+  };
 
   const onClickSubmitButton = () => {
     if (code) {
       activateInvitation(addressList, code);
     }
-  }
+  };
 
   if (invitationActiveState === 'Activated') {
     return null;
@@ -50,11 +54,17 @@ export default function Main (props) {
         <div className="InvitationDialog-form">
           <input
             className="InvitationDialog-input"
-            placeholder='enter code here'
-            value={code} 
-            autoFocus={true} 
-            onChange={onChangeInput} />
-          <button className="InvitationDialog-activate" onClick={onClickSubmitButton}>Activate</button>
+            placeholder="enter code here"
+            value={code}
+            autoFocus={true}
+            onChange={onChangeInput}
+          />
+          <button
+            className="InvitationDialog-activate"
+            onClick={onClickSubmitButton}
+          >
+            Activate
+          </button>
         </div>
       </div>
     );
