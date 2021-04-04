@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useSubstrate } from 'services/substrate-lib';
 import './AccountSelector.scss';
 
-function DropdownBaseButton (props) {
+function DropdownBaseButton(props) {
   const { setOpen, account } = props;
 
   return (
@@ -13,48 +13,54 @@ function DropdownBaseButton (props) {
   );
 }
 
-function DropdownOptions (props) {
-  const { accountOptions, selectedAccount, setOpen, setAccountAddress, setSelectedAccount } = props;
+function DropdownOptions(props) {
+  const {
+    accountOptions,
+    selectedAccount,
+    setOpen,
+    setAccountAddress,
+    setSelectedAccount,
+  } = props;
 
   const toggleContainer = React.createRef();
 
-  const onClickOutsideHandler = (event) => {
+  const onClickOutsideHandler = event => {
     if (!toggleContainer.current.contains(event.target)) {
       setOpen(false);
     }
-  }
+  };
 
   useEffect(() => {
-    window.addEventListener("click", onClickOutsideHandler);
+    window.addEventListener('click', onClickOutsideHandler);
     return () => {
-      window.removeEventListener("click", onClickOutsideHandler);
-    }
+      window.removeEventListener('click', onClickOutsideHandler);
+    };
   });
 
-  const onClickRow = (index) => {
+  const onClickRow = index => {
     return () => {
       const account = accountOptions[index];
       setAccountAddress(account.address);
       setSelectedAccount(account);
       setOpen(false);
     };
-  }
+  };
 
-  const renderRow = (index) => {
+  const renderRow = index => {
     const account = accountOptions[index];
     const isFirst = index === 0;
     const isLast = index === accountOptions.length - 1;
     const isSelected = account.address === selectedAccount.address;
 
-    const nameStyle = "DropdownNew-name" + (isSelected ? " name-selected" : "");
+    const nameStyle = 'DropdownNew-name' + (isSelected ? ' name-selected' : '');
     const rowStyle = {};
     if (isFirst) {
-      rowStyle["borderTopLeftRadius"] = "25px";
-      rowStyle["borderTopRightRadius"] = "25px";
+      rowStyle['borderTopLeftRadius'] = '25px';
+      rowStyle['borderTopRightRadius'] = '25px';
     }
     if (isLast) {
-      rowStyle["borderBottomLeftRadius"] = "25px";
-      rowStyle["borderBottomRightRadius"] = "25px";
+      rowStyle['borderBottomLeftRadius'] = '25px';
+      rowStyle['borderBottomRightRadius'] = '25px';
     }
 
     return (
@@ -62,36 +68,42 @@ function DropdownOptions (props) {
         key={account.name}
         className="DropdownNew-option-row"
         style={rowStyle}
-        onClick={onClickRow(index)}>
+        onClick={onClickRow(index)}
+      >
         <p className={nameStyle}>{account.name}</p>
       </div>
-    )
-  }
+    );
+  };
 
   const totalHeight = accountOptions.length * 50;
 
   return (
     <div
       className="DropdownNew-options-container"
-      style={{height: `${totalHeight}px`}}
-      ref={toggleContainer}>
+      style={{ height: `${totalHeight}px` }}
+      ref={toggleContainer}
+    >
       {accountOptions.map((option, index) => renderRow(index))}
     </div>
   );
 }
 
-export default function AccountSelector (props) {
+export default function AccountSelector(props) {
   const { keyring } = useSubstrate();
   const { setAccountAddress } = props;
   const [open, setOpen] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState({name: "", address: ""});
+  const [selectedAccount, setSelectedAccount] = useState({
+    name: '',
+    address: '',
+  });
 
-  const injectedKeyringOptions =
-    keyring.getPairs().filter(account => account.meta.isInjected)
+  const injectedKeyringOptions = keyring
+    .getPairs()
+    .filter(account => account.meta.isInjected)
     .map(account => {
       return {
         name: account.meta.name,
-        address: account.address
+        address: account.address,
       };
     });
 
@@ -100,7 +112,7 @@ export default function AccountSelector (props) {
 
   // Set the initial address
   useEffect(() => {
-    if (initialAddress !== "") {
+    if (initialAddress !== '') {
       setSelectedAccount(injectedKeyringOptions[0]);
       setAccountAddress(initialAddress);
     }
@@ -108,7 +120,7 @@ export default function AccountSelector (props) {
 
   const renderDropdown = () => {
     if (!open || injectedKeyringOptions.length === 1) {
-      return <DropdownBaseButton setOpen={setOpen} account={selectedAccount} />
+      return <DropdownBaseButton setOpen={setOpen} account={selectedAccount} />;
     } else {
       return (
         <DropdownOptions
@@ -116,14 +128,11 @@ export default function AccountSelector (props) {
           setOpen={setOpen}
           setSelectedAccount={setSelectedAccount}
           accountOptions={injectedKeyringOptions}
-          selectedAccount={selectedAccount}/>
+          selectedAccount={selectedAccount}
+        />
       );
     }
-  }
+  };
 
-  return (
-    <div className="AccountSelectorNew-container">
-      {renderDropdown()}
-    </div>
-  )
+  return <div className="AccountSelectorNew-container">{renderDropdown()}</div>;
 }
