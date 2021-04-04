@@ -1,14 +1,14 @@
+@import 'styles/mixins.scss';
+
 .FaucetButton {
   width: 28px;
   height: 22px;
   margin: 27px 35px 27px 15px;
   border: none;
-  outline: none;
   background-color: transparent;
   position: relative;
-}
 
-.FaucetButton-img {
-  width: 30px;
-  height: 30px;
+  color: white;
+
+  @include svgStates(white);
 }

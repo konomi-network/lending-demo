@@ -3,7 +3,7 @@ import { useCookies } from 'react-cookie';
 
 import { useSubstrate } from 'services/substrate-lib';
 import AccountSelector from './AccountSelector';
-import './AccountButton.scss';
+import styles from './AccountButton.module.scss';
 
 function ConnectAccountButton (props) {
   const { loadAccounts } = useSubstrate();
@@ -14,7 +14,7 @@ function ConnectAccountButton (props) {
   };
   return (
     <button
-      className="ConnectAccountButton"
+      className={styles.connectAccountButton}
       onClick={onClickConnectButton}>
       Connect To Wallet
     </button>
