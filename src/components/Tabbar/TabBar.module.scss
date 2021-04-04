@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700;800;900&display=swap');
+@import 'styles/mixins.scss';
+
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 40px;
+  padding: 18px 0px;
+
+  color: white;
+}
+
+.item {
+  box-sizing: border-box;
+
+  margin: 0px 35px;
+  height: 40px;
+
+  .itemLabel {
+    @include fontSetting();
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 36px;
+    letter-spacing: 0.05em;
+    color: inherit;
+  }
+
+  @include tabStates(#56b8ef);
+}
+
+.itemActive {
+  .itemLabel {
+    color: #56b8ef;
+    @include tabStates(#56b8ef);
+  }
+
+  border-bottom: #56b8ef solid 4px;
+}
