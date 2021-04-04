@@ -1,13 +1,25 @@
 import React from 'react';
+import { Popup } from 'semantic-ui-react';
 
 import { ReactComponent as QuestionMark } from 'resources/icons/QuestionMark.svg';
-import Tooltip from '../Tooltip';
 
 const Hint = ({ text = '' }) => {
   return (
-    <Tooltip title={text}>
-      <QuestionMark />
-    </Tooltip>
+    <Popup
+      basic
+      content={text}
+      trigger={<QuestionMark />}
+      size="mini"
+      style={{
+        background: '#181B59',
+        borderRadius: 9,
+        border: 'none',
+        padding: 12,
+        width: 200,
+        fontSize: 14,
+        color: '#D1CCCC',
+      }}
+    ></Popup>
   );
 };
 
