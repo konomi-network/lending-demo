@@ -1,13 +1,16 @@
+@import 'styles/mixins.scss';
+
 .Market-table-row {
   display: flex;
   flex-direction: row;
   height: 80px;
-  cursor: pointer;
 
   background: #182048;
   box-shadow: 0px 4px 18px rgba(23, 34, 96, 0.3);
   border-radius: 7px;
   margin: 8px 0px;
+
+  @include buttonStates(#182048);
 }
 
 .Market-table-cell {
@@ -28,7 +31,7 @@
   font-size: 18px;
   line-height: 80px;
   letter-spacing: 0.05em;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
 }
 
@@ -39,7 +42,7 @@
   font-size: 22px;
   line-height: 80px;
   letter-spacing: 0.1em;
-  color: #37BCEC;
+  color: #37bcec;
 }
 
 .BorrowMarket-asset-column {
