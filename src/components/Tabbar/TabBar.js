@@ -19,7 +19,6 @@ export default function TabBar(props) {
     return onClickTabItem;
   };
 
-  // component can be "icon", "label" and "marker"
   // Each component should have a corresponding css style.
   const tabItemActiveStyle = tabName => {
     if (tabName !== selectedTabItem) {
@@ -36,9 +35,7 @@ export default function TabBar(props) {
         className={[styles.item, tabItemActiveStyle(tabName)].join(' ')}
         onClick={onClickTabItemName(tabName)}
       >
-        {/* <div className={styles.item}> */}
         <p className={styles.itemLabel}>{tabName}</p>
-        {/* </div> */}
       </div>
     );
   };

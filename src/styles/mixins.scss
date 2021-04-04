@@ -1,0 +1,62 @@
+@mixin buttonStates($mainColor) {
+  $hover-color: scale-color($mainColor, $lightness: +30%);
+  $click-color: scale-color($mainColor, $lightness: +20%);
+
+  outline: none;
+  cursor: pointer;
+
+  // state color
+  &:hover {
+    background-color: $hover-color;
+  }
+
+  &:active {
+    background-color: $click-color;
+  }
+}
+
+@mixin tabStates($mainColor) {
+  $hover-color: scale-color($mainColor, $lightness: +30%);
+  $click-color: scale-color($mainColor, $lightness: +20%);
+
+  outline: none;
+  cursor: pointer;
+
+  // state color
+  &:hover {
+    color: $hover-color;
+
+    border-bottom: $hover-color solid 4px;
+  }
+
+  &:active {
+    color: $click-color;
+    border-bottom: $click-color solid 4px;
+  }
+}
+
+@mixin svgStates($mainColor) {
+  $hover-color: invert($mainColor, 20%);
+  $click-color: invert($mainColor, 40%);
+
+  outline: none;
+  cursor: pointer;
+
+  // state color
+  &:hover {
+    stroke: $hover-color;
+    fill: $hover-color;
+    color: $hover-color;
+  }
+
+  &:active {
+    stroke: $click-color;
+    fill: $click-color;
+    color: $click-color;
+  }
+}
+
+@mixin fontSetting {
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+}
