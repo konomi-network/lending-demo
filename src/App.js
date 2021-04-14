@@ -44,11 +44,18 @@ function Main() {
   }, [invitationActiveState, keyring, accountAddress]);
 
   useEffect(() => {
-    const interval = setInterval(async () => {
-      if (accountAddress && invitationActiveState === 'Activated' && api) {
+    let interval = null;
+    console.log(
+      'before condition: ' + invitationActiveState + ' ' + accountAddress
+    );
+    if (accountAddress && invitationActiveState === 'Activated' && api) {
+      interval = setInterval(async () => {
+        console.log(
+          'wow, fetch user info:' + invitationActiveState + ' ' + accountAddress
+        );
         fetchUserInfo(setAccountBalance, accountAddress);
-      }
-    }, 3000);
+      }, 3000);
+    }
 
     return () => clearInterval(interval);
   }, [api, accountAddress, invitationActiveState]);
