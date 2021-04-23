@@ -16,8 +16,6 @@ const fetchUserInfo = async (setAccountBalance, accountAddress) => {
     .then(response => {
       const asyncHandleResponse = async () => {
         const data = await response.json();
-        console.log('data');
-        console.log(data);
         if (response.status == 200 && response.ok && data) {
           const { totalSupply, borrowLimit, totalBorrow } = data.result;
           setAccountBalance({

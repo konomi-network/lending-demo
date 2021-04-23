@@ -45,14 +45,8 @@ function Main() {
 
   useEffect(() => {
     let interval = null;
-    console.log(
-      'before condition: ' + invitationActiveState + ' ' + accountAddress
-    );
     if (accountAddress && invitationActiveState === 'Activated' && api) {
       interval = setInterval(async () => {
-        console.log(
-          'wow, fetch user info:' + invitationActiveState + ' ' + accountAddress
-        );
         fetchUserInfo(setAccountBalance, accountAddress);
       }, 3000);
     }
