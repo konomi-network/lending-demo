@@ -2,10 +2,10 @@
   "APP_NAME": "konomi-front-end-v2",
   "DEVELOPMENT_KEYRING": true,
   "CUSTOM_TYPES": {
-    "Address": "AccountId",
+    "Address": "MultiAddress",
     "AssetId": "u64",
     "FeeRate": "u64",
-    "LookupSource": "AccountId",
+    "LookupSource": "MultiAddress",
     "User": {
       "borrowLimit": "Balance",
       "supplyBalance": "Balance",
@@ -17,22 +17,22 @@
       "asset": "AssetId",
       "supply": "Balance",
       "debt": "Balance",
-      "safeFactor": "u128",
-      "closeFactor": "u128",
-      "discountFactor": "u128",
-      "totalSupplyIndex": "u128",
-      "totalDebtIndex": "u128",
+      "safeFactor": "FixedU128",
+      "closeFactor": "FixedU128",
+      "discountFactor": "FixedU128",
+      "totalSupplyIndex": "FixedU128",
+      "totalDebtIndex": "FixedU128",
       "lastUpdated": "BlockNumber",
-      "utilizationFactor": "u128",
-      "initialInterestRate": "u128"
+      "utilizationFactor": "FixedU128",
+      "initialInterestRate": "FixedU128"
     },
     "UserSupply": {
       "amount": "Balance",
-      "index": "u128"
+      "index": "FixedU128"
     },
     "UserDebt": {
       "amount": "Balance",
-      "index": "u128"
+      "index": "FixedU128"
     }
   },
   "RPC": {

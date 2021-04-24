@@ -12,16 +12,16 @@ const fetchUserInfo = async (setAccountBalance, accountAddress) => {
     }),
     redirect: 'follow',
   };
-  await fetch('https://app.konomi.tech/rpc', requestOptions)
+  await fetch('https://konomi.tech/rpc', requestOptions)
     .then(response => {
       const asyncHandleResponse = async () => {
         const data = await response.json();
         if (response.status == 200 && response.ok && data) {
-          const [supplyBalance, borrowLimit, debtBalance] = data.result;
+          const { totalSupply, borrowLimit, totalBorrow } = data.result;
           setAccountBalance({
-            supplyBalance: u128StringToNumber(supplyBalance),
+            supplyBalance: u128StringToNumber(totalSupply),
             borrowLimit: u128StringToNumber(borrowLimit),
-            debtBalance: u128StringToNumber(debtBalance),
+            debtBalance: u128StringToNumber(totalBorrow),
           });
         } else {
           // TODO: dispatch failure
