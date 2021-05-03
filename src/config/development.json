@@ -1,3 +1,4 @@
 {
-  "PROVIDER_SOCKET": "wss://konomi.tech/node"
+  "PROVIDER_SOCKET": "wss://app.konomi.tech/nodes",
+  "RPC_REQUEST_URL": "https://dev.konomi.tech/rpc"
 }

@@ -1,6 +1,7 @@
 {
   "APP_NAME": "konomi-front-end-v2",
   "DEVELOPMENT_KEYRING": true,
+  "RPC_REQUEST_URL": "https://dev.konomi.tech/rpc",
   "CUSTOM_TYPES": {
     "Address": "MultiAddress",
     "AssetId": "u64",

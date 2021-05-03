@@ -1,5 +1,7 @@
 import { u128StringToNumber } from 'utils/numberUtils';
 
+import config from 'config';
+
 const fetchUserInfo = async (setAccountBalance, accountAddress) => {
   const requestOptions = {
     method: 'POST',
@@ -12,7 +14,7 @@ const fetchUserInfo = async (setAccountBalance, accountAddress) => {
     }),
     redirect: 'follow',
   };
-  await fetch('https://konomi.tech/rpc', requestOptions)
+  await fetch(config.RPC_REQUEST_URL, requestOptions)
     .then(response => {
       const asyncHandleResponse = async () => {
         const data = await response.json();
