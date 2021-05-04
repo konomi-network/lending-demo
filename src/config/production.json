@@ -1,3 +1,3 @@
 {
-  "PROVIDER_SOCKET": "wss://app.konomi.tech/nodes"
+  "PROVIDER_SOCKET": "wss://dev.konomi.tech/node"
 }

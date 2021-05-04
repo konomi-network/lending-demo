@@ -12,7 +12,7 @@ const fetchUserInfo = async (setAccountBalance, accountAddress) => {
     }),
     redirect: 'follow',
   };
-  await fetch('https://konomi.tech/rpc', requestOptions)
+  await fetch('https://dev.konomi.tech/rpc/', requestOptions)
     .then(response => {
       const asyncHandleResponse = async () => {
         const data = await response.json();
