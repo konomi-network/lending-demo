@@ -1,33 +1,27 @@
-import React, { useState } from "react";
-import { Modal } from "semantic-ui-react";
+import React, { useState } from 'react';
+import { Modal } from 'semantic-ui-react';
 
-import LiquidationAlert from "components/Liquidation/LiquidationAlert";
-import InvitationDialog from "components/Invitation/InvitationDialog";
-import { useSubstrate } from "services/substrate-lib";
-import BorrowMarketRow from "./BorrowMarketRow";
-import BorrowRepayModal from "./BorrowRepayModal";
-import SupplyMarketRow from "./SupplyMarketRow";
-import SupplyWithdrawModal from "./SupplyWithdrawModal";
-import "./BorrowMarketRow.scss";
-import "./MarketLists.scss";
-import "./SupplyMarketRow.scss";
+import LiquidationAlert from 'components/Liquidation/LiquidationAlert';
+import InvitationDialog from 'components/Invitation/InvitationDialog';
+import { useSubstrate } from 'services/substrate-lib';
+import BorrowMarketRow from './BorrowMarketRow';
+import BorrowRepayModal from './BorrowRepayModal';
+import SupplyMarketRow from './SupplyMarketRow';
+import SupplyWithdrawModal from './SupplyWithdrawModal';
+import './BorrowMarketRow.scss';
+import './MarketLists.scss';
+import './SupplyMarketRow.scss';
 
-import KonomiImage from "resources/img/KONO.png";
-import DotImage from "resources/img/DOT.png";
-import KsmImage from "resources/img/KSM.png";
-import EthImage from "resources/img/ETH.png";
-import BtcImage from "resources/img/BTC.png";
+import DotImage from 'resources/img/DOT.png';
+import EthImage from 'resources/img/ETH.png';
 
 const ASSET_LIST = [
-  { id: 0, name: "Konomi", abbr: "KONO", image: KonomiImage },
-  { id: 1, name: "Polkadot", abbr: "DOT", image: DotImage },
-  { id: 2, name: "Kusama", abbr: "KSM", image: KsmImage },
-  { id: 3, name: "Ethereum", abbr: "ETH", image: EthImage },
-  { id: 4, name: "Bitcoin", abbr: "BTC", image: BtcImage },
+  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
+  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
 ];
 
 export default function Main(props) {
-  const { accountPair, setAccountAddress } = props;
+  const { accountPair } = props;
   const { invitationActiveState } = useSubstrate();
 
   const [supplyModalOpen, setSupplyModalOpen] = useState(false);
@@ -42,9 +36,9 @@ export default function Main(props) {
         onOpen={() => setSupplyModalOpen(true)}
         open={supplyModalOpen}
         size="tiny"
-        style={{ backgroundColor: "#27358D" }}
+        style={{ backgroundColor: '#27358D' }}
       >
-        <Modal.Content style={{ backgroundColor: "#27358D", padding: "0px" }}>
+        <Modal.Content style={{ backgroundColor: '#27358D', padding: '0px' }}>
           <SupplyWithdrawModal
             accountPair={accountPair}
             assetId={supplyId}
@@ -55,12 +49,12 @@ export default function Main(props) {
     );
   };
 
-  const onClickSupplyMarketRow = (rowId) => {
+  const onClickSupplyMarketRow = rowId => {
     setSupplyId(rowId);
     setSupplyModalOpen(true);
   };
 
-  const renderSupplyMarketRow = (rowId) => {
+  const renderSupplyMarketRow = rowId => {
     return (
       <SupplyMarketRow
         key={`supply ${rowId}`}
@@ -86,9 +80,9 @@ export default function Main(props) {
         onOpen={() => setBorrowModalOpen(true)}
         open={borrowModalOpen}
         size="tiny"
-        style={{ backgroundColor: "#27358D" }}
+        style={{ backgroundColor: '#27358D' }}
       >
-        <Modal.Content style={{ backgroundColor: "#27358D", padding: "0px" }}>
+        <Modal.Content style={{ backgroundColor: '#27358D', padding: '0px' }}>
           <BorrowRepayModal
             accountPair={accountPair}
             assetId={borrowId}
@@ -99,12 +93,12 @@ export default function Main(props) {
     );
   };
 
-  const onClickBorrowMarketRow = (rowId) => {
+  const onClickBorrowMarketRow = rowId => {
     setBorrowId(rowId);
     setBorrowModalOpen(true);
   };
 
-  const renderBorrowMarketRow = (rowId) => {
+  const renderBorrowMarketRow = rowId => {
     return (
       <BorrowMarketRow
         key={`borrow ${rowId}`}
@@ -127,7 +121,7 @@ export default function Main(props) {
     return null;
   }
 
-  if (invitationActiveState !== "Activated") {
+  if (invitationActiveState !== 'Activated') {
     return <InvitationDialog />;
   }
 
