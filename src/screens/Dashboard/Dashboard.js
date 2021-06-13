@@ -52,6 +52,7 @@ const getHealthIndexColor = healthIndex => {
 function Main(props) {
   const {
     walletBalances,
+    userBalance,
     supplies,
     debts,
     prices,
@@ -63,19 +64,22 @@ function Main(props) {
     prices['DOT'] * walletBalances['DOT'] +
     prices['ETH'] * walletBalances['ETH'];
 
-  let totalSupplyBalance = 0;
-  totalSupplyBalance =
-    prices['DOT'] * supplies['DOT'] + prices['ETH'] * supplies['ETH'];
+  // let totalSupplyBalance = 0;
+  // totalSupplyBalance =
+  //   prices['DOT'] * supplies['DOT'] + prices['ETH'] * supplies['ETH'];
 
-  let totalDebtBalance = 0;
-  totalDebtBalance =
-    prices['DOT'] * debts['DOT'] + prices['ETH'] * debts['ETH'];
+  // let totalDebtBalance = 0;
+  // totalDebtBalance =
+  //   prices['DOT'] * debts['DOT'] + prices['ETH'] * debts['ETH'];
+  const totalSupplyBalance = userBalance.totalSupply;
+  const totalDebtBalance = userBalance.totalDebt;
+  const totalBorrowLimit = userBalance.totalCollateral;
 
   const getHealthIndex = () => {
-    if (totalSupplyBalance === 0 || totalDebtBalance === 0) {
+    if (totalBorrowLimit === 0 || totalDebtBalance === 0) {
       return -1;
     }
-    const index = totalSupplyBalance / totalDebtBalance;
+    const index = totalBorrowLimit / totalDebtBalance;
     if (isNaN(index)) {
       return -1;
     }
@@ -131,7 +135,7 @@ function Main(props) {
         </p>
 
         <p className={styles.cellNumber}>
-          ${numberToReadableString(totalSupplyBalance, true)}
+          ${numberToReadableString(totalBorrowLimit, true)}
         </p>
       </div>
       <div className={styles.item}>
@@ -146,6 +150,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  userBalance: state.market.userBalance,
   supplies: state.market.supplies,
   debts: state.market.debts,
   prices: state.market.prices,

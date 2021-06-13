@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
-import { numberToReadableString } from 'utils/numberUtils';
+import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
 import DotImage from 'resources/img/DOT.png';
 import EthImage from 'resources/img/ETH.png';
 import CloseIcon from 'resources/img/close_black.png';
@@ -21,6 +21,7 @@ function Main(props) {
     setModalOpen,
     accountPair,
     walletBalances,
+    pools,
     supplies,
     debts,
     prices,
@@ -32,7 +33,6 @@ function Main(props) {
   const [activeItem, setActiveItem] = useState('Borrow');
   const [txCallable, setTxCallable] = useState('borrow');
   const [txStatus, setTxStatus] = useState(null);
-  const [apy, setAPY] = useState(0);
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
@@ -42,6 +42,12 @@ function Main(props) {
   const currentSupply = supplies[abbr];
   const currentBorrowLimit = currentSupply;
   const walletBalance = walletBalances[abbr];
+  const pool = pools[abbr];
+  let apy = 0;
+  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
+    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+    apy = apyNumber.toFixed(2);
+  }
 
   const onChangeInput = event => {
     setInputValue(event.target.value);
@@ -106,14 +112,14 @@ function Main(props) {
         // New borrow balance exceeds borrow limit * 0.9.
         return null;
       } else {
-        return inputNumberValue;
+        return numberToU128String(inputNumberValue);
       }
     } else {
       if (inputNumberValue > walletBalance) {
         // Repay exceeds wallet balance.
         return null;
       } else {
-        return inputNumberValue;
+        return numberToU128String(inputNumberValue);
       }
     }
   };
@@ -229,6 +235,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  pools: state.market.pools,
   supplies: state.market.supplies,
   debts: state.market.debts,
   prices: state.market.prices,

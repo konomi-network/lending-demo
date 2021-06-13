@@ -1,4 +1,10 @@
 const initState = {
+  pools: {},
+  userBalance: {
+    totalSupply: 0,
+    totalDebt: 0,
+    totalCollateral: 0,
+  },
   supplies: {
     DOT: 0,
     ETH: 0,
@@ -16,6 +22,17 @@ const initState = {
 
 export default (state = initState, action) => {
   switch (action.type) {
+    case 'UPDATE_POOLS':
+      return {
+        ...state,
+        pools: action.payload,
+      };
+    // payload: {totalSupply: 10, totalDebt: 5, totalCollateral: 8}
+    case 'UPDATE_USER_BALANCE':
+      return {
+        ...state,
+        userBalance: action.payload,
+      };
     // payload: {DOT: 200}
     case 'UPDATE_SUPPLY':
       return {
