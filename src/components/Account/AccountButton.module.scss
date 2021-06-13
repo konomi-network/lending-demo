@@ -18,5 +18,7 @@
   text-align: center;
   color: white;
 
+  z-index: 1;
+
   @include buttonStates(rgb(37, 228, 240));
 }
