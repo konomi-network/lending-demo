@@ -1,30 +1,30 @@
-import React, { useReducer, useContext } from "react";
-import PropTypes from "prop-types";
-import jsonrpc from "@polkadot/types/interfaces/jsonrpc";
-import queryString from "query-string";
+import React, { useReducer, useContext } from 'react';
+import PropTypes from 'prop-types';
+import jsonrpc from '@polkadot/types/interfaces/jsonrpc';
+import queryString from 'query-string';
 
-import { ApiPromise, WsProvider } from "@polkadot/api";
-import { web3Accounts, web3Enable } from "@polkadot/extension-dapp";
-import keyring from "@polkadot/ui-keyring";
+import { ApiPromise, WsProvider } from '@polkadot/api';
+import { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import keyring from '@polkadot/ui-keyring';
 
-import config from "../../config";
+import config from '../../config';
 
 const parsedQuery = queryString.parse(window.location.search);
-const connectedSocket = parsedQuery.rpc || config.PROVIDER_SOCKET;
+const connectedSocket = config.PROVIDER_SOCKET;
 
 ///
 // Initial state for `useReducer`
 
 const INIT_STATE = {
   socket: connectedSocket,
-  jsonrpc: { ...jsonrpc, ...config.RPC },
+  jsonrpc: { ...jsonrpc },
   types: config.CUSTOM_TYPES,
   keyring: null,
   keyringState: null,
   api: null,
   apiError: null,
   apiState: null,
-  invitationActiveState: null,
+  invitationActiveState: 'Activated',
   invitationVerificationMessage: null,
   invitationActivationMessage: null,
 };
@@ -34,54 +34,54 @@ const INIT_STATE = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "CONNECT_INIT":
-      return { ...state, apiState: "CONNECT_INIT" };
+    case 'CONNECT_INIT':
+      return { ...state, apiState: 'CONNECT_INIT' };
 
-    case "CONNECT":
-      return { ...state, api: action.payload, apiState: "CONNECTING" };
+    case 'CONNECT':
+      return { ...state, api: action.payload, apiState: 'CONNECTING' };
 
-    case "CONNECT_SUCCESS":
-      return { ...state, apiState: "READY" };
+    case 'CONNECT_SUCCESS':
+      return { ...state, apiState: 'READY' };
 
-    case "CONNECT_ERROR":
-      return { ...state, apiState: "ERROR", apiError: action.payload };
+    case 'CONNECT_ERROR':
+      return { ...state, apiState: 'ERROR', apiError: action.payload };
 
-    case "LOAD_KEYRING":
-      return { ...state, keyringState: "LOADING" };
+    case 'LOAD_KEYRING':
+      return { ...state, keyringState: 'LOADING' };
 
-    case "SET_KEYRING":
-      return { ...state, keyring: action.payload, keyringState: "READY" };
+    case 'SET_KEYRING':
+      return { ...state, keyring: action.payload, keyringState: 'READY' };
 
-    case "KEYRING_ERROR":
-      return { ...state, keyring: null, keyringState: "ERROR" };
+    case 'KEYRING_ERROR':
+      return { ...state, keyring: null, keyringState: 'ERROR' };
 
-    case "INVITATION_VERIFIED":
+    case 'INVITATION_VERIFIED':
       return {
         ...state,
-        invitationActiveState: "Activated",
+        invitationActiveState: 'Activated',
         invitationVerificationMessage: null,
         invitationActivationMessage: null,
       };
 
-    case "INVITATION_VERIFICATION_FAIL":
+    case 'INVITATION_VERIFICATION_FAIL':
       return {
         ...state,
-        invitationActiveState: "Verification_failed",
+        invitationActiveState: 'Verification_failed',
         invitationVerificationMessage: action.payload,
       };
 
-    case "INVITATION_VERIFICATION_ERROR":
-      return { ...state, invitationActiveState: "Verification_error" };
+    case 'INVITATION_VERIFICATION_ERROR':
+      return { ...state, invitationActiveState: 'Verification_error' };
 
-    case "INVITATION_ACTIVATION_FAIL":
+    case 'INVITATION_ACTIVATION_FAIL':
       return {
         ...state,
-        invitationActiveState: "Activation_failed",
+        invitationActiveState: 'Activation_failed',
         invitationActivationMessage: action.payload,
       };
 
-    case "INVITATION_ACTIVATION_ERROR":
-      return { ...state, invitationActiveState: "Activation_error" };
+    case 'INVITATION_ACTIVATION_ERROR':
+      return { ...state, invitationActiveState: 'Activation_error' };
 
     default:
       throw new Error(`Unknown type: ${action.type}`);
@@ -91,24 +91,32 @@ const reducer = (state, action) => {
 ///
 // Connecting to the Substrate node
 
-const connect = (state, dispatch) => {
+const connect = async (state, dispatch) => {
   const { apiState, socket, jsonrpc, types } = state;
   // We only want this function to be performed once
   if (apiState) return;
 
-  dispatch({ type: "CONNECT_INIT" });
+  dispatch({ type: 'CONNECT_INIT' });
 
   const provider = new WsProvider(socket);
-  const _api = new ApiPromise({ provider, types, rpc: jsonrpc });
+  const _api = new ApiPromise({
+    provider,
+    types,
+    typesAlias: {
+      tokens: {
+        AccountData: 'CurrencyAccountData',
+      },
+    },
+  });
 
   // Set listeners for disconnection and reconnection event.
-  _api.on("connected", () => {
-    dispatch({ type: "CONNECT", payload: _api });
+  _api.on('connected', () => {
+    dispatch({ type: 'CONNECT', payload: _api });
     // `ready` event is not emitted upon reconnection and is checked explicitly here.
-    _api.isReady.then((_api) => dispatch({ type: "CONNECT_SUCCESS" }));
+    _api.isReady.then(_api => dispatch({ type: 'CONNECT_SUCCESS' }));
   });
-  _api.on("ready", () => dispatch({ type: "CONNECT_SUCCESS" }));
-  _api.on("error", (err) => dispatch({ type: "CONNECT_ERROR", payload: err }));
+  _api.on('ready', () => dispatch({ type: 'CONNECT_SUCCESS' }));
+  _api.on('error', err => dispatch({ type: 'CONNECT_ERROR', payload: err }));
 };
 
 ///
@@ -117,7 +125,7 @@ const connect = (state, dispatch) => {
 let loadAccts = false;
 const loadAccounts = (state, dispatch) => {
   const asyncLoadAccounts = async () => {
-    dispatch({ type: "LOAD_KEYRING" });
+    dispatch({ type: 'LOAD_KEYRING' });
     try {
       await web3Enable(config.APP_NAME);
       let allAccounts = await web3Accounts();
@@ -127,16 +135,34 @@ const loadAccounts = (state, dispatch) => {
         address,
         meta: { ...meta },
       }));
-      console.log(allAccounts);
-      keyring.loadAll(
-        { isDevelopment: config.DEVELOPMENT_KEYRING },
-        allAccounts
-      );
-      dispatch({ type: "SET_KEYRING", payload: keyring });
-      console.log(keyring);
+
+      // when allAccounts = [], alert user to install
+      if (!allAccounts || allAccounts.length < 1) {
+        dispatch({
+          type: 'CONNECT_ERROR',
+          payload: {
+            code: 0,
+            description:
+              'Sorry, there is no account detected. Please check if you have install polkadot and have accounts created',
+          },
+        });
+      } else {
+        keyring.loadAll(
+          { isDevelopment: config.DEVELOPMENT_KEYRING },
+          allAccounts
+        );
+        dispatch({ type: 'SET_KEYRING', payload: keyring });
+        console.log(
+          '🚀 ~ file: SubstrateContext.js ~ line 175 ~ asyncLoadAccounts ~ keyring',
+          keyring
+        );
+      }
     } catch (e) {
-      console.error(e);
-      dispatch({ type: "KEYRING_ERROR" });
+      console.error(
+        '🚀 ~ file: SubstrateContext.js ~ line 178 ~ asyncLoadAccounts ~ e',
+        e
+      );
+      dispatch({ type: 'KEYRING_ERROR' });
     }
   };
 
@@ -144,7 +170,7 @@ const loadAccounts = (state, dispatch) => {
   // If `keyringState` is not null `asyncLoadAccounts` is running.
   if (keyringState) return;
   // If `loadAccts` is true, the `asyncLoadAccounts` has been run once.
-  if (loadAccts) return dispatch({ type: "SET_KEYRING", payload: keyring });
+  if (loadAccts) return dispatch({ type: 'SET_KEYRING', payload: keyring });
 
   // This is the heavy duty work
   loadAccts = true;
@@ -152,33 +178,33 @@ const loadAccounts = (state, dispatch) => {
 };
 
 const verifyInvitation = (state, dispatch, addressList) => {
-  const asyncVerify = async (accountAddressList) => {
+  const asyncVerify = async accountAddressList => {
     const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ walletIds: accountAddressList }),
-      redirect: "follow",
+      redirect: 'follow',
     };
-    console.log("address");
+    console.log('address');
     console.log(accountAddressList);
-    await fetch("https://app.konomi.tech/code/login", requestOptions)
-      .then((response) => {
+    await fetch('https://app.konomi.tech/code/login', requestOptions)
+      .then(response => {
         const asyncHandleResponse = async () => {
           const data = await response.json();
           if (response.status == 200 && response.ok) {
-            dispatch({ type: "INVITATION_VERIFIED" });
+            dispatch({ type: 'INVITATION_VERIFIED' });
           } else {
             dispatch({
-              type: "INVITATION_VERIFICATION_FAIL",
+              type: 'INVITATION_VERIFICATION_FAIL',
               payload: data.message,
             });
           }
         };
         asyncHandleResponse();
       })
-      .catch((error) => {
-        console.log("error", error);
-        dispatch({ type: "INVITATION_VERIFICATION_ERROR" });
+      .catch(error => {
+        console.log('error', error);
+        dispatch({ type: 'INVITATION_VERIFICATION_ERROR' });
       });
   };
   asyncVerify(addressList);
@@ -187,29 +213,29 @@ const verifyInvitation = (state, dispatch, addressList) => {
 const activateInvitation = (state, dispatch, addressList, code) => {
   const asyncActivate = async (accountAddressList, code) => {
     const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ walletIds: accountAddressList, code }),
-      redirect: "follow",
+      redirect: 'follow',
     };
-    await fetch("https://app.konomi.tech/code/activate", requestOptions)
-      .then((response) => {
+    await fetch('https://app.konomi.tech/code/activate', requestOptions)
+      .then(response => {
         const asyncHandleResponse = async () => {
           const data = await response.json();
           if (response.status == 200 && response.ok) {
-            dispatch({ type: "INVITATION_VERIFIED" });
+            dispatch({ type: 'INVITATION_VERIFIED' });
           } else {
             dispatch({
-              type: "INVITATION_ACTIVATION_FAIL",
+              type: 'INVITATION_ACTIVATION_FAIL',
               payload: data.message,
             });
           }
         };
         asyncHandleResponse();
       })
-      .catch((error) => {
-        console.log("error", error);
-        dispatch({ type: "INVITATION_ACTIVATION_ERROR" });
+      .catch(error => {
+        console.log('error', error);
+        dispatch({ type: 'INVITATION_ACTIVATION_ERROR' });
       });
   };
   asyncActivate(addressList, code);
@@ -217,26 +243,26 @@ const activateInvitation = (state, dispatch, addressList, code) => {
 
 const SubstrateContext = React.createContext();
 
-const SubstrateContextProvider = (props) => {
+const SubstrateContextProvider = props => {
   // filtering props and merge with default param value
   const initState = { ...INIT_STATE };
-  const neededPropNames = ["socket", "types"];
-  neededPropNames.forEach((key) => {
+  const neededPropNames = ['socket', 'types'];
+  neededPropNames.forEach(key => {
     initState[key] =
-      typeof props[key] === "undefined" ? initState[key] : props[key];
+      typeof props[key] === 'undefined' ? initState[key] : props[key];
   });
 
   const [state, dispatch] = useReducer(reducer, initState);
   state.connectSubstrate = () => {
-    console.log("connect to substrate");
+    console.log('connect to substrate');
     connect(state, dispatch);
   };
   state.loadAccounts = () => {
-    console.log("loadAccounts");
+    console.log('loadAccounts');
     loadAccounts(state, dispatch);
   };
   // loadAccounts(state, dispatch);
-  state.verifyInvitation = (accountAddressList) => {
+  state.verifyInvitation = accountAddressList => {
     verifyInvitation(state, dispatch, accountAddressList);
   };
 

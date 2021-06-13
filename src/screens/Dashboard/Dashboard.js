@@ -3,7 +3,7 @@ import React from 'react';
 import { Hint } from 'components';
 import { ReactComponent as HealthCircle } from 'resources/icons/HealthCircle.svg';
 import { numberToReadableString } from 'utils/numberUtils';
-import { useWallet } from './WalletContext';
+import { connect } from 'react-redux';
 
 import styles from './Dashboard.module.scss';
 
@@ -49,24 +49,37 @@ const getHealthIndexColor = healthIndex => {
   return COLOR.blue;
 };
 
-export default function Main(props) {
-  const { accountBalance } = props;
-  const { prices, setPrices, balances, setBalances } = useWallet();
+function Main(props) {
+  const {
+    walletBalances,
+    userBalance,
+    supplies,
+    debts,
+    prices,
+    liquidationThreshold,
+  } = props;
 
-  let result = 0;
-  for (let index = 0; index < 5; index++) {
-    result += prices[index] * balances[index];
-  }
+  let totalWalletBalance = 0;
+  totalWalletBalance =
+    prices['DOT'] * walletBalances['DOT'] +
+    prices['ETH'] * walletBalances['ETH'];
+
+  // let totalSupplyBalance = 0;
+  // totalSupplyBalance =
+  //   prices['DOT'] * supplies['DOT'] + prices['ETH'] * supplies['ETH'];
+
+  // let totalDebtBalance = 0;
+  // totalDebtBalance =
+  //   prices['DOT'] * debts['DOT'] + prices['ETH'] * debts['ETH'];
+  const totalSupplyBalance = userBalance.totalSupply;
+  const totalDebtBalance = userBalance.totalDebt;
+  const totalBorrowLimit = userBalance.totalCollateral;
 
   const getHealthIndex = () => {
-    if (
-      !accountBalance ||
-      accountBalance.debtBalance === 0 ||
-      accountBalance.borrowLimit === 0
-    ) {
+    if (totalBorrowLimit === 0 || totalDebtBalance === 0) {
       return -1;
     }
-    const index = accountBalance.borrowLimit / accountBalance.debtBalance;
+    const index = totalBorrowLimit / totalDebtBalance;
     if (isNaN(index)) {
       return -1;
     }
@@ -93,13 +106,13 @@ export default function Main(props) {
       <div className={styles.item}>
         <p className={styles.cellLabel}>TOTAL SUPPLY</p>
         <p className={styles.cellNumber}>
-          ${numberToReadableString(accountBalance.supplyBalance, true)}
+          ${numberToReadableString(totalSupplyBalance, true)}
         </p>
       </div>
       <div className={styles.item}>
         <p className={styles.cellLabel}>TOTAL BORROW</p>
         <p className={styles.cellNumber}>
-          ${numberToReadableString(accountBalance.debtBalance, true)}
+          ${numberToReadableString(totalDebtBalance, true)}
         </p>
       </div>
       <div className={[styles.item, styles.health].join(' ')}>
@@ -112,7 +125,9 @@ export default function Main(props) {
         <p className={styles.index} style={getHealthIndexStyle()}>
           {getHealthIndexText(healthIndex)}
         </p>
-        <p className={styles.threshold}>LIQUIDATION THRESHOLD: 1.0</p>
+        <p className={styles.threshold}>
+          LIQUIDATION THRESHOLD: {liquidationThreshold.toFixed(1)}
+        </p>
       </div>
       <div className={styles.item}>
         <p className={styles.cellLabel}>
@@ -120,15 +135,26 @@ export default function Main(props) {
         </p>
 
         <p className={styles.cellNumber}>
-          ${numberToReadableString(accountBalance.borrowLimit, true)}
+          ${numberToReadableString(totalBorrowLimit, true)}
         </p>
       </div>
       <div className={styles.item}>
         <p className={styles.cellLabel}>TOTAL WALLET BALLANCE</p>
         <p className={styles.cellNumber}>
-          ${numberToReadableString(result, true)}
+          ${numberToReadableString(totalWalletBalance, true)}
         </p>
       </div>
     </div>
   );
 }
+
+const mapStateToProps = state => ({
+  walletBalances: state.wallet.balances,
+  userBalance: state.market.userBalance,
+  supplies: state.market.supplies,
+  debts: state.market.debts,
+  prices: state.market.prices,
+  liquidationThreshold: state.market.liquidationThreshold,
+});
+
+export default connect(mapStateToProps)(Main);
