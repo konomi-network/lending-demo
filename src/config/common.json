@@ -3,37 +3,134 @@
   "DEVELOPMENT_KEYRING": true,
   "CUSTOM_TYPES": {
     "Address": "MultiAddress",
-    "AssetId": "u64",
-    "FeeRate": "u64",
     "LookupSource": "MultiAddress",
-    "User": {
-      "borrowLimit": "Balance",
-      "supplyBalance": "Balance",
-      "debtBalance": "Balance"
+    "Basic": {
+      "id": "u8"
     },
+    "Native": {
+      "id": "u8"
+    },
+    "Cross": {
+      "id": "u8"
+    },
+    "Erc20": {
+      "id": "u8"
+    },
+    "CurrencyIdOf": "CurrencyId",
+    "CurrencyId": {
+      "_enum": {
+        "Basic": "Basic",
+        "Native": "Native",
+        "Cross": "Cross",
+        "Erc20": "Erc20"
+      }
+    },
+    "ParachainId": {
+      "_enum": [
+        "Statemint",
+        "KonomiTestChain"
+      ]
+    },
+    "CurrencyAccountData": {
+      "free": "Balance",
+      "reserved": "Balance",
+      "frozen": "Balance"
+    },
+    "PoolId": "u64",
     "Pool": {
+      "id": "u64",
+      "name": "Vec<u8>",
+      "currency_id": "CurrencyIdOf",
+      "can_be_collateral": "bool",
       "enabled": "bool",
-      "canBeCollateral": "bool",
-      "asset": "AssetId",
-      "supply": "Balance",
+      "supply": "FixedU128",
+      "total_supply_index": "FixedU128",
+      "debt": "FixedU128",
+      "total_debt_index": "FixedU128",
+      "interest_updated_at": "BlockNumber",
+      "minimal_amount": "FixedU128",
+      "safe_factor": "FixedU128",
+      "close_factor": "FixedU128",
+      "close_minimal_amount": "FixedU128",
+      "discount_factor": "FixedU128",
+      "utilization_factor": "FixedU128",
+      "initial_interest_rate": "FixedU128",
+      "last_updated": "BlockNumber",
+      "last_updated_by": "AccountId",
+      "created_by": "AccountId",
+      "created_at": "BlockNumber"
+    },
+    "UserData": {
+      "amount": "FixedU128",
+      "index": "FixedU128"
+    },
+    "Price": {
+      "price": "FixedU128",
+      "updated_at": "BlockNumber"
+    },
+    "FeedId": "u32",
+    "RoundId": "u32",
+    "Value": "u128",
+    "FeedConfig": {
+      "owner": "AccountId",
+      "pending_owner": "Option<AccountId>",
+      "submission_value_bounds": "(Value, Value)",
+      "submission_count_bounds": "(u32, u32)",
+      "payment": "Balance",
+      "timeout": "BlockNumber",
+      "decimals": "u8",
+      "description": "Vec<u8>",
+      "restart_delay": "RoundId",
+      "reporting_round": "RoundId",
+      "latest_round": "RoundId",
+      "first_valid_round": "Option<RoundId>",
+      "oracle_count": "u32",
+      "pruning_window": "RoundId",
+      "next_round_to_prune": "RoundId",
       "debt": "Balance",
-      "safeFactor": "FixedU128",
-      "closeFactor": "FixedU128",
-      "discountFactor": "FixedU128",
-      "totalSupplyIndex": "FixedU128",
-      "totalDebtIndex": "FixedU128",
-      "lastUpdated": "BlockNumber",
-      "utilizationFactor": "FixedU128",
-      "initialInterestRate": "FixedU128"
+      "max_debt": "Option<Balance>"
     },
-    "UserSupply": {
-      "amount": "Balance",
-      "index": "FixedU128"
+    "FeedConfigOf": "FeedConfig",
+    "Round": {
+      "started_at": "BlockNumber",
+      "answer": "Option<Value>",
+      "updated_at": "Option<BlockNumber>",
+      "answered_in_round": "Option<RoundId>"
     },
-    "UserDebt": {
-      "amount": "Balance",
-      "index": "FixedU128"
-    }
+    "RoundOf": "Round",
+    "RoundDetails": {
+      "submissions": "Vec<Value>",
+      "submission_count_bounds": "(u32, u32)",
+      "payment": "Balance",
+      "timeout": "BlockNumber"
+    },
+    "RoundDetailsOf": "RoundDetails",
+    "OracleMeta": {
+      "withdrawable": "Balance",
+      "admin": "AccountId",
+      "pending_admin": "Option<AccountId>"
+    },
+    "OracleMetaOf": "OracleMeta",
+    "OracleStatus": {
+      "starting_round": "RoundId",
+      "ending_round": "Option<RoundId>",
+      "last_reported_round": "Option<RoundId>",
+      "last_started_round": "Option<RoundId>",
+      "latest_submission": "Option<Value>"
+    },
+    "OracleStatusOf": "OracleStatus",
+    "Requester": {
+      "delay": "RoundId",
+      "last_started_round": "Option<RoundId>"
+    },
+    "RoundData": {
+      "started_at": "BlockNumber",
+      "answer": "Value",
+      "updated_at": "BlockNumber",
+      "answered_in_round": "RoundId"
+    },
+    "RoundDataOf": "RoundData",
+    "SubmissionBounds": "(u32, u32)"
   },
   "RPC": {
     "lending": {

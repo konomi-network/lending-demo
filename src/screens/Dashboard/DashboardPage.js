@@ -4,12 +4,11 @@ import { InvitationDialog, LiquidationAlert } from 'components';
 import { useSubstrate } from 'services/substrate-lib';
 import Dashboard from './Dashboard';
 import Wallet from './Wallet';
-import { WalletContextProvider } from './WalletContext';
 
 import './DashboardPage.scss';
 
 export default function Main(props) {
-  const { accountPair, accountBalance } = props;
+  const { accountPair } = props;
   const { invitationActiveState } = useSubstrate();
 
   if (!accountPair || !accountPair.address) {
@@ -21,12 +20,10 @@ export default function Main(props) {
   }
 
   return (
-    <WalletContextProvider>
-      <div className="DashboardPage-container">
-        <LiquidationAlert {...props} />
-        <Dashboard accountPair={accountPair} accountBalance={accountBalance} />
-        <Wallet accountPair={accountPair} />
-      </div>
-    </WalletContextProvider>
+    <div className="DashboardPage-container">
+      <LiquidationAlert {...props} />
+      <Dashboard {...props} />
+      <Wallet {...props} />
+    </div>
   );
 }

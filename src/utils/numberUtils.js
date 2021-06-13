@@ -17,6 +17,7 @@ const balanceToAPY = balance => {
 // Convert balance to a unit number, based on money base 10^12.
 const balanceToUnitNumber = balance => {
   const balanceString = balance.toString();
+  console.log('balanceString, ' + balanceString);
   const balanceBigInt = BigInt(balanceString);
   const tmp = balanceBigInt / 1000000n;
   const tmpNumber = Number(tmp);
@@ -78,6 +79,13 @@ const u128StringToNumber = stringNumber => {
   return tmpNumber / 1000000;
 };
 
+const priceToNumber = price => {
+  const priceString = price.toString();
+  const priceBigInt = BigInt(priceString);
+  const finalPriceBigInt = priceBigInt / 100000n;
+  return Number(finalPriceBigInt) / 1000;
+};
+
 export {
   balanceToBigInt,
   balanceToAPY,
@@ -87,4 +95,5 @@ export {
   fixed32ToNumber,
   fixed32ToAPY,
   u128StringToNumber,
+  priceToNumber,
 };
