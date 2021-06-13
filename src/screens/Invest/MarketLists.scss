@@ -1,16 +1,16 @@
 .MarketLists-container {
   display: flex;
   flex-direction: row;
-  margin: 40px auto;
-  width: 1400px;
+  margin: 40px 24px;
+  width: 100%;
   position: relative;
   /* z-index: 100; */
 }
 
 .Market-container {
-  width: 47%;
+  width: 45%;
   padding: 40px 50px 60px 50px;
-  background-color: #28337A;
+  background-color: #28337a;
   box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
@@ -28,7 +28,7 @@
   line-height: 72px;
   letter-spacing: 0.02em;
 
-  color: #DDDCDC;
+  color: #dddcdc;
   margin: 0 0 0.7em;
 }
 
@@ -45,5 +45,5 @@
   font-weight: 600;
   font-size: 19px;
   line-height: 35px;
-  color: #CECECE;
+  color: #cecece;
 }
