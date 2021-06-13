@@ -135,6 +135,10 @@ const loadAccounts = (state, dispatch) => {
         address,
         meta: { ...meta },
       }));
+      console.log(
+        '🚀 ~ file: SubstrateContext.js ~ line 138 ~ allAccounts=allAccounts.map ~ allAccounts',
+        allAccounts
+      );
 
       // when allAccounts = [], alert user to install
       if (!allAccounts || allAccounts.length < 1) {
@@ -143,7 +147,7 @@ const loadAccounts = (state, dispatch) => {
           payload: {
             code: 0,
             description:
-              'Sorry, there is no account detected. Please check if you have install polkadot and have accounts created',
+              'Sorry, there is no account detected. Please check if you have installed polkadot.js and have accounts created',
           },
         });
       } else {
