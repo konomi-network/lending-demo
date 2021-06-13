@@ -127,7 +127,25 @@ const loadAccounts = (state, dispatch) => {
   const asyncLoadAccounts = async () => {
     dispatch({ type: 'LOAD_KEYRING' });
     try {
-      await web3Enable(config.APP_NAME);
+      const extensions = await web3Enable(config.APP_NAME);
+      console.log(
+        '🚀 ~ file: SubstrateContext.js ~ line 131 ~ asyncLoadAccounts ~ extensions',
+        extensions
+      );
+
+      // when extensions = [], alert user to install extension
+      if (!extensions || extensions.length < 1) {
+        dispatch({
+          type: 'CONNECT_ERROR',
+          payload: {
+            code: 0,
+            description:
+              'Sorry, there is no extension detected. Please check if you have installed polkadot.js',
+          },
+        });
+        return;
+      }
+
       let allAccounts = await web3Accounts();
       // allAccounts = allAccounts.map(({ address, meta }) =>
       //   ({ address, meta: { ...meta, name: `${meta.name} (${meta.source})` } }));
@@ -145,22 +163,22 @@ const loadAccounts = (state, dispatch) => {
         dispatch({
           type: 'CONNECT_ERROR',
           payload: {
-            code: 0,
+            code: 1,
             description:
               'Sorry, there is no account detected. Please check if you have installed polkadot.js and have accounts created',
           },
         });
-      } else {
-        keyring.loadAll(
-          { isDevelopment: config.DEVELOPMENT_KEYRING },
-          allAccounts
-        );
-        dispatch({ type: 'SET_KEYRING', payload: keyring });
-        console.log(
-          '🚀 ~ file: SubstrateContext.js ~ line 175 ~ asyncLoadAccounts ~ keyring',
-          keyring
-        );
+        return;
       }
+      keyring.loadAll(
+        { isDevelopment: config.DEVELOPMENT_KEYRING },
+        allAccounts
+      );
+      dispatch({ type: 'SET_KEYRING', payload: keyring });
+      console.log(
+        '🚀 ~ file: SubstrateContext.js ~ line 175 ~ asyncLoadAccounts ~ keyring',
+        keyring
+      );
     } catch (e) {
       console.error(
         '🚀 ~ file: SubstrateContext.js ~ line 178 ~ asyncLoadAccounts ~ e',

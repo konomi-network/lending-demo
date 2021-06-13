@@ -14,6 +14,7 @@ import ArrowImage from 'resources/img/arrow_right.png';
 import { SubstrateContextProvider, useSubstrate } from 'services/substrate-lib';
 import Watermark from 'resources/img/watermark_new.png';
 import { connect } from 'react-redux';
+import isNumber from 'lodash/isNumber';
 import walletAction from 'modules/wallet/actions';
 import marketAction from 'modules/market/actions';
 import { fetchUserBalance } from 'services/user-balance';
@@ -58,7 +59,7 @@ function Main(props) {
   }, [invitationActiveState, keyring, accountAddress]);
 
   useEffect(() => {
-    if (apiError && apiError.code === 0 && apiError.description) {
+    if (apiError && isNumber(apiError.code) && apiError.description) {
       setModalOpen(true);
     }
   }, [apiError]);
