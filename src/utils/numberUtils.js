@@ -1,5 +1,7 @@
 /* global BigInt */
 
+const u128Base = 1000000000000;
+
 // Convert balance to BigInt number.
 const balanceToBigInt = balance => {
   const balanceString = balance.toString();
@@ -86,6 +88,16 @@ const priceToNumber = price => {
   return Number(finalPriceBigInt) / 1000;
 };
 
+const numberToU128String = number => {
+  let buffer = 1n;
+  while (number > 9000) {
+    number = number / 10;
+    buffer = buffer * 10n;
+  }
+  const numberBigInt = BigInt(Math.floor(number * u128Base)) * buffer;
+  return numberBigInt.toString();
+};
+
 export {
   balanceToBigInt,
   balanceToAPY,
@@ -96,4 +108,5 @@ export {
   fixed32ToAPY,
   u128StringToNumber,
   priceToNumber,
+  numberToU128String,
 };

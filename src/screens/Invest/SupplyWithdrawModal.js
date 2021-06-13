@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
-import { numberToReadableString } from 'utils/numberUtils';
+import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
 import DotImage from 'resources/img/DOT.png';
 import EthImage from 'resources/img/ETH.png';
 import CloseIcon from 'resources/img/close_black.png';
@@ -21,6 +21,7 @@ function Main(props) {
     setModalOpen,
     accountPair,
     walletBalances,
+    pools,
     supplies,
     prices,
   } = props;
@@ -30,7 +31,6 @@ function Main(props) {
   const [activeItem, setActiveItem] = useState('Supply');
   const [txCallable, setTxCallable] = useState('supply');
   const [txStatus, setTxStatus] = useState(null);
-  const [apy, setAPY] = useState(0);
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
@@ -38,12 +38,19 @@ function Main(props) {
   const price = prices[abbr];
   const currentSupply = supplies[abbr];
   const walletBalance = walletBalances[abbr];
+  const pool = pools[abbr];
+  let apy = 0;
+  if (pool && pool.supplyAPY && pool.supplyAPY !== '0') {
+    const apyNumber = parseInt(pool.supplyAPY) / 100000;
+    apy = apyNumber.toFixed(2);
+  }
 
   const numberInput = React.createRef();
 
   const onChangeInput = event => {
     setInputValue(event.target.value);
-    const numberValue = parseFloat(event.target.value).toPrecision(12);
+    // const numberValue = parseFloat(event.target.value).toPrecision(12);
+    const numberValue = parseFloat(event.target.value);
     if (numberValue && !isNaN(numberValue)) {
       setInputNumberValue(numberValue);
     } else {
@@ -101,14 +108,14 @@ function Main(props) {
         // New supply exceeds wallet balance.
         return null;
       } else {
-        return inputNumberValue;
+        return numberToU128String(inputNumberValue);
       }
     } else {
       if (inputNumberValue > currentSupply) {
         // Withdraw amount exceeds the current supply.
         return null;
       } else {
-        return inputNumberValue;
+        return numberToU128String(inputNumberValue);
       }
     }
   };
@@ -223,6 +230,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  pools: state.market.pools,
   supplies: state.market.supplies,
   prices: state.market.prices,
 });

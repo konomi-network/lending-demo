@@ -1,3 +1,3 @@
-import { fetchUserInfo } from './getUserInfo';
+import { fetchUserBalance } from './userBalanceServices';
 
-export { fetchUserInfo };
+export { fetchUserBalance };

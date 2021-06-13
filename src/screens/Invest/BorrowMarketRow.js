@@ -14,52 +14,23 @@ const BORROW_ASSET_LIST = [
 ];
 
 function Main(props) {
-  const { rowId, onClickBorrowMarketRow, walletBalances, prices } = props;
-
-  const [apy, setAPY] = useState(0);
-  const [liquidity, setLiquidity] = useState(0);
-
-  // useEffect(() => {
-  //   let unsubLiquidity = null;
-  //   const assetId = rowId;
-
-  //   if (assetId != null) {
-  //     const getLiquidity = async () => {
-  //       unsubLiquidity = await api.query.lending.pools(assetId, assetPool => {
-  //         if (assetPool.isSome) {
-  //           const unwrappedPool = assetPool.unwrap();
-  //           const liquidityInt =
-  //             balanceToUnitNumber(unwrappedPool.supply) -
-  //             balanceToUnitNumber(unwrappedPool.debt);
-  //           setLiquidity(liquidityInt);
-  //         } else {
-  //           setLiquidity(0);
-  //         }
-  //       });
-  //     };
-  //     getLiquidity();
-  //   }
-
-  //   return () => {
-  //     unsubLiquidity && unsubLiquidity();
-  //   };
-  // }, [api.query.assets, api.query.lending, accountPair, rowId]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(async () => {
-  //     const rate = await api.rpc.lending.debtRate(rowId);
-  //     const newAPY = fixed32ToAPY(rate);
-  //     if (newAPY !== apy) {
-  //       setAPY(newAPY);
-  //     }
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [rowId]);
+  const { rowId, onClickBorrowMarketRow, walletBalances, pools, prices } =
+    props;
 
   const rowData = BORROW_ASSET_LIST[rowId];
   const abbr = rowData.abbr;
   const walletBalance = walletBalances[abbr];
   const price = prices[abbr];
+  const pool = pools[abbr];
+  let apy = 0;
+  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
+    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+    apy = apyNumber.toFixed(2);
+  }
+  let liquidity = 0;
+  if (pool && pool.supply && pool.supply !== '0') {
+    liquidity = parseInt(pool.supply) / 100000;
+  }
   return (
     <div
       className="Market-table-row"
@@ -91,6 +62,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  pools: state.market.pools,
   prices: state.market.prices,
 });
 

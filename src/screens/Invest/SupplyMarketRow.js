@@ -26,20 +26,7 @@ const SUPPLY_ASSET_LIST = [
 ];
 
 function Main(props) {
-  const { rowId, onClickSupplyMarketRow, walletBalances } = props;
-
-  const [apy, setAPY] = useState(0);
-
-  // useEffect(() => {
-  //   const interval = setInterval( async () => {
-  //     const rate = await api.rpc.lending.supplyRate(rowId);
-  //     const newAPY = fixed32ToAPY(rate);
-  //     if (newAPY !== apy) {
-  //       setAPY(newAPY);
-  //     }
-  //   }, 1000);
-  //   return () => clearInterval(interval);
-  // }, [rowId]);
+  const { rowId, onClickSupplyMarketRow, walletBalances, pools } = props;
 
   // const renderCollateralSlider = () => {
   //   return (
@@ -52,6 +39,12 @@ function Main(props) {
   const rowData = SUPPLY_ASSET_LIST[rowId];
   const abbr = rowData.abbr;
   const walletBalance = walletBalances[abbr];
+  const pool = pools[abbr];
+  let apy = 0;
+  if (pool && pool.supplyAPY && pool.supplyAPY !== '0') {
+    const apyNumber = parseInt(pool.supplyAPY) / 100000;
+    apy = apyNumber.toFixed(2);
+  }
   return (
     <div
       className="Market-table-row"
@@ -78,6 +71,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  pools: state.market.pools,
 });
 
 export default connect(mapStateToProps)(Main);

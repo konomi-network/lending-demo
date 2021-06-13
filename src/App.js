@@ -5,13 +5,19 @@ import { ReactComponent as AppLogo } from 'resources/icons/AppLogo.svg';
 import { AccountButton, FaucetButton, TabBar } from 'components';
 import { TAB_NAME_ARRAY } from 'components/Tabbar/TabBar';
 import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from 'screens';
-import { fixed32ToNumber, priceToNumber } from 'utils/numberUtils';
+import {
+  balanceToUnitNumber,
+  fixed32ToNumber,
+  priceToNumber,
+} from 'utils/numberUtils';
 import ArrowImage from 'resources/img/arrow_right.png';
 import { SubstrateContextProvider, useSubstrate } from 'services/substrate-lib';
 import Watermark from 'resources/img/watermark_new.png';
 import { connect } from 'react-redux';
 import walletAction from 'modules/wallet/actions';
 import marketAction from 'modules/market/actions';
+import { fetchUserBalance } from 'services/user-balance';
+import { fetchPools } from 'services/pool';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.scss';
@@ -19,6 +25,8 @@ import './App.scss';
 function Main(props) {
   const {
     updateWalletBalance,
+    updatePools,
+    updateUserBalance,
     updateSupply,
     updateDebt,
     updatePrice,
@@ -76,7 +84,7 @@ function Main(props) {
         accountAddress,
         { native: { id: 0 } },
         accountData => {
-          updateWalletBalance('DOT', accountData.free.toNumber());
+          updateWalletBalance('DOT', balanceToUnitNumber(accountData.free));
         }
       );
     };
@@ -85,7 +93,7 @@ function Main(props) {
         accountAddress,
         { native: { id: 1 } },
         accountData => {
-          updateWalletBalance('ETH', accountData.free.toNumber());
+          updateWalletBalance('ETH', balanceToUnitNumber(accountData.free));
         }
       );
     };
@@ -254,6 +262,25 @@ function Main(props) {
     api && api.query && api.query.chainlinkFeed,
   ]);
 
+  // Poll user balance.
+  useEffect(() => {
+    let interval = null;
+    if (accountAddress) {
+      interval = setInterval(async () => {
+        await fetchUserBalance(updateUserBalance, accountAddress);
+      }, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [accountAddress]);
+
+  // Poll pools.
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await fetchPools(updatePools);
+    }, 5000);
+    return () => clearInterval(interval);
+  });
+
   // Account address could be null before user link the polkadot extension or
   // doesn't have an account.
   const accountPair =
@@ -359,8 +386,10 @@ function Main(props) {
 
 const mapDispatchToProps = {
   updateWalletBalance: walletAction.UPDATE_WALLET_BALANCE,
+  updatePools: marketAction.UPDATE_POOLS,
+  updateUserBalance: marketAction.UPDATE_USER_BALANCE,
   updateSupply: marketAction.UPDATE_SUPPLY,
-  updateDebt: marketAction.UPDATE_SUPPLY,
+  updateDebt: marketAction.UPDATE_DEBT,
   updatePrice: marketAction.UPDATE_PRICE,
   updateLiquidationThreshold: marketAction.UPDATE_LIQUIDATION_THRESHOLD,
 };
