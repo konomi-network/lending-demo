@@ -135,15 +135,33 @@ const loadAccounts = (state, dispatch) => {
         address,
         meta: { ...meta },
       }));
-      console.log(allAccounts);
-      keyring.loadAll(
-        { isDevelopment: config.DEVELOPMENT_KEYRING },
-        allAccounts
-      );
-      dispatch({ type: 'SET_KEYRING', payload: keyring });
-      console.log(keyring);
+
+      // when allAccounts = [], alert user to install
+      if (!allAccounts || allAccounts.length < 1) {
+        dispatch({
+          type: 'CONNECT_ERROR',
+          payload: {
+            code: 0,
+            description:
+              'Sorry, there is no account detected. Please check if you have install polkadot and have accounts created',
+          },
+        });
+      } else {
+        keyring.loadAll(
+          { isDevelopment: config.DEVELOPMENT_KEYRING },
+          allAccounts
+        );
+        dispatch({ type: 'SET_KEYRING', payload: keyring });
+        console.log(
+          '🚀 ~ file: SubstrateContext.js ~ line 175 ~ asyncLoadAccounts ~ keyring',
+          keyring
+        );
+      }
     } catch (e) {
-      console.error(e);
+      console.error(
+        '🚀 ~ file: SubstrateContext.js ~ line 178 ~ asyncLoadAccounts ~ e',
+        e
+      );
       dispatch({ type: 'KEYRING_ERROR' });
     }
   };
