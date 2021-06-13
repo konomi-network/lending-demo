@@ -6,3 +6,4 @@ export { default as LiquidationAlert } from './Liquidation/LiquidationAlert';
 export { default as TabBar } from './Tabbar/TabBar';
 export { default as Tooltip } from './Tooltip';
 export { default as Hint } from './Hint';
+export { default as Modal } from './Modal';

@@ -2,7 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import { CookiesProvider } from 'react-cookie';
 
 import { ReactComponent as AppLogo } from 'resources/icons/AppLogo.svg';
-import { AccountButton, FaucetButton, TabBar } from 'components';
+import { Modal, AccountButton, FaucetButton, TabBar } from 'components';
 import { TAB_NAME_ARRAY } from 'components/Tabbar/TabBar';
 import { ConnectPage, DashboardPage, MarketLists, WelcomePage } from 'screens';
 import {
@@ -38,6 +38,15 @@ function Main(props) {
     useSubstrate();
   const { invitationActiveState, verifyInvitation } = useSubstrate();
 
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [accountBalance, setAccountBalance] = useState({
+    supplyBalance: null,
+    borrowLimit: null,
+    debtBalance: null,
+  });
+  const [threshold, setThreshold] = useState(null);
+
   useEffect(() => {
     if (invitationActiveState == null && accountAddress) {
       const addressList = keyring
@@ -47,6 +56,12 @@ function Main(props) {
       verifyInvitation(addressList);
     }
   }, [invitationActiveState, keyring, accountAddress]);
+
+  useEffect(() => {
+    if (apiError && apiError.code === 0 && apiError.description) {
+      setModalOpen(true);
+    }
+  }, [apiError]);
 
   useEffect(() => {
     let unsubThreshold = null;
@@ -363,7 +378,7 @@ function Main(props) {
             <AppLogo />
           </div>
           <TabBar onChangeTabItemName={setSelectedTabItem} />
-          <div className="App-header-middle"></div>
+          <div className="App-header-middle" />
           {renderAccountButton()}
           {renderArrow()}
           {renderFaucetButton()}
@@ -376,9 +391,16 @@ function Main(props) {
           />
         </div>
         <div className="App-oval-box">
-          <div className="App-oval-background"></div>
+          <div className="App-oval-background" />
         </div>
         {renderPage()}
+
+        {/* connection error alert */}
+        <Modal
+          open={modalOpen}
+          setOpen={setModalOpen}
+          header={apiError?.description}
+        />
       </div>
     </div>
   );
