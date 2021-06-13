@@ -14,3 +14,11 @@ Add the websocket connection to `config/development.json`, e.g.
 }
 ```
 Now, you can start the server with the command: `yarn start`.
+
+## Using docker
+```bash
+# If you want to build the image locally
+docker build -t konominetwork/ui:v0.1.0 .
+
+docker run --rm -p 80:80 konominetwork/ui:v0.1.0
+```
