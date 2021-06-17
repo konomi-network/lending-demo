@@ -373,36 +373,34 @@ function Main(props) {
 
   return (
     <div className="App-container" ref={contextRef}>
-      <div className="App-content-container">
-        <div className="App-header">
-          <div className="App-header-logo">
-            <AppLogo />
-          </div>
-          <TabBar onChangeTabItemName={setSelectedTabItem} />
-          <div className="App-header-middle" />
-          {renderAccountButton()}
-          {renderArrow()}
-          {renderFaucetButton()}
+      <div className="App-header">
+        <div className="App-header-logo">
+          <AppLogo />
         </div>
-        <div className="App-watermark">
-          <img
-            className="App-watermark-image"
-            src={Watermark}
-            alt="watermark-img"
-          />
-        </div>
-        <div className="App-oval-box">
-          <div className="App-oval-background" />
-        </div>
-        {renderPage()}
-
-        {/* connection error alert */}
-        <Modal
-          open={modalOpen}
-          setOpen={setModalOpen}
-          header={apiError?.description}
+        <TabBar onChangeTabItemName={setSelectedTabItem} />
+        <div className="App-header-middle" />
+        {renderAccountButton()}
+        {renderArrow()}
+        {renderFaucetButton()}
+      </div>
+      <div className="App-watermark">
+        <img
+          className="App-watermark-image"
+          src={Watermark}
+          alt="watermark-img"
         />
       </div>
+      <div className="App-oval-box">
+        <div className="App-oval-background" />
+      </div>
+      {renderPage()}
+
+      {/* connection error alert */}
+      <Modal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        header={apiError?.description}
+      />
     </div>
   );
 }
