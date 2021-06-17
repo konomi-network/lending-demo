@@ -1,6 +1,8 @@
+@import 'styles/variables.scss';
+
 .LiquidationAlert-container {
   height: 60px;
-  background-color: #E88C20;
+  background-color: $orange-1;
 }
 
 .LiquidationAlert-warning-text {
@@ -12,5 +14,5 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  color: #FFFFFF;
+  color: #ffffff;
 }

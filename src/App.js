@@ -23,6 +23,11 @@ import { fetchPools } from 'services/pool';
 import 'semantic-ui-css/semantic.min.css';
 import './App.scss';
 
+const STATUS = {
+  Activated: 'Activated',
+  READY: 'READY',
+};
+
 function Main(props) {
   const {
     updateWalletBalance,
@@ -68,7 +73,7 @@ function Main(props) {
     let unsubThreshold = null;
 
     if (
-      invitationActiveState === 'Activated' &&
+      invitationActiveState === STATUS.Activated &&
       api &&
       api.query.floatingRateLend
     ) {
@@ -301,14 +306,14 @@ function Main(props) {
   // doesn't have an account.
   const accountPair =
     accountAddress &&
-    keyringState === 'READY' &&
+    keyringState === STATUS.READY &&
     keyring.getPair(accountAddress);
 
   const renderArrow = () => {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== STATUS.Activated) {
       return null;
     }
     return (
@@ -324,7 +329,7 @@ function Main(props) {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== STATUS.Activated) {
       return null;
     }
     return <FaucetButton accountPair={accountPair} />;
@@ -338,7 +343,7 @@ function Main(props) {
       console.log('connect substrate');
       connectSubstrate();
       return null;
-    } else if (apiState !== 'READY') {
+    } else if (apiState !== STATUS.READY) {
       return <ConnectPage apiState={apiState} />;
     }
 
@@ -393,6 +398,7 @@ function Main(props) {
       <div className="App-oval-box">
         <div className="App-oval-background" />
       </div>
+
       {renderPage()}
 
       {/* connection error alert */}

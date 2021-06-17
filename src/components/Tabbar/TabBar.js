@@ -7,7 +7,7 @@ const TAB_NAME_ARRAY = ['Dashboard', 'Invest'];
 export default function TabBar(props) {
   const { onChangeTabItemName } = props;
 
-  const [selectedTabItem, setSelectedTabItem] = useState('Dashboard');
+  const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
 
   const onClickTabItemName = tabName => {
     const onClickTabItem = () => {

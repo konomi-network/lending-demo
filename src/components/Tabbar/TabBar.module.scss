@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;700;800;900&display=swap');
 @import 'styles/mixins.scss';
+@import 'styles/variables.scss';
 
 .container {
   display: flex;
@@ -25,14 +26,14 @@
     color: inherit;
   }
 
-  @include tabStates(#56b8ef);
+  @include tabStates($blue-1);
 }
 
 .itemActive {
   .itemLabel {
-    color: #56b8ef;
-    @include tabStates(#56b8ef);
+    color: $blue-1;
+    @include tabStates($blue-1);
   }
 
-  border-bottom: #56b8ef solid 4px;
+  border-bottom: $blue-1 solid 4px;
 }

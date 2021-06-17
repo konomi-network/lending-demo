@@ -1,3 +1,5 @@
+@import 'styles/variables.scss';
+
 .MarketLists-container {
   display: flex;
   flex-direction: row;
@@ -10,8 +12,8 @@
 .Market-container {
   width: 45%;
   padding: 40px 50px 60px 50px;
-  background-color: #28337a;
-  box-shadow: 4px 4px 30px rgba(0, 0, 0, 0.1);
+  background-color: $purple-3;
+  box-shadow: 4px 4px 30px $black-a10;
   border-radius: 8px;
 }
 
@@ -21,8 +23,6 @@
 }
 
 .Market-title {
-  font-family: Poppins;
-  font-style: normal;
   font-weight: 500;
   font-size: 40px;
   line-height: 72px;
@@ -40,8 +40,6 @@
 
 .Market-table-header-text {
   text-align: center;
-  font-family: Poppins;
-  font-style: normal;
   font-weight: 600;
   font-size: 19px;
   line-height: 35px;
