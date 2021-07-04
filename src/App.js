@@ -22,11 +22,15 @@ import { fetchPools } from 'services/pool';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.scss';
+import { isEmpty } from 'lodash';
+import { isFunction } from '@polkadot/util';
 
 const STATUS = {
   Activated: 'Activated',
   READY: 'READY',
 };
+
+const DEFAULT_COINS = ['KONO', 'BTC', 'ETH', 'DOT', 'DORA', 'LIT'];
 
 function Main(props) {
   const {
@@ -37,6 +41,7 @@ function Main(props) {
     updateDebt,
     updatePrice,
     updateLiquidationThreshold,
+    pools,
   } = props;
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
@@ -52,6 +57,10 @@ function Main(props) {
     debtBalance: null,
   });
   const [threshold, setThreshold] = useState(null);
+
+  const coins = isEmpty(pools)
+    ? DEFAULT_COINS
+    : Object.values(pools).map(coin => coin.name);
 
   useEffect(() => {
     if (invitationActiveState == null && accountAddress) {
@@ -98,84 +107,66 @@ function Main(props) {
 
   // Monitor wallet balances.
   useEffect(() => {
-    let unsubDotBalance = null;
-    let unsubEthBalance = null;
-    const getDotWalletBalance = async () => {
-      unsubDotBalance = await api.query.tokens.accounts(
-        accountAddress,
-        { native: { id: 0 } },
-        accountData => {
-          updateWalletBalance('DOT', balanceToUnitNumber(accountData.free));
-        }
-      );
-    };
-    const getEthWalletBalance = async () => {
-      unsubEthBalance = await api.query.tokens.accounts(
-        accountAddress,
-        { native: { id: 1 } },
-        accountData => {
-          updateWalletBalance('ETH', balanceToUnitNumber(accountData.free));
-        }
-      );
-    };
+    let roundIds = {};
+
+    const getAllWalletBalance = () =>
+      coins.map(async (coin, index) => {
+        const tokenName = coin.name || coin;
+        const tokenId = coin.id || index;
+
+        roundIds[tokenName] = await api.query.tokens.accounts(
+          accountAddress,
+          coin.currencyId || { native: { id: tokenId } },
+          accountData => {
+            console.log(
+              '🚀 ~ file: App.js ~ line 121 ~ coins.map ~ accountData',
+              accountData
+            );
+            updateWalletBalance(coin, balanceToUnitNumber(accountData.free));
+          }
+        );
+      });
+
     if (accountAddress && api && api.query && api.query.tokens) {
       console.log('get wallet balance');
-      getDotWalletBalance();
-      getEthWalletBalance();
+      getAllWalletBalance();
     }
-
-    return () => {
-      unsubDotBalance && unsubDotBalance();
-      unsubEthBalance && unsubEthBalance();
-    };
+    return () =>
+      Object.keys(roundIds).map(roundId => isFunction(roundId) && roundId());
   }, [
     accountAddress,
-    api,
     invitationActiveState,
     api && api.query && api.query.tokens,
   ]);
 
   // Monitor supply balances.
   useEffect(() => {
-    let unsubDotSupply = null;
-    let unsubEthSupply = null;
-
-    const getDotSupplyBalance = async () => {
-      unsubDotSupply = await api.query.floatingRateLend.poolUserSupplies(
-        1,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateSupply('DOT', amount);
+    let roundIds = {};
+    const getAllSupplyBalance = () =>
+      coins.map(async (coin, index) => {
+        const tokenName = coin.name || coin;
+        const tokenId = coin.id || index;
+        roundIds[tokenName] = await api.query.floatingRateLend.poolUserSupplies(
+          tokenId,
+          accountAddress,
+          data => {
+            if (data.isSome) {
+              const dataUnwrap = data.unwrap();
+              const amount = fixed32ToNumber(dataUnwrap.amount);
+              updateSupply(tokenName, amount);
+            }
           }
-        }
-      );
-    };
-    const getEthSupplyBalance = async () => {
-      unsubEthSupply = await api.query.floatingRateLend.poolUserSupplies(
-        2,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateSupply('ETH', amount);
-          }
-        }
-      );
-    };
+        );
+      });
 
     if (accountAddress && api && api.query && api.query.floatingRateLend) {
       console.log('floating supply');
-      getDotSupplyBalance();
-      getEthSupplyBalance();
+      getAllSupplyBalance();
     }
-    return () => {
-      unsubDotSupply && unsubDotSupply();
-      unsubEthSupply && unsubEthSupply();
-    };
+    return () =>
+      Object.keys(roundIds).forEach(
+        roundId => isFunction(roundId) && roundId()
+      );
   }, [
     api,
     accountAddress,
@@ -185,44 +176,31 @@ function Main(props) {
 
   // Monitor debt balances.
   useEffect(() => {
-    let unsubDotDebt = null;
-    let unsubEthDebt = null;
-
-    const getDotDebtBalance = async () => {
-      unsubDotDebt = await api.query.floatingRateLend.poolUserDebts(
-        1,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateDebt('DOT', amount);
+    let roundIds = {};
+    const getAllDebtBalance = () =>
+      coins.map(async (coin, index) => {
+        const tokenName = coin.name || coin;
+        const tokenId = coin.id || index;
+        roundIds[tokenName] = await api.query.floatingRateLend.poolUserDebts(
+          tokenId,
+          accountAddress,
+          data => {
+            if (data.isSome) {
+              const dataUnwrap = data.unwrap();
+              const amount = fixed32ToNumber(dataUnwrap.amount);
+              updateDebt(tokenName, amount);
+            }
           }
-        }
-      );
-    };
-    const getEthDebtBalance = async () => {
-      unsubEthDebt = await api.query.floatingRateLend.poolUserDebts(
-        2,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateDebt('ETH', amount);
-          }
-        }
-      );
-    };
+        );
+      });
 
     if (accountAddress && api && api.query && api.query.floatingRateLend) {
-      getDotDebtBalance();
-      getEthDebtBalance();
+      getAllDebtBalance();
     }
-    return () => {
-      unsubDotDebt && unsubDotDebt();
-      unsubEthDebt && unsubEthDebt();
-    };
+    return () =>
+      Object.keys(roundIds).forEach(
+        roundId => isFunction(roundId) && roundId()
+      );
   }, [
     api,
     accountAddress,
@@ -232,50 +210,39 @@ function Main(props) {
 
   // Monitor prices.
   useEffect(() => {
-    let unsubDotRoundId = null;
-    let unsubEthRoundId = null;
+    let roundIds = {};
 
-    const getDotPrice = async () => {
-      unsubDotRoundId = await api.query.chainlinkFeed.feeds(1, async data => {
-        if (!data.isEmpty) {
-          let json = JSON.parse(data.toString());
-          const lastRoundId = json['latest_round'];
-          const priceData = await api.query.chainlinkFeed.rounds(
-            1,
-            lastRoundId.toString()
-          );
-          if (priceData.isSome) {
-            const unWrappedPriceData = priceData.unwrap();
-            updatePrice('DOT', priceToNumber(unWrappedPriceData.answer));
+    const getAllPrices = () =>
+      coins.map(async (coin, index) => {
+        const tokenName = coin.name || coin;
+        const tokenId = coin.id || index;
+        roundIds[tokenName] = await api.query.chainlinkFeed.feeds(
+          tokenId,
+          async data => {
+            if (!data.isEmpty) {
+              let json = JSON.parse(data.toString());
+              const lastRoundId = json['latest_round'];
+              const priceData = await api.query.chainlinkFeed.rounds(
+                tokenId,
+                lastRoundId.toString()
+              );
+              if (priceData.isSome) {
+                const unWrappedPriceData = priceData.unwrap();
+                updatePrice(
+                  tokenName,
+                  priceToNumber(unWrappedPriceData.answer)
+                );
+              }
+            }
           }
-        }
+        );
       });
-    };
-    const getEthPrice = async () => {
-      unsubEthRoundId = await api.query.chainlinkFeed.feeds(2, async data => {
-        if (!data.isEmpty) {
-          let json = JSON.parse(data.toString());
-          const lastRoundId = json['latest_round'];
-          const priceData = await api.query.chainlinkFeed.rounds(
-            2,
-            lastRoundId.toString()
-          );
-          if (priceData.isSome) {
-            const unWrappedPriceData = priceData.unwrap();
-            updatePrice('ETH', priceToNumber(unWrappedPriceData.answer));
-          }
-        }
-      });
-    };
 
     if (accountAddress && api && api.query && api.query.chainlinkFeed) {
-      getDotPrice();
-      getEthPrice();
+      getAllPrices();
     }
-    return () => {
-      unsubDotRoundId && unsubDotRoundId();
-      unsubEthRoundId && unsubEthRoundId();
-    };
+    return () =>
+      Object.keys(roundIds).map(roundId => isFunction(roundId) && roundId());
   }, [
     api,
     accountAddress,
@@ -410,6 +377,9 @@ function Main(props) {
     </div>
   );
 }
+const mapStateToProps = state => ({
+  pools: state.market.pools,
+});
 
 const mapDispatchToProps = {
   updateWalletBalance: walletAction.UPDATE_WALLET_BALANCE,
@@ -421,7 +391,7 @@ const mapDispatchToProps = {
   updateLiquidationThreshold: marketAction.UPDATE_LIQUIDATION_THRESHOLD,
 };
 
-const MainContainer = connect(() => {}, mapDispatchToProps)(Main);
+const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export default function App() {
   return (
