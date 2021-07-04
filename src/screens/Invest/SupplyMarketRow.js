@@ -1,29 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
+import { COIN_IMAGES } from 'utils/coinImages';
 
 import './SupplyMarketRow.scss';
-
-const SUPPLY_ASSET_LIST = [
-  {
-    id: 0,
-    name: 'Polkadot',
-    abbr: 'DOT',
-    image: DotImage,
-    apy: 0.0204,
-    price: 60,
-  },
-  {
-    id: 1,
-    name: 'Ethereum',
-    abbr: 'ETH',
-    image: EthImage,
-    apy: 0.0004,
-    price: 600,
-  },
-];
 
 function Main(props) {
   const { rowId, onClickSupplyMarketRow, walletBalances, pools } = props;
@@ -36,8 +15,8 @@ function Main(props) {
   //   );
   // };
 
-  const rowData = SUPPLY_ASSET_LIST[rowId];
-  const abbr = rowData.abbr;
+  const rowData = pools[rowId];
+  const abbr = rowData.name;
   const walletBalance = walletBalances[abbr];
   const pool = pools[abbr];
   let apy = 0;
@@ -54,7 +33,7 @@ function Main(props) {
       <div className="SupplyMarket-asset-column Market-table-cell">
         <img
           className="Market-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
         <p className="Market-table-asset-text">{abbr}</p>

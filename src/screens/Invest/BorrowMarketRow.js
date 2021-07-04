@@ -3,22 +3,15 @@ import { connect } from 'react-redux';
 
 // import { useSubstrate } from 'services/substrate-lib';
 import { numberToReadableString } from 'utils/numberUtils';
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
-
+import { COIN_IMAGES } from 'utils/coinImages';
 import './BorrowMarketRow.scss';
-
-const BORROW_ASSET_LIST = [
-  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
-  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
-];
 
 function Main(props) {
   const { rowId, onClickBorrowMarketRow, walletBalances, pools, prices } =
     props;
 
-  const rowData = BORROW_ASSET_LIST[rowId];
-  const abbr = rowData.abbr;
+  const rowData = pools[rowId];
+  const abbr = rowData.name;
   const walletBalance = walletBalances[abbr];
   const price = prices[abbr];
   const pool = pools[abbr];
@@ -40,7 +33,7 @@ function Main(props) {
       <div className="BorrowMarket-asset-column Market-table-cell">
         <img
           className="Market-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
         <p className="Market-table-asset-text">{abbr}</p>

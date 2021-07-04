@@ -4,16 +4,10 @@ import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
 import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
+import { COIN_IMAGES } from 'utils/coinImages';
 import CloseIcon from 'resources/img/close_black.png';
 
 import './MarketModal.scss';
-
-const ASSET_LIST = [
-  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
-  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
-];
 
 function Main(props) {
   const {
@@ -34,7 +28,7 @@ function Main(props) {
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
-  const abbr = ASSET_LIST[assetId].abbr;
+  const abbr = pools[assetId].name;
   const price = prices[abbr];
   const currentSupply = supplies[abbr];
   const walletBalance = walletBalances[abbr];
@@ -130,10 +124,10 @@ function Main(props) {
       <div className="MarketModal-header">
         <img
           className="MarketModal-header-image"
-          src={ASSET_LIST[assetId].image}
+          src={COIN_IMAGES[pool.name]}
           alt="header-asset-icon"
         />
-        <p className="MarketModal-header-title">{ASSET_LIST[assetId].name}</p>
+        <p className="MarketModal-header-title">{pool.name}</p>
         <div
           onClick={() => setModalOpen(false)}
           className="MarketModal-header-close-button"
@@ -179,7 +173,7 @@ function Main(props) {
         <div className="MarketModal-trans-info-row">
           <img
             className="MarketModal-rate-icon"
-            src={ASSET_LIST[assetId].image}
+            src={COIN_IMAGES[pool.name]}
             alt="asset-icon"
           />
           <p className="MarketModal-trans-info-text">Supply APY</p>

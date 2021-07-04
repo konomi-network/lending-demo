@@ -1,13 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { COIN_IMAGES } from 'utils/coinImages';
+
 import { numberToReadableString } from 'utils/numberUtils';
 
 import './WalletAssetRow.scss';
 
 function WalletAssetRow(props) {
   const { rowData, walletBalances, supplies, debts, prices } = props;
-  const abbr = rowData.abbr;
+  console.log(
+    '🚀 ~ file: WalletAssetRow.js ~ line 12 ~ WalletAssetRow ~ supplies, debts, prices',
+    supplies,
+    debts,
+    prices
+  );
+  console.log(
+    '🚀 ~ file: WalletAssetRow.js ~ line 12 ~ WalletAssetRow ~ rowData',
+    rowData
+  );
+  const abbr = rowData.name;
   const assetValue = walletBalances[abbr] * prices[abbr];
 
   return (
@@ -15,10 +27,10 @@ function WalletAssetRow(props) {
       <div className="WalletAssetRow-column-asset WalletAssetRow-cell">
         <img
           className="WalletAssetRow-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
-        <p className="WalletAssetRow-asset-text">{rowData.abbr}</p>
+        <p className="WalletAssetRow-asset-text">{abbr}</p>
       </div>
       <div className="WalletAssetRow-column-supply-balance">
         <p className="WalletAssetRow-number">
@@ -36,7 +48,7 @@ function WalletAssetRow(props) {
         </p>
       </div>
       <div className="WalletAssetRow-column-price">
-        <p className="WalletAssetRow-number">${prices[abbr]}</p>
+        <p className="WalletAssetRow-number">${prices[abbr] || '0'}</p>
       </div>
       <div className="WalletAssetRow-column-value">
         <p className="WalletAssetRow-number">

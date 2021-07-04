@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Modal } from 'semantic-ui-react';
 
 import LiquidationAlert from 'components/Liquidation/LiquidationAlert';
@@ -12,16 +13,8 @@ import './BorrowMarketRow.scss';
 import './MarketLists.scss';
 import './SupplyMarketRow.scss';
 
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
-
-const ASSET_LIST = [
-  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
-  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
-];
-
-export default function Main(props) {
-  const { accountPair } = props;
+function Main(props) {
+  const { accountPair, pools } = props;
   const { invitationActiveState } = useSubstrate();
 
   const [supplyModalOpen, setSupplyModalOpen] = useState(false);
@@ -54,23 +47,19 @@ export default function Main(props) {
     setSupplyModalOpen(true);
   };
 
-  const renderSupplyMarketRow = rowId => {
-    return (
-      <SupplyMarketRow
-        key={`supply ${rowId}`}
-        rowId={rowId}
-        accountPair={accountPair}
-        onClickSupplyMarketRow={onClickSupplyMarketRow}
-      />
-    );
-  };
-
   const renderSupplyMarketTableContent = () => {
-    const rows = [];
-    for (var i = 0; i < ASSET_LIST.length; i++) {
-      rows.push(renderSupplyMarketRow(i));
-    }
-    return <div>{rows}</div>;
+    return (
+      <div>
+        {Object.values(pools).map(coin => (
+          <SupplyMarketRow
+            key={`supply ${coin.name}`}
+            rowId={coin.name}
+            accountPair={accountPair}
+            onClickSupplyMarketRow={onClickSupplyMarketRow}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderBorrowModal = () => {
@@ -110,11 +99,18 @@ export default function Main(props) {
   };
 
   const renderBorrowMarketTableContent = () => {
-    const rows = [];
-    for (var i = 0; i < ASSET_LIST.length; i++) {
-      rows.push(renderBorrowMarketRow(i));
-    }
-    return <div>{rows}</div>;
+    return (
+      <div>
+        {Object.values(pools).map(coin => (
+          <BorrowMarketRow
+            key={`borrow ${coin.name}`}
+            rowId={coin.name}
+            accountPair={accountPair}
+            onClickBorrowMarketRow={onClickBorrowMarketRow}
+          />
+        ))}
+      </div>
+    );
   };
 
   if (!accountPair || !accountPair.address) {
@@ -169,3 +165,10 @@ export default function Main(props) {
     </div>
   );
 }
+
+const mapStateToProps = state => ({
+  pools: state.market.pools,
+});
+
+const mapDispatchToProps = {};
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
