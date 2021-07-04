@@ -9,16 +9,7 @@ import './WalletAssetRow.scss';
 
 function WalletAssetRow(props) {
   const { rowData, walletBalances, supplies, debts, prices } = props;
-  console.log(
-    '🚀 ~ file: WalletAssetRow.js ~ line 12 ~ WalletAssetRow ~ supplies, debts, prices',
-    supplies,
-    debts,
-    prices
-  );
-  console.log(
-    '🚀 ~ file: WalletAssetRow.js ~ line 12 ~ WalletAssetRow ~ rowData',
-    rowData
-  );
+
   const abbr = rowData.name;
   const assetValue = walletBalances[abbr] * prices[abbr];
 
