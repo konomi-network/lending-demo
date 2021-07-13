@@ -98,6 +98,13 @@ const numberToU128String = number => {
   return numberBigInt.toString();
 };
 
+const formatWithDecimal = (number, decimals = 0) => {
+  if (!decimals) {
+    return number;
+  }
+  return number / 10 ** decimals;
+};
+
 export {
   balanceToBigInt,
   balanceToAPY,
@@ -109,4 +116,5 @@ export {
   u128StringToNumber,
   priceToNumber,
   numberToU128String,
+  formatWithDecimal,
 };

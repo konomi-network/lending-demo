@@ -2,25 +2,26 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 // import { useSubstrate } from 'services/substrate-lib';
-import { numberToReadableString } from 'utils/numberUtils';
+import { numberToReadableString, formatWithDecimal } from 'utils/numberUtils';
 import { COIN_IMAGES } from 'utils/coinImages';
 import './BorrowMarketRow.scss';
 
 function Main(props) {
-  const { rowData, rowId, onClickBorrowMarketRow, walletBalances } = props;
+  const { rowData, rowId, onClickBorrowMarketRow, walletBalances, decimals } =
+    props;
 
   const abbr = rowData.name;
   const walletBalance = walletBalances[abbr];
-  const price = rowData.price;
+  const price = formatWithDecimal(rowData.price, decimals);
 
   let apy = 0;
   if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
-    const apyNumber = parseInt(rowData.borrowAPY) / 100000;
+    const apyNumber = parseInt(rowData.borrowAPY) / decimals;
     apy = apyNumber.toFixed(2);
   }
   let liquidity = 0;
   if (rowData && rowData.supply && rowData.supply !== '0') {
-    liquidity = parseInt(rowData.supply) / 100000;
+    liquidity = parseInt(rowData.supply) / decimals;
   }
   return (
     <div
@@ -53,6 +54,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(Main);

@@ -1,18 +1,21 @@
-import { toNumber } from 'lodash';
+// import { toNumber } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
 import { COIN_IMAGES } from 'utils/coinImages';
 
-import { numberToReadableString } from 'utils/numberUtils';
+import { numberToReadableString, formatWithDecimal } from 'utils/numberUtils';
 
 import './WalletAssetRow.scss';
 
 function WalletAssetRow(props) {
-  const { rowData, walletBalances } = props;
+  const { rowData, walletBalances, decimals } = props;
 
   const abbr = rowData.name;
-  const assetValue = walletBalances[abbr] * toNumber(rowData.price);
+  const price = formatWithDecimal(rowData.price, decimals);
+  const supply = formatWithDecimal(rowData.supply, decimals);
+  const borrow = formatWithDecimal(rowData.borrow, decimals);
+  const assetValue = walletBalances[abbr] * price;
 
   return (
     <div className="WalletAssetRow-container">
@@ -26,12 +29,12 @@ function WalletAssetRow(props) {
       </div>
       <div className="WalletAssetRow-column-supply-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(rowData.supply)}
+          {numberToReadableString(supply)}
         </p>
       </div>
       <div className="WalletAssetRow-column-borrow-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(rowData.borrow)}
+          {numberToReadableString(borrow)}
         </p>
       </div>
       <div className="WalletAssetRow-column-wallet-balance">
@@ -41,7 +44,7 @@ function WalletAssetRow(props) {
       </div>
       <div className="WalletAssetRow-column-price">
         <p className="WalletAssetRow-number">
-          ${numberToReadableString(rowData.price) || '0'}
+          ${numberToReadableString(price) || '0'}
         </p>
       </div>
       <div className="WalletAssetRow-column-value">
@@ -55,9 +58,7 @@ function WalletAssetRow(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  debts: state.market.debts,
-  supplies: state.market.supplies,
-  prices: state.market.prices,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(WalletAssetRow);

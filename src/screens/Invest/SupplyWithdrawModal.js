@@ -3,14 +3,25 @@ import { connect } from 'react-redux';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
-import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
+import {
+  numberToReadableString,
+  numberToU128String,
+  formatWithDecimal,
+} from 'utils/numberUtils';
 import { COIN_IMAGES } from 'utils/coinImages';
 import CloseIcon from 'resources/img/close_black.png';
 
 import './MarketModal.scss';
 
 function Main(props) {
-  const { assetId, setModalOpen, accountPair, walletBalances, pools } = props;
+  const {
+    assetId,
+    setModalOpen,
+    accountPair,
+    walletBalances,
+    pools,
+    decimals,
+  } = props;
 
   const [inputValue, setInputValue] = useState(0);
   const [inputNumberValue, setInputNumberValue] = useState(null);
@@ -22,12 +33,13 @@ function Main(props) {
 
   const rowData = pools[assetId];
   const abbr = rowData.name;
-  const price = rowData.price;
+  const price = formatWithDecimal(rowData.price, decimals);
   const currentSupply = rowData.supply;
   const walletBalance = walletBalances[abbr];
+
   let apy = 0;
   if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
-    const apyNumber = parseInt(rowData.supplyAPY) / 100000;
+    const apyNumber = parseInt(rowData.supplyAPY) / decimals;
     apy = apyNumber.toFixed(2);
   }
 
@@ -217,6 +229,7 @@ function Main(props) {
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
   pools: state.market.pools,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(Main);

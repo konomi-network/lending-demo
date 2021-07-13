@@ -14,6 +14,10 @@ const fetchPools = async (updatePools, updateAssets = () => {}) => {
       const asyncHandleResponse = async () => {
         const data = await response.json();
         if (response.status == 200 && response.ok && data) {
+          console.log(
+            '🚀 ~ file: poolServices.js ~ line 17 ~ asyncHandleResponse ~ data',
+            data
+          );
           const payload = {};
           for (const pool of data.items) {
             const abbr = pool.name;
@@ -22,7 +26,10 @@ const fetchPools = async (updatePools, updateAssets = () => {}) => {
           }
           updatePools(payload);
           // ensure list is sorted in DEFAULT_COIN_ORDER
-          updateAssets(sortBy(Object.values(payload), 'order'));
+          updateAssets({
+            assets: sortBy(Object.values(payload), 'order'),
+            decimals: data.decimals,
+          });
         } else {
           // TODO: dispatch failure
           console.log('fetch pools fail');

@@ -19,6 +19,7 @@ const initState = {
     ETH: 100,
   },
   liquidationThreshold: 1.0,
+  decimals: 1,
 };
 
 export default (state = initState, action) => {
@@ -32,7 +33,8 @@ export default (state = initState, action) => {
     case 'UPDATE_ASSETS': {
       return {
         ...state,
-        assets: action.payload,
+        assets: action.payload.assets,
+        decimals: action.payload.decimals,
       };
     }
     // payload: {totalSupply: 10, totalDebt: 5, totalCollateral: 8}

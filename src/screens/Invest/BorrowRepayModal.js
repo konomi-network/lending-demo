@@ -3,7 +3,11 @@ import { connect } from 'react-redux';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
-import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
+import {
+  numberToReadableString,
+  numberToU128String,
+  formatWithDecimal,
+} from 'utils/numberUtils';
 import { COIN_IMAGES } from 'utils/coinImages';
 import CloseIcon from 'resources/img/close_black.png';
 
@@ -17,6 +21,7 @@ function Main(props) {
     walletBalances,
     pools,
     liquidationThreshold,
+    decimals,
   } = props;
 
   const [inputValue, setInputValue] = useState(0);
@@ -29,7 +34,7 @@ function Main(props) {
 
   const rowData = pools[assetId];
   const abbr = rowData.name;
-  const price = rowData.price;
+  const price = formatWithDecimal(rowData.price, decimals);
   const currentBorrow = rowData.borrow;
   const currentSupply = rowData.supply;
   const currentBorrowLimit = currentSupply;
@@ -227,9 +232,7 @@ function Main(props) {
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
   pools: state.market.pools,
-  supplies: state.market.supplies,
-  debts: state.market.debts,
-  prices: state.market.prices,
+  decimals: state.market.decimals,
   liquidationThreshold: state.market.liquidationThreshold,
 });
 
