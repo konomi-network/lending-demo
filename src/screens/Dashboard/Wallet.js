@@ -7,21 +7,7 @@ import './Wallet.scss';
 import './WalletAssetRow.scss';
 
 function Wallet(props) {
-  const { accountPair, pools } = props;
-
-  const renderTableRows = () => {
-    const tableRows = Object.values(pools).map(asset => {
-      return (
-        <WalletAssetRow
-          rowData={asset}
-          assetId={asset.id}
-          accountPair={accountPair}
-          key={asset.id}
-        />
-      );
-    });
-    return tableRows;
-  };
+  const { accountPair, assets } = props;
 
   const renderAssetTable = () => {
     return (
@@ -48,7 +34,16 @@ function Wallet(props) {
             <p className="Wallet-asset-table-header-text">Value</p>
           </div>
         </div>
-        {renderTableRows()}
+        {assets.map(asset => {
+          return (
+            <WalletAssetRow
+              rowData={asset}
+              assetId={asset.id}
+              accountPair={accountPair}
+              key={asset.id}
+            />
+          );
+        })}
       </div>
     );
   };
@@ -63,6 +58,7 @@ function Wallet(props) {
 
 const mapStateToProps = state => ({
   pools: state.market.pools,
+  assets: state.market.assets,
 });
 
 const mapDispatchToProps = {};

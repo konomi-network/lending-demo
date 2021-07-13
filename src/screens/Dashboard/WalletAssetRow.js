@@ -1,3 +1,4 @@
+import { toNumber } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
 
@@ -8,10 +9,10 @@ import { numberToReadableString } from 'utils/numberUtils';
 import './WalletAssetRow.scss';
 
 function WalletAssetRow(props) {
-  const { rowData, walletBalances, supplies, debts, prices } = props;
+  const { rowData, walletBalances } = props;
 
   const abbr = rowData.name;
-  const assetValue = walletBalances[abbr] * prices[abbr];
+  const assetValue = walletBalances[abbr] * toNumber(rowData.price);
 
   return (
     <div className="WalletAssetRow-container">
@@ -25,12 +26,12 @@ function WalletAssetRow(props) {
       </div>
       <div className="WalletAssetRow-column-supply-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(supplies[abbr])}
+          {numberToReadableString(rowData.supply)}
         </p>
       </div>
       <div className="WalletAssetRow-column-borrow-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(debts[abbr])}
+          {numberToReadableString(rowData.borrow)}
         </p>
       </div>
       <div className="WalletAssetRow-column-wallet-balance">
@@ -39,7 +40,9 @@ function WalletAssetRow(props) {
         </p>
       </div>
       <div className="WalletAssetRow-column-price">
-        <p className="WalletAssetRow-number">${prices[abbr] || '0'}</p>
+        <p className="WalletAssetRow-number">
+          ${numberToReadableString(rowData.price) || '0'}
+        </p>
       </div>
       <div className="WalletAssetRow-column-value">
         <p className="WalletAssetRow-number">
