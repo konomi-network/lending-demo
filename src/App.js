@@ -22,7 +22,7 @@ import { fetchPools } from 'services/pool';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.scss';
-import { isEmpty } from 'lodash';
+import { isEmpty, sortBy } from 'lodash';
 import { isFunction } from '@polkadot/util';
 
 const STATUS = {
@@ -30,18 +30,20 @@ const STATUS = {
   READY: 'READY',
 };
 
-const DEFAULT_COINS = ['KONO', 'BTC', 'ETH', 'DOT', 'DORA', 'LIT'];
+const DEFAULT_COIN_ORDER = { KONO: 0, BTC: 1, ETH: 2, DOT: 3, DORA: 4, LIT: 5 };
 
 function Main(props) {
   const {
     updateWalletBalance,
     updatePools,
+    updateAssets,
     updateUserBalance,
     updateSupply,
     updateDebt,
     updatePrice,
     updateLiquidationThreshold,
     pools,
+    assets,
   } = props;
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
@@ -58,9 +60,10 @@ function Main(props) {
   });
   const [threshold, setThreshold] = useState(null);
 
-  const coins = isEmpty(pools)
-    ? DEFAULT_COINS
-    : Object.values(pools).map(coin => coin.name);
+  const coins = isEmpty(assets) ? Object.keys(DEFAULT_COIN_ORDER) : assets;
+
+  console.log('🚀 ~ file: App.js ~ line 62 ~ Main ~ coins', coins);
+  console.log('🚀 ~ file: App.js ~ line 65 ~ Main ~ pools', pools);
 
   useEffect(() => {
     if (invitationActiveState == null && accountAddress) {
@@ -118,10 +121,6 @@ function Main(props) {
           accountAddress,
           coin.currencyId || { native: { id: tokenId } },
           accountData => {
-            console.log(
-              '🚀 ~ file: App.js ~ line 121 ~ coins.map ~ accountData',
-              accountData
-            );
             updateWalletBalance(coin, balanceToUnitNumber(accountData.free));
           }
         );
@@ -139,116 +138,116 @@ function Main(props) {
     api && api.query && api.query.tokens,
   ]);
 
-  // Monitor supply balances.
-  useEffect(() => {
-    let roundIds = {};
-    const getAllSupplyBalance = () =>
-      coins.map(async (coin, index) => {
-        const tokenName = coin.name || coin;
-        const tokenId = coin.id || index;
-        roundIds[tokenName] = await api.query.floatingRateLend.poolUserSupplies(
-          tokenId,
-          accountAddress,
-          data => {
-            if (data.isSome) {
-              const dataUnwrap = data.unwrap();
-              const amount = fixed32ToNumber(dataUnwrap.amount);
-              updateSupply(tokenName, amount);
-            }
-          }
-        );
-      });
+  // // Monitor supply balances.
+  // useEffect(() => {
+  //   let roundIds = {};
+  //   const getAllSupplyBalance = () =>
+  //     coins.map(async (coin, index) => {
+  //       const tokenName = coin.name || coin;
+  //       const tokenId = coin.id || index;
+  //       roundIds[tokenName] = await api.query.floatingRateLend.poolUserSupplies(
+  //         tokenId,
+  //         accountAddress,
+  //         data => {
+  //           if (data.isSome) {
+  //             const dataUnwrap = data.unwrap();
+  //             const amount = fixed32ToNumber(dataUnwrap.amount);
+  //             updateSupply(tokenName, amount);
+  //           }
+  //         }
+  //       );
+  //     });
 
-    if (accountAddress && api && api.query && api.query.floatingRateLend) {
-      console.log('floating supply');
-      getAllSupplyBalance();
-    }
-    return () =>
-      Object.keys(roundIds).forEach(
-        roundId => isFunction(roundId) && roundId()
-      );
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.floatingRateLend,
-  ]);
+  //   if (accountAddress && api && api.query && api.query.floatingRateLend) {
+  //     console.log('floating supply');
+  //     getAllSupplyBalance();
+  //   }
+  //   return () =>
+  //     Object.keys(roundIds).forEach(
+  //       roundId => isFunction(roundId) && roundId()
+  //     );
+  // }, [
+  //   api,
+  //   accountAddress,
+  //   invitationActiveState,
+  //   api && api.query && api.query.floatingRateLend,
+  // ]);
 
-  // Monitor debt balances.
-  useEffect(() => {
-    let roundIds = {};
-    const getAllDebtBalance = () =>
-      coins.map(async (coin, index) => {
-        const tokenName = coin.name || coin;
-        const tokenId = coin.id || index;
-        roundIds[tokenName] = await api.query.floatingRateLend.poolUserDebts(
-          tokenId,
-          accountAddress,
-          data => {
-            if (data.isSome) {
-              const dataUnwrap = data.unwrap();
-              const amount = fixed32ToNumber(dataUnwrap.amount);
-              updateDebt(tokenName, amount);
-            }
-          }
-        );
-      });
+  // // Monitor debt balances.
+  // useEffect(() => {
+  //   let roundIds = {};
+  //   const getAllDebtBalance = () =>
+  //     coins.map(async (coin, index) => {
+  //       const tokenName = coin.name || coin;
+  //       const tokenId = coin.id || index;
+  //       roundIds[tokenName] = await api.query.floatingRateLend.poolUserDebts(
+  //         tokenId,
+  //         accountAddress,
+  //         data => {
+  //           if (data.isSome) {
+  //             const dataUnwrap = data.unwrap();
+  //             const amount = fixed32ToNumber(dataUnwrap.amount);
+  //             updateDebt(tokenName, amount);
+  //           }
+  //         }
+  //       );
+  //     });
 
-    if (accountAddress && api && api.query && api.query.floatingRateLend) {
-      getAllDebtBalance();
-    }
-    return () =>
-      Object.keys(roundIds).forEach(
-        roundId => isFunction(roundId) && roundId()
-      );
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.floatingRateLend,
-  ]);
+  //   if (accountAddress && api && api.query && api.query.floatingRateLend) {
+  //     getAllDebtBalance();
+  //   }
+  //   return () =>
+  //     Object.keys(roundIds).forEach(
+  //       roundId => isFunction(roundId) && roundId()
+  //     );
+  // }, [
+  //   api,
+  //   accountAddress,
+  //   invitationActiveState,
+  //   api && api.query && api.query.floatingRateLend,
+  // ]);
 
-  // Monitor prices.
-  useEffect(() => {
-    let roundIds = {};
+  // // Monitor prices.
+  // useEffect(() => {
+  //   let roundIds = {};
 
-    const getAllPrices = () =>
-      coins.map(async (coin, index) => {
-        const tokenName = coin.name || coin;
-        const tokenId = coin.id || index;
-        roundIds[tokenName] = await api.query.chainlinkFeed.feeds(
-          tokenId,
-          async data => {
-            if (!data.isEmpty) {
-              let json = JSON.parse(data.toString());
-              const lastRoundId = json['latest_round'];
-              const priceData = await api.query.chainlinkFeed.rounds(
-                tokenId,
-                lastRoundId.toString()
-              );
-              if (priceData.isSome) {
-                const unWrappedPriceData = priceData.unwrap();
-                updatePrice(
-                  tokenName,
-                  priceToNumber(unWrappedPriceData.answer)
-                );
-              }
-            }
-          }
-        );
-      });
+  //   const getAllPrices = () =>
+  //     coins.map(async (coin, index) => {
+  //       const tokenName = coin.name || coin;
+  //       const tokenId = coin.id || index;
+  //       roundIds[tokenName] = await api.query.chainlinkFeed.feeds(
+  //         tokenId,
+  //         async data => {
+  //           if (!data.isEmpty) {
+  //             let json = JSON.parse(data.toString());
+  //             const lastRoundId = json['latest_round'];
+  //             const priceData = await api.query.chainlinkFeed.rounds(
+  //               tokenId,
+  //               lastRoundId.toString()
+  //             );
+  //             if (priceData.isSome) {
+  //               const unWrappedPriceData = priceData.unwrap();
+  //               updatePrice(
+  //                 tokenName,
+  //                 priceToNumber(unWrappedPriceData.answer)
+  //               );
+  //             }
+  //           }
+  //         }
+  //       );
+  //     });
 
-    if (accountAddress && api && api.query && api.query.chainlinkFeed) {
-      getAllPrices();
-    }
-    return () =>
-      Object.keys(roundIds).map(roundId => isFunction(roundId) && roundId());
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.chainlinkFeed,
-  ]);
+  //   if (accountAddress && api && api.query && api.query.chainlinkFeed) {
+  //     getAllPrices();
+  //   }
+  //   return () =>
+  //     Object.keys(roundIds).map(roundId => isFunction(roundId) && roundId());
+  // }, [
+  //   api,
+  //   accountAddress,
+  //   invitationActiveState,
+  //   api && api.query && api.query.chainlinkFeed,
+  // ]);
 
   // Poll user balance.
   useEffect(() => {
@@ -264,7 +263,7 @@ function Main(props) {
   // Poll pools.
   useEffect(() => {
     const interval = setInterval(async () => {
-      await fetchPools(updatePools);
+      await fetchPools(updatePools, updateAssets);
     }, 5000);
     return () => clearInterval(interval);
   });
@@ -384,6 +383,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   updateWalletBalance: walletAction.UPDATE_WALLET_BALANCE,
   updatePools: marketAction.UPDATE_POOLS,
+  updateAssets: marketAction.UPDATE_ASSETS,
   updateUserBalance: marketAction.UPDATE_USER_BALANCE,
   updateSupply: marketAction.UPDATE_SUPPLY,
   updateDebt: marketAction.UPDATE_DEBT,
