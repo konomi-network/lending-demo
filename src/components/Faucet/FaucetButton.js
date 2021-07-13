@@ -1,15 +1,17 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import { ReactComponent as Faucet } from 'resources/icons/Faucet.svg';
 import { useSubstrate } from 'services/substrate-lib';
 import { numberToU128String } from 'utils/numberUtils';
 import './FaucetButton.scss';
 
-/* global BigInt */
+const AMOUNT = 100; // in USD
 
-export default function Main(props) {
+/* global BigInt */
+function Main(props) {
   const { api, keyring } = useSubstrate();
-  const { accountPair } = props;
+  const { accountPair, assets } = props;
 
   if (!api || !keyring) {
     return null;
@@ -26,36 +28,36 @@ export default function Main(props) {
   const onClickButton = async () => {
     // Get the nonce for the admin key
     const { nonce } = await api.query.system.account(aliceAccount.address);
-    console.log('nonce');
-    console.log(nonce.toNumber());
-    const gasHash = await api.tx.currencies
-      .transfer(
-        accountPair.address,
-        { basic: { id: 0 } },
-        numberToU128String(1)
-      )
-      .signAndSend(aliceAccount, { nonce });
-    console.log('after gas');
-    if (gasHash) {
-      const dotNonce = nonce.toNumber() + 1;
-      console.log(dotNonce);
-      const transferHash0 = await api.tx.currencies
-        .transfer(
-          accountPair.address,
-          { native: { id: 0 } },
-          numberToU128String(20)
-        )
-        .signAndSend(aliceAccount, { nonce: dotNonce });
-      const ethNonce = nonce.toNumber() + 2;
-      console.log(ethNonce);
-      const transferHash1 = await api.tx.currencies
-        .transfer(
-          accountPair.address,
-          { native: { id: 1 } },
-          numberToU128String(0.1)
-        )
-        .signAndSend(aliceAccount, { nonce: ethNonce });
-    }
+
+    Promise.allSettled(
+      assets.map((asset, idx) => {
+        if (asset.name === 'KONO') {
+          return api.tx.balances
+            .transfer(accountPair.address, numberToU128String(AMOUNT))
+            .signAndSend(aliceAccount, { nonce: nonce.toNumber() + idx });
+        } else {
+          return api.tx.currencies
+            .transfer(
+              accountPair.address,
+              asset.currencyId,
+              numberToU128String(AMOUNT)
+            )
+            .signAndSend(aliceAccount, { nonce: nonce.toNumber() + idx });
+        }
+      })
+    )
+      .then(res => {
+        console.log(
+          '🚀 ~ file: FaucetButton.js ~ line 44 ~ onClickButton ~ res',
+          res
+        );
+      })
+      .catch(err => {
+        console.log(
+          '🚀 ~ file: FaucetButton.js ~ line 51 ~ onClickButton ~ err',
+          err
+        );
+      });
   };
 
   return (
@@ -64,3 +66,10 @@ export default function Main(props) {
     </div>
   );
 }
+
+const mapStateToProps = state => ({
+  assets: state.market.assets,
+  decimals: state.market.decimals,
+});
+
+export default connect(mapStateToProps)(Main);
