@@ -10,15 +10,7 @@ import CloseIcon from 'resources/img/close_black.png';
 import './MarketModal.scss';
 
 function Main(props) {
-  const {
-    assetId,
-    setModalOpen,
-    accountPair,
-    walletBalances,
-    pools,
-    supplies,
-    prices,
-  } = props;
+  const { assetId, setModalOpen, accountPair, walletBalances, pools } = props;
 
   const [inputValue, setInputValue] = useState(0);
   const [inputNumberValue, setInputNumberValue] = useState(null);
@@ -28,14 +20,14 @@ function Main(props) {
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
-  const abbr = pools[assetId].name;
-  const price = prices[abbr];
-  const currentSupply = supplies[abbr];
+  const rowData = pools[assetId];
+  const abbr = rowData.name;
+  const price = rowData.price;
+  const currentSupply = rowData.supply;
   const walletBalance = walletBalances[abbr];
-  const pool = pools[abbr];
   let apy = 0;
-  if (pool && pool.supplyAPY && pool.supplyAPY !== '0') {
-    const apyNumber = parseInt(pool.supplyAPY) / 100000;
+  if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
+    const apyNumber = parseInt(rowData.supplyAPY) / 100000;
     apy = apyNumber.toFixed(2);
   }
 
@@ -124,10 +116,10 @@ function Main(props) {
       <div className="MarketModal-header">
         <img
           className="MarketModal-header-image"
-          src={COIN_IMAGES[pool.name]}
+          src={COIN_IMAGES[rowData.name]}
           alt="header-asset-icon"
         />
-        <p className="MarketModal-header-title">{pool.name}</p>
+        <p className="MarketModal-header-title">{rowData.name}</p>
         <div
           onClick={() => setModalOpen(false)}
           className="MarketModal-header-close-button"
@@ -173,7 +165,7 @@ function Main(props) {
         <div className="MarketModal-trans-info-row">
           <img
             className="MarketModal-rate-icon"
-            src={COIN_IMAGES[pool.name]}
+            src={COIN_IMAGES[rowData.name]}
             alt="asset-icon"
           />
           <p className="MarketModal-trans-info-text">Supply APY</p>
@@ -225,8 +217,6 @@ function Main(props) {
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
   pools: state.market.pools,
-  supplies: state.market.supplies,
-  prices: state.market.prices,
 });
 
 export default connect(mapStateToProps)(Main);

@@ -5,7 +5,7 @@ import { COIN_IMAGES } from 'utils/coinImages';
 import './SupplyMarketRow.scss';
 
 function Main(props) {
-  const { rowId, onClickSupplyMarketRow, walletBalances, pools } = props;
+  const { rowData, rowId, onClickSupplyMarketRow, walletBalances } = props;
 
   // const renderCollateralSlider = () => {
   //   return (
@@ -15,13 +15,11 @@ function Main(props) {
   //   );
   // };
 
-  const rowData = pools[rowId];
   const abbr = rowData.name;
   const walletBalance = walletBalances[abbr];
-  const pool = pools[abbr];
   let apy = 0;
-  if (pool && pool.supplyAPY && pool.supplyAPY !== '0') {
-    const apyNumber = parseInt(pool.supplyAPY) / 100000;
+  if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
+    const apyNumber = parseInt(rowData.supplyAPY) / 100000;
     apy = apyNumber.toFixed(2);
   }
   return (
@@ -50,7 +48,6 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  pools: state.market.pools,
 });
 
 export default connect(mapStateToProps)(Main);

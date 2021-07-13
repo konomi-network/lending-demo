@@ -14,7 +14,7 @@ import './MarketLists.scss';
 import './SupplyMarketRow.scss';
 
 function Main(props) {
-  const { accountPair, pools } = props;
+  const { accountPair, assets } = props;
   const { invitationActiveState } = useSubstrate();
 
   const [supplyModalOpen, setSupplyModalOpen] = useState(false);
@@ -50,12 +50,13 @@ function Main(props) {
   const renderSupplyMarketTableContent = () => {
     return (
       <div>
-        {Object.values(pools).map(coin => (
+        {assets.map(coin => (
           <SupplyMarketRow
             key={`supply ${coin.name}`}
             rowId={coin.name}
             accountPair={accountPair}
             onClickSupplyMarketRow={onClickSupplyMarketRow}
+            rowData={coin}
           />
         ))}
       </div>
@@ -87,26 +88,16 @@ function Main(props) {
     setBorrowModalOpen(true);
   };
 
-  const renderBorrowMarketRow = rowId => {
-    return (
-      <BorrowMarketRow
-        key={`borrow ${rowId}`}
-        rowId={rowId}
-        accountPair={accountPair}
-        onClickBorrowMarketRow={onClickBorrowMarketRow}
-      />
-    );
-  };
-
   const renderBorrowMarketTableContent = () => {
     return (
       <div>
-        {Object.values(pools).map(coin => (
+        {assets.map(coin => (
           <BorrowMarketRow
             key={`borrow ${coin.name}`}
             rowId={coin.name}
             accountPair={accountPair}
             onClickBorrowMarketRow={onClickBorrowMarketRow}
+            rowData={coin}
           />
         ))}
       </div>
@@ -167,7 +158,7 @@ function Main(props) {
 }
 
 const mapStateToProps = state => ({
-  pools: state.market.pools,
+  assets: state.market.assets,
 });
 
 const mapDispatchToProps = {};

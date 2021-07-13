@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 // import { useSubstrate } from 'services/substrate-lib';
@@ -7,22 +7,20 @@ import { COIN_IMAGES } from 'utils/coinImages';
 import './BorrowMarketRow.scss';
 
 function Main(props) {
-  const { rowId, onClickBorrowMarketRow, walletBalances, pools, prices } =
-    props;
+  const { rowData, rowId, onClickBorrowMarketRow, walletBalances } = props;
 
-  const rowData = pools[rowId];
   const abbr = rowData.name;
   const walletBalance = walletBalances[abbr];
-  const price = prices[abbr];
-  const pool = pools[abbr];
+  const price = rowData.price;
+
   let apy = 0;
-  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
-    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+  if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
+    const apyNumber = parseInt(rowData.borrowAPY) / 100000;
     apy = apyNumber.toFixed(2);
   }
   let liquidity = 0;
-  if (pool && pool.supply && pool.supply !== '0') {
-    liquidity = parseInt(pool.supply) / 100000;
+  if (rowData && rowData.supply && rowData.supply !== '0') {
+    liquidity = parseInt(rowData.supply) / 100000;
   }
   return (
     <div
@@ -55,8 +53,6 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  pools: state.market.pools,
-  prices: state.market.prices,
 });
 
 export default connect(mapStateToProps)(Main);

@@ -16,9 +16,6 @@ function Main(props) {
     accountPair,
     walletBalances,
     pools,
-    supplies,
-    debts,
-    prices,
     liquidationThreshold,
   } = props;
 
@@ -30,16 +27,16 @@ function Main(props) {
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
-  const abbr = pools[assetId].name;
-  const price = prices[abbr];
-  const currentBorrow = debts[abbr];
-  const currentSupply = supplies[abbr];
+  const rowData = pools[assetId];
+  const abbr = rowData.name;
+  const price = rowData.price;
+  const currentBorrow = rowData.borrow;
+  const currentSupply = rowData.supply;
   const currentBorrowLimit = currentSupply;
   const walletBalance = walletBalances[abbr];
-  const pool = pools[abbr];
   let apy = 0;
-  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
-    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+  if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
+    const apyNumber = parseInt(rowData.borrowAPY) / 100000;
     apy = apyNumber.toFixed(2);
   }
 
@@ -128,10 +125,10 @@ function Main(props) {
       <div className="MarketModal-header">
         <img
           className="MarketModal-header-image"
-          src={COIN_IMAGES[pool.name]}
+          src={COIN_IMAGES[rowData.name]}
           alt="header-asset-icon"
         />
-        <p className="MarketModal-header-title">{pool.name}</p>
+        <p className="MarketModal-header-title">{rowData.name}</p>
         <div
           onClick={() => setModalOpen(false)}
           className="MarketModal-header-close-button"
@@ -178,7 +175,7 @@ function Main(props) {
         <div className="MarketModal-trans-info-row">
           <img
             className="MarketModal-rate-icon"
-            src={COIN_IMAGES[pool.name]}
+            src={COIN_IMAGES[rowData.name]}
             alt="asset-icon"
           />
           <p className="MarketModal-trans-info-text">Borrow APY</p>
