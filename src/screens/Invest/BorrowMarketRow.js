@@ -11,8 +11,8 @@ function Main(props) {
     props;
 
   const abbr = rowData.name;
-  const walletBalance = walletBalances[abbr];
   const price = formatWithDecimal(rowData.price, decimals);
+  const walletBalanceCount = walletBalances[abbr] / price;
 
   let apy = 0;
   if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
@@ -42,7 +42,9 @@ function Main(props) {
         <p className="Market-table-cell-text">{apy}%</p>
       </div>
       <div className="BorrowMarket-wallet-column">
-        <p className="Market-table-cell-text">{`${walletBalance} ${abbr}`}</p>
+        <p className="Market-table-cell-text">{`${numberToReadableString(
+          walletBalanceCount
+        )} ${abbr}`}</p>
       </div>
       <div className="BorrowMarket-liquidity-column">
         <p className="Market-table-cell-text">

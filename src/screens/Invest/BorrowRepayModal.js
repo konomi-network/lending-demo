@@ -38,7 +38,8 @@ function Main(props) {
   const currentBorrow = formatWithDecimal(rowData.borrow, decimals);
   const currentSupply = formatWithDecimal(rowData.supply, decimals);
   const currentBorrowLimit = currentSupply;
-  const walletBalance = walletBalances[abbr];
+  const walletBalanceCount = walletBalances[abbr] / price;
+
   let apy = 0;
   if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
     const apyNumber = formatWithDecimal(rowData.borrowAPY, decimals) * 100;
@@ -111,7 +112,7 @@ function Main(props) {
         return numberToU128String(inputNumberValue);
       }
     } else {
-      if (inputNumberValue > walletBalance) {
+      if (inputNumberValue > walletBalanceCount) {
         // Repay exceeds wallet balance.
         return null;
       } else {
@@ -157,7 +158,7 @@ function Main(props) {
         </div>
         <div className="MarketModal-input-wallet-container">
           <p className="MarketModal-input-wallet-balance">
-            {numberToReadableString(walletBalance)}
+            {numberToReadableString(walletBalanceCount)}
           </p>
           <p className="MarketModal-input-wallet-text">AVAILABLE IN WALLET</p>
         </div>

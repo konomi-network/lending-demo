@@ -1,7 +1,6 @@
 // import { toNumber } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
-
 import { COIN_IMAGES } from 'utils/coinImages';
 
 import { numberToReadableString, formatWithDecimal } from 'utils/numberUtils';
@@ -13,9 +12,15 @@ function WalletAssetRow(props) {
 
   const abbr = rowData.name;
   const price = formatWithDecimal(rowData.price, decimals);
-  const supply = formatWithDecimal(rowData.supply, decimals);
-  const borrow = formatWithDecimal(rowData.borrow, decimals);
-  const assetValue = walletBalances[abbr] * price;
+  const supplyCount = formatWithDecimal(
+    rowData.supply / rowData.price,
+    decimals
+  );
+  const borrowCount = formatWithDecimal(
+    rowData.borrow / rowData.price,
+    decimals
+  );
+  const walletBalanceCount = walletBalances[abbr] / price;
 
   return (
     <div className="WalletAssetRow-container">
@@ -29,17 +34,17 @@ function WalletAssetRow(props) {
       </div>
       <div className="WalletAssetRow-column-supply-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(supply)}
+          {numberToReadableString(supplyCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-borrow-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(borrow)}
+          {numberToReadableString(borrowCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-wallet-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(walletBalances[abbr])}
+          {numberToReadableString(walletBalanceCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-price">
@@ -49,7 +54,7 @@ function WalletAssetRow(props) {
       </div>
       <div className="WalletAssetRow-column-value">
         <p className="WalletAssetRow-number">
-          ${numberToReadableString(assetValue, true)}
+          ${numberToReadableString(walletBalances[abbr], true)}
         </p>
       </div>
     </div>

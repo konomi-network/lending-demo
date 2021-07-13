@@ -35,7 +35,7 @@ function Main(props) {
   const abbr = rowData.name;
   const price = formatWithDecimal(rowData.price, decimals);
   const currentSupply = formatWithDecimal(rowData.supply, decimals);
-  const walletBalance = walletBalances[abbr];
+  const walletBalanceCount = walletBalances[abbr] / price;
 
   let apy = 0;
   if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
@@ -102,7 +102,7 @@ function Main(props) {
       return null;
     }
     if (activeItem === 'Supply') {
-      if (walletBalance < inputNumberValue) {
+      if (walletBalanceCount < inputNumberValue) {
         // New supply exceeds wallet balance.
         return null;
       } else {
@@ -155,7 +155,9 @@ function Main(props) {
           <p className="MarketModal-input-abbr">{abbr}</p>
         </div>
         <div className="MarketModal-input-wallet-container">
-          <p className="MarketModal-input-wallet-balance">{walletBalance}</p>
+          <p className="MarketModal-input-wallet-balance">
+            {walletBalanceCount}
+          </p>
           <p className="MarketModal-input-wallet-text">AVAILABLE IN WALLET</p>
         </div>
       </div>

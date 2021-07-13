@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { formatWithDecimal } from 'utils/numberUtils';
+import { formatWithDecimal, numberToReadableString } from 'utils/numberUtils';
 import { COIN_IMAGES } from 'utils/coinImages';
 
 import './SupplyMarketRow.scss';
@@ -18,7 +18,9 @@ function Main(props) {
   // };
 
   const abbr = rowData.name;
-  const walletBalance = walletBalances[abbr];
+  const price = formatWithDecimal(rowData.price, decimals);
+  const walletBalanceCount = walletBalances[abbr] / price;
+
   let apy = 0;
   if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
     const apyNumber = formatWithDecimal(rowData.supplyAPY, decimals) * 100;
@@ -42,7 +44,9 @@ function Main(props) {
         <p className="Market-table-cell-text">{apy}%</p>
       </div>
       <div className="SupplyMarket-wallet-column">
-        <p className="Market-table-cell-text">{`${walletBalance} ${abbr}`}</p>
+        <p className="Market-table-cell-text">{`${numberToReadableString(
+          walletBalanceCount
+        )} ${abbr}`}</p>
       </div>
     </div>
   );
