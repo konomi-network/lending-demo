@@ -34,12 +34,12 @@ function Main(props) {
   const rowData = pools[assetId];
   const abbr = rowData.name;
   const price = formatWithDecimal(rowData.price, decimals);
-  const currentSupply = rowData.supply;
+  const currentSupply = formatWithDecimal(rowData.supply, decimals);
   const walletBalance = walletBalances[abbr];
 
   let apy = 0;
   if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
-    const apyNumber = parseInt(rowData.supplyAPY) / decimals;
+    const apyNumber = formatWithDecimal(rowData.supplyAPY, decimals) * 100;
     apy = apyNumber.toFixed(2);
   }
 

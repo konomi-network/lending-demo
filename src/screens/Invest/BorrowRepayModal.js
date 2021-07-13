@@ -35,13 +35,13 @@ function Main(props) {
   const rowData = pools[assetId];
   const abbr = rowData.name;
   const price = formatWithDecimal(rowData.price, decimals);
-  const currentBorrow = rowData.borrow;
-  const currentSupply = rowData.supply;
+  const currentBorrow = formatWithDecimal(rowData.borrow, decimals);
+  const currentSupply = formatWithDecimal(rowData.supply, decimals);
   const currentBorrowLimit = currentSupply;
   const walletBalance = walletBalances[abbr];
   let apy = 0;
   if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
-    const apyNumber = parseInt(rowData.borrowAPY) / 100000;
+    const apyNumber = formatWithDecimal(rowData.borrowAPY, decimals) * 100;
     apy = apyNumber.toFixed(2);
   }
 

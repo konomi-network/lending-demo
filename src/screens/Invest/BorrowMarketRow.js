@@ -16,12 +16,13 @@ function Main(props) {
 
   let apy = 0;
   if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
-    const apyNumber = parseInt(rowData.borrowAPY) / decimals;
+    const apyNumber = formatWithDecimal(rowData.borrowAPY, decimals) * 100; // percentage need to x 100
     apy = apyNumber.toFixed(2);
   }
   let liquidity = 0;
   if (rowData && rowData.supply && rowData.supply !== '0') {
-    liquidity = parseInt(rowData.supply) / decimals;
+    liquidity =
+      parseInt(formatWithDecimal(rowData.supply), decimals) / decimals;
   }
   return (
     <div

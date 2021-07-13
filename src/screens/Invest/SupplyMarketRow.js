@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { formatWithDecimal } from 'utils/numberUtils';
 import { COIN_IMAGES } from 'utils/coinImages';
 
 import './SupplyMarketRow.scss';
@@ -20,7 +21,7 @@ function Main(props) {
   const walletBalance = walletBalances[abbr];
   let apy = 0;
   if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
-    const apyNumber = parseInt(rowData.supplyAPY) / decimals;
+    const apyNumber = formatWithDecimal(rowData.supplyAPY, decimals) * 100;
     apy = apyNumber.toFixed(2);
   }
   return (
