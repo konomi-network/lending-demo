@@ -5,8 +5,6 @@ import { useSubstrate } from 'services/substrate-lib';
 import Dashboard from './Dashboard';
 import Wallet from './Wallet';
 
-import './DashboardPage.scss';
-
 export default function Main(props) {
   const { accountPair } = props;
   const { invitationActiveState } = useSubstrate();
@@ -20,7 +18,7 @@ export default function Main(props) {
   }
 
   return (
-    <div className="DashboardPage-container">
+    <div>
       <LiquidationAlert {...props} />
       <Dashboard {...props} />
       <Wallet {...props} />

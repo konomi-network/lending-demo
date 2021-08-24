@@ -1,9 +1,11 @@
+@import 'styles/variables.scss';
+
 .WalletAssetRow-container {
   display: flex;
   flex-direction: row;
   height: 70px;
-  background: #182048;
-  box-shadow: 0px 4px 18px rgba(23, 34, 96, 0.3);
+  background: $purple-8;
+  box-shadow: 0px 4px 18px $purple-7-a30;
   border-radius: 7px;
   margin: 5px 0px;
 }
@@ -51,13 +53,11 @@
 }
 
 .WalletAssetRow-asset-text {
-  font-family: Poppins;
-  font-style: normal;
   font-weight: bold;
   font-size: 22px;
   line-height: 70px;
   letter-spacing: 0.1em;
-  color: #37BCEC;
+  color: $blue-3;
   margin-left: 20px;
 }
 
@@ -68,5 +68,5 @@
   font-size: 18px;
   line-height: 70px;
   letter-spacing: 0.05em;
-  color: #FFFFFF;
+  color: #ffffff;
 }

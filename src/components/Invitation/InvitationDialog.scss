@@ -1,3 +1,5 @@
+@import 'styles/variables.scss';
+
 .InvitationDialog-container {
   display: flex;
   flex-direction: column;
@@ -12,7 +14,7 @@
   font-size: 36px;
   line-height: 54px;
   letter-spacing: 0.1em;
-  color: #18d5ef;
+  color: $blue-2;
   margin: 100px auto;
 }
 
@@ -24,7 +26,7 @@
 
 .InvitationDialog-input {
   background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0px 8px 40px #3856f1;
+  box-shadow: 0px 8px 40px $primary-color;
   border: none;
   outline: none;
   width: 340px;
@@ -49,8 +51,8 @@
   color: #ffffff;
   height: 75px;
   width: 240px;
-  background-color: rgba(37, 228, 240, 0.9);
-  box-shadow: 0px 8px 40px #3856f1;
+  background-color: $secondary-color-a90;
+  box-shadow: 0px 8px 40px $primary-color;
   border-radius: 40px;
   border: none;
   outline: none;
