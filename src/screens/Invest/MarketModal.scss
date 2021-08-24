@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800&display=swap');
+@import 'styles/variables.scss';
 
 .MarketModal-container {
   /* height: 400px; */
-  background-color: #27358D;
+  background-color: $purple-4;
 }
 
 .MarketModal-header {
@@ -21,15 +22,13 @@
 }
 
 .MarketModal-header-title {
-  font-family: Poppins;
-  font-style: normal;
   font-weight: 700;
   font-size: 18px;
   line-height: 50px;
   margin: 0px 20px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  color: #4FE6FF;
+  color: $blue-4;
 }
 
 .MarketModal-header-close-button {
@@ -48,7 +47,7 @@
 
 .MarketModal-input-container {
   height: 200px;
-  background-color: #212A5F;
+  background-color: $purple-5;
   /* position: relative; */
 }
 
@@ -68,13 +67,10 @@
   text-align: center;
   border: 0px;
 
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: normal;
   font-size: 48px;
   line-height: 72px;
   color: white;
-  background-color: #212A5F;
+  background-color: $purple-5;
 }
 
 input.MarketModal-input:focus {
@@ -88,7 +84,7 @@ input.MarketModal-input:focus {
   line-height: 14px;
   text-align: center;
   letter-spacing: 0.03em;
-  color: #AEAEAE;
+  color: #aeaeae;
 
   position: absolute;
   right: 30px;
@@ -105,25 +101,19 @@ input.MarketModal-input:focus {
 
 .MarketModal-input-wallet-balance {
   display: inline-block;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: normal;
   font-size: 20px;
   line-height: 30px;
   letter-spacing: 0.02em;
-  color: #FFFFFF;
-  margin-right: 10px
+  color: #ffffff;
+  margin-right: 10px;
 }
 
 .MarketModal-input-wallet-text {
   display: inline-block;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: normal;
   font-size: 10px;
   line-height: 30px;
   letter-spacing: 0.02em;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .MarketModal-menu {
@@ -136,21 +126,19 @@ input.MarketModal-input:focus {
   width: 50%;
   text-align: center;
   justify-content: center;
-  font-family: Poppins;
-  font-style: normal;
   font-weight: bold;
   font-size: 20px;
   line-height: 80px;
-  color: #676FA8;
-  border-color: #161C45;
+  color: $purple-6;
+  border-color: $purple-8;
   border-bottom-style: solid;
   border-radius: 0;
   border-bottom-width: 0.3px;
 }
 
 .MarketModal-menu-active {
-  border-color: #8CD6FF!important;
-  color: #8CD6FF!important;
+  border-color: $blue-5 !important;
+  color: $blue-5 !important;
 }
 
 .MarketModal-trans-info {
@@ -176,23 +164,17 @@ input.MarketModal-input:focus {
 .MarketModal-trans-info-text {
   display: inline-block;
   min-width: 200px;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: normal;
   font-size: 20px;
   line-height: 60px;
   letter-spacing: 0.01em;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .MarketModal-trans-info-number {
   text-align: right;
   min-width: 200px;
-  font-family: Poppins;
-  font-style: normal;
-  font-weight: normal;
   font-size: 20px;
   line-height: 60px;
   letter-spacing: 0.01em;
-  color: #FFFFFF;
+  color: #ffffff;
 }

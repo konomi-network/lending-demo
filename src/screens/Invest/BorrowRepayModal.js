@@ -3,17 +3,15 @@ import { connect } from 'react-redux';
 import { Dimmer, Loader } from 'semantic-ui-react';
 
 import { KNTxButton } from 'services/substrate-lib/components';
-import { numberToReadableString, numberToU128String } from 'utils/numberUtils';
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
+import {
+  numberToReadableString,
+  numberToU128String,
+  formatWithDecimal,
+} from 'utils/numberUtils';
+import { COIN_IMAGES } from 'utils/coinImages';
 import CloseIcon from 'resources/img/close_black.png';
 
 import './MarketModal.scss';
-
-const ASSET_LIST = [
-  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
-  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
-];
 
 function Main(props) {
   const {
@@ -22,10 +20,8 @@ function Main(props) {
     accountPair,
     walletBalances,
     pools,
-    supplies,
-    debts,
-    prices,
     liquidationThreshold,
+    decimals,
   } = props;
 
   const [inputValue, setInputValue] = useState(0);
@@ -36,16 +32,17 @@ function Main(props) {
   const [loaderActive, setLoaderActive] = useState(false);
   const [processingText, setProcessingText] = useState('Processing');
 
-  const abbr = ASSET_LIST[assetId].abbr;
-  const price = prices[abbr];
-  const currentBorrow = debts[abbr];
-  const currentSupply = supplies[abbr];
+  const rowData = pools[assetId];
+  const abbr = rowData.name;
+  const price = formatWithDecimal(rowData.price, decimals);
+  const currentBorrow = formatWithDecimal(rowData.borrow, decimals);
+  const currentSupply = formatWithDecimal(rowData.supply, decimals);
   const currentBorrowLimit = currentSupply;
-  const walletBalance = walletBalances[abbr];
-  const pool = pools[abbr];
+  const walletBalanceCount = walletBalances[abbr] / price;
+
   let apy = 0;
-  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
-    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+  if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
+    const apyNumber = formatWithDecimal(rowData.borrowAPY, decimals) * 100;
     apy = apyNumber.toFixed(2);
   }
 
@@ -115,7 +112,7 @@ function Main(props) {
         return numberToU128String(inputNumberValue);
       }
     } else {
-      if (inputNumberValue > walletBalance) {
+      if (inputNumberValue > walletBalanceCount) {
         // Repay exceeds wallet balance.
         return null;
       } else {
@@ -134,10 +131,10 @@ function Main(props) {
       <div className="MarketModal-header">
         <img
           className="MarketModal-header-image"
-          src={ASSET_LIST[assetId].image}
+          src={COIN_IMAGES[rowData.name]}
           alt="header-asset-icon"
         />
-        <p className="MarketModal-header-title">{ASSET_LIST[assetId].name}</p>
+        <p className="MarketModal-header-title">{rowData.name}</p>
         <div
           onClick={() => setModalOpen(false)}
           className="MarketModal-header-close-button"
@@ -161,7 +158,7 @@ function Main(props) {
         </div>
         <div className="MarketModal-input-wallet-container">
           <p className="MarketModal-input-wallet-balance">
-            {numberToReadableString(walletBalance)}
+            {numberToReadableString(walletBalanceCount)}
           </p>
           <p className="MarketModal-input-wallet-text">AVAILABLE IN WALLET</p>
         </div>
@@ -184,7 +181,7 @@ function Main(props) {
         <div className="MarketModal-trans-info-row">
           <img
             className="MarketModal-rate-icon"
-            src={ASSET_LIST[assetId].image}
+            src={COIN_IMAGES[rowData.name]}
             alt="asset-icon"
           />
           <p className="MarketModal-trans-info-text">Borrow APY</p>
@@ -236,9 +233,7 @@ function Main(props) {
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
   pools: state.market.pools,
-  supplies: state.market.supplies,
-  debts: state.market.debts,
-  prices: state.market.prices,
+  decimals: state.market.decimals,
   liquidationThreshold: state.market.liquidationThreshold,
 });
 

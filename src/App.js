@@ -22,16 +22,24 @@ import { fetchPools } from 'services/pool';
 
 import 'semantic-ui-css/semantic.min.css';
 import './App.scss';
+import { isEmpty, sortBy } from 'lodash';
+import { isFunction } from '@polkadot/util';
+
+const STATUS = {
+  Activated: 'Activated',
+  READY: 'READY',
+};
+
+const DEFAULT_COIN_ORDER = { KONO: 0, BTC: 1, ETH: 2, DOT: 3, DORA: 4, LIT: 5 };
 
 function Main(props) {
   const {
     updateWalletBalance,
     updatePools,
+    updateAssets,
     updateUserBalance,
-    updateSupply,
-    updateDebt,
-    updatePrice,
     updateLiquidationThreshold,
+    assets,
   } = props;
   const [accountAddress, setAccountAddress] = useState(null);
   const [selectedTabItem, setSelectedTabItem] = useState(TAB_NAME_ARRAY[0]);
@@ -47,6 +55,8 @@ function Main(props) {
     debtBalance: null,
   });
   const [threshold, setThreshold] = useState(null);
+
+  const coins = isEmpty(assets) ? Object.keys(DEFAULT_COIN_ORDER) : assets;
 
   useEffect(() => {
     if (invitationActiveState == null && accountAddress) {
@@ -68,7 +78,7 @@ function Main(props) {
     let unsubThreshold = null;
 
     if (
-      invitationActiveState === 'Activated' &&
+      invitationActiveState === STATUS.Activated &&
       api &&
       api.query.floatingRateLend
     ) {
@@ -93,189 +103,51 @@ function Main(props) {
 
   // Monitor wallet balances.
   useEffect(() => {
-    let unsubDotBalance = null;
-    let unsubEthBalance = null;
-    const getDotWalletBalance = async () => {
-      unsubDotBalance = await api.query.tokens.accounts(
-        accountAddress,
-        { native: { id: 0 } },
-        accountData => {
-          updateWalletBalance('DOT', balanceToUnitNumber(accountData.free));
-        }
-      );
-    };
-    const getEthWalletBalance = async () => {
-      unsubEthBalance = await api.query.tokens.accounts(
-        accountAddress,
-        { native: { id: 1 } },
-        accountData => {
-          updateWalletBalance('ETH', balanceToUnitNumber(accountData.free));
-        }
-      );
-    };
-    if (accountAddress && api && api.query && api.query.tokens) {
-      console.log('get wallet balance');
-      getDotWalletBalance();
-      getEthWalletBalance();
-    }
+    let roundIds = {};
 
-    return () => {
-      unsubDotBalance && unsubDotBalance();
-      unsubEthBalance && unsubEthBalance();
-    };
+    if (
+      accountAddress &&
+      api &&
+      api.query &&
+      api.query.tokens &&
+      assets.length > 0
+    ) {
+      const getAllWalletBalance = () =>
+        coins.map(async coin => {
+          const tokenName = coin.name;
+          if (tokenName === 'KONO') {
+            roundIds[tokenName] = await api.query.balances.account(
+              accountAddress,
+              accountData => {
+                updateWalletBalance(
+                  tokenName,
+                  balanceToUnitNumber(accountData.free)
+                );
+              }
+            );
+          } else {
+            roundIds[tokenName] = await api.query.tokens.accounts(
+              accountAddress,
+              coin.currencyId,
+              accountData => {
+                updateWalletBalance(
+                  tokenName,
+                  balanceToUnitNumber(accountData.free)
+                );
+              }
+            );
+          }
+        });
+      console.log('get wallet balance');
+      getAllWalletBalance();
+    }
+    return () =>
+      Object.keys(roundIds).map(roundId => isFunction(roundId) && roundId());
   }, [
     accountAddress,
-    api,
     invitationActiveState,
     api && api.query && api.query.tokens,
-  ]);
-
-  // Monitor supply balances.
-  useEffect(() => {
-    let unsubDotSupply = null;
-    let unsubEthSupply = null;
-
-    const getDotSupplyBalance = async () => {
-      unsubDotSupply = await api.query.floatingRateLend.poolUserSupplies(
-        1,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateSupply('DOT', amount);
-          }
-        }
-      );
-    };
-    const getEthSupplyBalance = async () => {
-      unsubEthSupply = await api.query.floatingRateLend.poolUserSupplies(
-        2,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateSupply('ETH', amount);
-          }
-        }
-      );
-    };
-
-    if (accountAddress && api && api.query && api.query.floatingRateLend) {
-      console.log('floating supply');
-      getDotSupplyBalance();
-      getEthSupplyBalance();
-    }
-    return () => {
-      unsubDotSupply && unsubDotSupply();
-      unsubEthSupply && unsubEthSupply();
-    };
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.floatingRateLend,
-  ]);
-
-  // Monitor debt balances.
-  useEffect(() => {
-    let unsubDotDebt = null;
-    let unsubEthDebt = null;
-
-    const getDotDebtBalance = async () => {
-      unsubDotDebt = await api.query.floatingRateLend.poolUserDebts(
-        1,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateDebt('DOT', amount);
-          }
-        }
-      );
-    };
-    const getEthDebtBalance = async () => {
-      unsubEthDebt = await api.query.floatingRateLend.poolUserDebts(
-        2,
-        accountAddress,
-        data => {
-          if (data.isSome) {
-            const dataUnwrap = data.unwrap();
-            const amount = fixed32ToNumber(dataUnwrap.amount);
-            updateDebt('ETH', amount);
-          }
-        }
-      );
-    };
-
-    if (accountAddress && api && api.query && api.query.floatingRateLend) {
-      getDotDebtBalance();
-      getEthDebtBalance();
-    }
-    return () => {
-      unsubDotDebt && unsubDotDebt();
-      unsubEthDebt && unsubEthDebt();
-    };
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.floatingRateLend,
-  ]);
-
-  // Monitor prices.
-  useEffect(() => {
-    let unsubDotRoundId = null;
-    let unsubEthRoundId = null;
-
-    const getDotPrice = async () => {
-      unsubDotRoundId = await api.query.chainlinkFeed.feeds(1, async data => {
-        if (!data.isEmpty) {
-          let json = JSON.parse(data.toString());
-          const lastRoundId = json['latest_round'];
-          const priceData = await api.query.chainlinkFeed.rounds(
-            1,
-            lastRoundId.toString()
-          );
-          if (priceData.isSome) {
-            const unWrappedPriceData = priceData.unwrap();
-            updatePrice('DOT', priceToNumber(unWrappedPriceData.answer));
-          }
-        }
-      });
-    };
-    const getEthPrice = async () => {
-      unsubEthRoundId = await api.query.chainlinkFeed.feeds(2, async data => {
-        if (!data.isEmpty) {
-          let json = JSON.parse(data.toString());
-          const lastRoundId = json['latest_round'];
-          const priceData = await api.query.chainlinkFeed.rounds(
-            2,
-            lastRoundId.toString()
-          );
-          if (priceData.isSome) {
-            const unWrappedPriceData = priceData.unwrap();
-            updatePrice('ETH', priceToNumber(unWrappedPriceData.answer));
-          }
-        }
-      });
-    };
-
-    if (accountAddress && api && api.query && api.query.chainlinkFeed) {
-      getDotPrice();
-      getEthPrice();
-    }
-    return () => {
-      unsubDotRoundId && unsubDotRoundId();
-      unsubEthRoundId && unsubEthRoundId();
-    };
-  }, [
-    api,
-    accountAddress,
-    invitationActiveState,
-    api && api.query && api.query.chainlinkFeed,
+    assets.length,
   ]);
 
   // Poll user balance.
@@ -292,7 +164,7 @@ function Main(props) {
   // Poll pools.
   useEffect(() => {
     const interval = setInterval(async () => {
-      await fetchPools(updatePools);
+      await fetchPools(updatePools, updateAssets);
     }, 5000);
     return () => clearInterval(interval);
   });
@@ -301,14 +173,14 @@ function Main(props) {
   // doesn't have an account.
   const accountPair =
     accountAddress &&
-    keyringState === 'READY' &&
+    keyringState === STATUS.READY &&
     keyring.getPair(accountAddress);
 
   const renderArrow = () => {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== STATUS.Activated) {
       return null;
     }
     return (
@@ -324,7 +196,7 @@ function Main(props) {
     if (!accountPair) {
       return null;
     }
-    if (invitationActiveState !== 'Activated') {
+    if (invitationActiveState !== STATUS.Activated) {
       return null;
     }
     return <FaucetButton accountPair={accountPair} />;
@@ -338,7 +210,7 @@ function Main(props) {
       console.log('connect substrate');
       connectSubstrate();
       return null;
-    } else if (apiState !== 'READY') {
+    } else if (apiState !== STATUS.READY) {
       return <ConnectPage apiState={apiState} />;
     }
 
@@ -373,51 +245,52 @@ function Main(props) {
 
   return (
     <div className="App-container" ref={contextRef}>
-      <div className="App-content-container">
-        <div className="App-header">
-          <div className="App-header-logo">
-            <AppLogo />
-          </div>
-          <TabBar onChangeTabItemName={setSelectedTabItem} />
-          <div className="App-header-middle" />
-          {renderAccountButton()}
-          {renderArrow()}
-          {renderFaucetButton()}
+      <div className="App-header">
+        <div className="App-header-logo">
+          <AppLogo />
         </div>
-        <div className="App-watermark">
-          <img
-            className="App-watermark-image"
-            src={Watermark}
-            alt="watermark-img"
-          />
-        </div>
-        <div className="App-oval-box">
-          <div className="App-oval-background" />
-        </div>
-        {renderPage()}
-
-        {/* connection error alert */}
-        <Modal
-          open={modalOpen}
-          setOpen={setModalOpen}
-          header={apiError?.description}
+        <TabBar onChangeTabItemName={setSelectedTabItem} />
+        <div className="App-header-middle" />
+        {renderAccountButton()}
+        {renderArrow()}
+        {renderFaucetButton()}
+      </div>
+      <div className="App-watermark">
+        <img
+          className="App-watermark-image"
+          src={Watermark}
+          alt="watermark-img"
         />
       </div>
+      <div className="App-oval-box">
+        <div className="App-oval-background" />
+      </div>
+
+      {renderPage()}
+
+      {/* connection error alert */}
+      <Modal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        header={apiError?.description}
+      />
     </div>
   );
 }
+const mapStateToProps = state => ({
+  pools: state.market.pools,
+  assets: state.market.assets,
+});
 
 const mapDispatchToProps = {
   updateWalletBalance: walletAction.UPDATE_WALLET_BALANCE,
   updatePools: marketAction.UPDATE_POOLS,
+  updateAssets: marketAction.UPDATE_ASSETS,
   updateUserBalance: marketAction.UPDATE_USER_BALANCE,
-  updateSupply: marketAction.UPDATE_SUPPLY,
-  updateDebt: marketAction.UPDATE_DEBT,
-  updatePrice: marketAction.UPDATE_PRICE,
   updateLiquidationThreshold: marketAction.UPDATE_LIQUIDATION_THRESHOLD,
 };
 
-const MainContainer = connect(() => {}, mapDispatchToProps)(Main);
+const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export default function App() {
   return (

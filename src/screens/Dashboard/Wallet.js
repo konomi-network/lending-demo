@@ -1,47 +1,13 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
 import WalletAssetRow from './WalletAssetRow';
 
 import './Wallet.scss';
 import './WalletAssetRow.scss';
 
-const INIT_ASSET_LIST = [
-  {
-    id: 0,
-    name: 'Polkadot',
-    abbr: 'DOT',
-    image: DotImage,
-    balance: null,
-    price: 60,
-  },
-  {
-    id: 1,
-    name: 'Ethereum',
-    abbr: 'ETH',
-    image: EthImage,
-    balance: null,
-    price: 600,
-  },
-];
-
-export default function Main(props) {
-  const { accountPair } = props;
-
-  const renderTableRows = () => {
-    const tableRows = INIT_ASSET_LIST.map(asset => {
-      return (
-        <WalletAssetRow
-          rowData={asset}
-          assetId={asset.id}
-          accountPair={accountPair}
-          key={asset.id}
-        />
-      );
-    });
-    return tableRows;
-  };
+function Wallet(props) {
+  const { accountPair, assets } = props;
 
   const renderAssetTable = () => {
     return (
@@ -68,7 +34,16 @@ export default function Main(props) {
             <p className="Wallet-asset-table-header-text">Value</p>
           </div>
         </div>
-        {renderTableRows()}
+        {assets.map(asset => {
+          return (
+            <WalletAssetRow
+              rowData={asset}
+              assetId={asset.id}
+              accountPair={accountPair}
+              key={asset.id}
+            />
+          );
+        })}
       </div>
     );
   };
@@ -80,3 +55,11 @@ export default function Main(props) {
     </div>
   );
 }
+
+const mapStateToProps = state => ({
+  pools: state.market.pools,
+  assets: state.market.assets,
+});
+
+const mapDispatchToProps = {};
+export default connect(mapStateToProps, mapDispatchToProps)(Wallet);

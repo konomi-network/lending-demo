@@ -1,32 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
+import { formatWithDecimal, numberToReadableString } from 'utils/numberUtils';
+import { COIN_IMAGES } from 'utils/coinImages';
 
 import './SupplyMarketRow.scss';
 
-const SUPPLY_ASSET_LIST = [
-  {
-    id: 0,
-    name: 'Polkadot',
-    abbr: 'DOT',
-    image: DotImage,
-    apy: 0.0204,
-    price: 60,
-  },
-  {
-    id: 1,
-    name: 'Ethereum',
-    abbr: 'ETH',
-    image: EthImage,
-    apy: 0.0004,
-    price: 600,
-  },
-];
-
 function Main(props) {
-  const { rowId, onClickSupplyMarketRow, walletBalances, pools } = props;
+  const { rowData, rowId, onClickSupplyMarketRow, walletBalances, decimals } =
+    props;
 
   // const renderCollateralSlider = () => {
   //   return (
@@ -36,13 +17,13 @@ function Main(props) {
   //   );
   // };
 
-  const rowData = SUPPLY_ASSET_LIST[rowId];
-  const abbr = rowData.abbr;
-  const walletBalance = walletBalances[abbr];
-  const pool = pools[abbr];
+  const abbr = rowData.name;
+  const price = formatWithDecimal(rowData.price, decimals);
+  const walletBalanceCount = walletBalances[abbr] / price;
+
   let apy = 0;
-  if (pool && pool.supplyAPY && pool.supplyAPY !== '0') {
-    const apyNumber = parseInt(pool.supplyAPY) / 100000;
+  if (rowData && rowData.supplyAPY && rowData.supplyAPY !== '0') {
+    const apyNumber = formatWithDecimal(rowData.supplyAPY, decimals) * 100;
     apy = apyNumber.toFixed(2);
   }
   return (
@@ -54,7 +35,7 @@ function Main(props) {
       <div className="SupplyMarket-asset-column Market-table-cell">
         <img
           className="Market-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
         <p className="Market-table-asset-text">{abbr}</p>
@@ -63,7 +44,9 @@ function Main(props) {
         <p className="Market-table-cell-text">{apy}%</p>
       </div>
       <div className="SupplyMarket-wallet-column">
-        <p className="Market-table-cell-text">{`${walletBalance} ${abbr}`}</p>
+        <p className="Market-table-cell-text">{`${numberToReadableString(
+          walletBalanceCount
+        )} ${abbr}`}</p>
       </div>
     </div>
   );
@@ -71,7 +54,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  pools: state.market.pools,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(Main);

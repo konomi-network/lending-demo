@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
 @import 'styles/mixins.scss';
+@import 'styles/variables.scss';
 
 .AccountSelectorNew-container {
   position: relative;
@@ -13,12 +14,11 @@
   width: 250px;
   height: 50px;
   border-radius: 25px;
-  box-shadow: 0px 8px 40px #3856f1;
+  box-shadow: 0px 8px 40px $primary-color;
   outline: none;
   border-width: 0px;
-  background-color: rgba(37, 228, 240, 0.9);
-
-  @include buttonStates(rgb(37, 228, 240));
+  background-color: $secondary-color-a90;
+  @include buttonStates($secondary-color);
 }
 
 .DropdownNew-name {
@@ -38,7 +38,7 @@
   z-index: 666;
   width: 250px;
   border-radius: 25px;
-  border-color: rgba(37, 228, 240, 0.9);
+  border-color: $secondary-color-a90;
 }
 
 .DropdownNew-options-container:hover {
@@ -48,7 +48,7 @@
 .DropdownNew-option-row {
   width: 250px;
   height: 50px;
-  background-color: rgba(37, 228, 240, 0.9);
+  background-color: $secondary-color-a90;
 }
 
 .name-selected {

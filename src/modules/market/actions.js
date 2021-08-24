@@ -5,6 +5,13 @@ const UPDATE_POOLS = pools => {
   };
 };
 
+const UPDATE_ASSETS = assets => {
+  return {
+    type: 'UPDATE_ASSETS',
+    payload: assets,
+  };
+};
+
 const UPDATE_USER_BALANCE = userBalance => {
   return {
     type: 'UPDATE_USER_BALANCE',
@@ -48,6 +55,7 @@ const UPDATE_LIQUIDATION_THRESHOLD = threshold => {
 
 export default {
   UPDATE_POOLS,
+  UPDATE_ASSETS,
   UPDATE_USER_BALANCE,
   UPDATE_SUPPLY,
   UPDATE_DEBT,

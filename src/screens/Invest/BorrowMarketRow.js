@@ -1,35 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 // import { useSubstrate } from 'services/substrate-lib';
-import { numberToReadableString } from 'utils/numberUtils';
-import DotImage from 'resources/img/DOT.png';
-import EthImage from 'resources/img/ETH.png';
-
+import { numberToReadableString, formatWithDecimal } from 'utils/numberUtils';
+import { COIN_IMAGES } from 'utils/coinImages';
 import './BorrowMarketRow.scss';
 
-const BORROW_ASSET_LIST = [
-  { id: 0, name: 'Polkadot', abbr: 'DOT', image: DotImage },
-  { id: 1, name: 'Ethereum', abbr: 'ETH', image: EthImage },
-];
-
 function Main(props) {
-  const { rowId, onClickBorrowMarketRow, walletBalances, pools, prices } =
+  const { rowData, rowId, onClickBorrowMarketRow, walletBalances, decimals } =
     props;
 
-  const rowData = BORROW_ASSET_LIST[rowId];
-  const abbr = rowData.abbr;
-  const walletBalance = walletBalances[abbr];
-  const price = prices[abbr];
-  const pool = pools[abbr];
+  const abbr = rowData.name;
+  const price = formatWithDecimal(rowData.price, decimals);
+  const walletBalanceCount = walletBalances[abbr] / price;
+
   let apy = 0;
-  if (pool && pool.borrowAPY && pool.borrowAPY !== '0') {
-    const apyNumber = parseInt(pool.borrowAPY) / 100000;
+  if (rowData && rowData.borrowAPY && rowData.borrowAPY !== '0') {
+    const apyNumber = formatWithDecimal(rowData.borrowAPY, decimals) * 100; // percentage need to x 100
     apy = apyNumber.toFixed(2);
   }
   let liquidity = 0;
-  if (pool && pool.supply && pool.supply !== '0') {
-    liquidity = parseInt(pool.supply) / 100000;
+  if (rowData && rowData.supply && rowData.supply !== '0') {
+    liquidity =
+      parseInt(formatWithDecimal(rowData.supply), decimals) / decimals;
   }
   return (
     <div
@@ -40,7 +33,7 @@ function Main(props) {
       <div className="BorrowMarket-asset-column Market-table-cell">
         <img
           className="Market-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
         <p className="Market-table-asset-text">{abbr}</p>
@@ -49,7 +42,9 @@ function Main(props) {
         <p className="Market-table-cell-text">{apy}%</p>
       </div>
       <div className="BorrowMarket-wallet-column">
-        <p className="Market-table-cell-text">{`${walletBalance} ${abbr}`}</p>
+        <p className="Market-table-cell-text">{`${numberToReadableString(
+          walletBalanceCount
+        )} ${abbr}`}</p>
       </div>
       <div className="BorrowMarket-liquidity-column">
         <p className="Market-table-cell-text">
@@ -62,8 +57,7 @@ function Main(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  pools: state.market.pools,
-  prices: state.market.prices,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(Main);

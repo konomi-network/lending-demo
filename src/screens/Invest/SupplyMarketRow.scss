@@ -1,16 +1,17 @@
 @import 'styles/mixins.scss';
+@import 'styles/variables.scss';
 
 .Market-table-row {
   display: flex;
   flex-direction: row;
   height: 80px;
 
-  background: #182048;
-  box-shadow: 0px 4px 18px rgba(23, 34, 96, 0.3);
+  background: $purple-8;
+  box-shadow: 0px 4px 18px $purple-7-a30;
   border-radius: 7px;
   margin: 8px 0px;
 
-  @include buttonStates(#182048);
+  @include buttonStates($purple-8);
 }
 
 .Market-table-cell {
@@ -42,7 +43,7 @@
   font-size: 22px;
   line-height: 80px;
   letter-spacing: 0.1em;
-  color: #37bcec;
+  color: $blue-3;
 }
 
 .SupplyMarket-asset-column {

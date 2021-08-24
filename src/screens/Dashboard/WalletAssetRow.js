@@ -1,46 +1,60 @@
+// import { toNumber } from 'lodash';
 import React from 'react';
 import { connect } from 'react-redux';
+import { COIN_IMAGES } from 'utils/coinImages';
 
-import { numberToReadableString } from 'utils/numberUtils';
+import { numberToReadableString, formatWithDecimal } from 'utils/numberUtils';
 
 import './WalletAssetRow.scss';
 
 function WalletAssetRow(props) {
-  const { rowData, walletBalances, supplies, debts, prices } = props;
-  const abbr = rowData.abbr;
-  const assetValue = walletBalances[abbr] * prices[abbr];
+  const { rowData, walletBalances, decimals } = props;
+
+  const abbr = rowData.name;
+  const price = formatWithDecimal(rowData.price, decimals);
+  const supplyCount = formatWithDecimal(
+    rowData.supply / rowData.price,
+    decimals
+  );
+  const borrowCount = formatWithDecimal(
+    rowData.borrow / rowData.price,
+    decimals
+  );
+  const walletBalanceCount = walletBalances[abbr] / price;
 
   return (
     <div className="WalletAssetRow-container">
       <div className="WalletAssetRow-column-asset WalletAssetRow-cell">
         <img
           className="WalletAssetRow-asset-icon"
-          src={rowData.image}
+          src={COIN_IMAGES[abbr]}
           alt="asset-icon"
         />
-        <p className="WalletAssetRow-asset-text">{rowData.abbr}</p>
+        <p className="WalletAssetRow-asset-text">{abbr}</p>
       </div>
       <div className="WalletAssetRow-column-supply-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(supplies[abbr])}
+          {numberToReadableString(supplyCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-borrow-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(debts[abbr])}
+          {numberToReadableString(borrowCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-wallet-balance">
         <p className="WalletAssetRow-number">
-          {numberToReadableString(walletBalances[abbr])}
+          {numberToReadableString(walletBalanceCount)}
         </p>
       </div>
       <div className="WalletAssetRow-column-price">
-        <p className="WalletAssetRow-number">${prices[abbr]}</p>
+        <p className="WalletAssetRow-number">
+          ${numberToReadableString(price) || '0'}
+        </p>
       </div>
       <div className="WalletAssetRow-column-value">
         <p className="WalletAssetRow-number">
-          ${numberToReadableString(assetValue, true)}
+          ${numberToReadableString(walletBalances[abbr], true)}
         </p>
       </div>
     </div>
@@ -49,9 +63,7 @@ function WalletAssetRow(props) {
 
 const mapStateToProps = state => ({
   walletBalances: state.wallet.balances,
-  debts: state.market.debts,
-  supplies: state.market.supplies,
-  prices: state.market.prices,
+  decimals: state.market.decimals,
 });
 
 export default connect(mapStateToProps)(WalletAssetRow);
